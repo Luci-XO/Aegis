@@ -1,0 +1,19 @@
+{
+  "version": "2026-10-29.1",
+  "org_domains": ["aegis-corp.example"],
+  "tools": {
+    "read_email":   { "enabled": true,  "require_approval": false },
+    "search_files": { "enabled": true,  "require_approval": false },
+    "read_file":    { "enabled": true,  "require_approval": false },
+    "draft_email":  { "enabled": true,  "require_approval": false },
+    "send_email":   { "enabled": true,  "require_approval": true }
+  },
+  "egress": {
+    "internal": { "public": "allow", "internal": "allow",            "confidential": "require_approval" },
+    "external": { "public": "allow", "internal": "require_approval", "confidential": "deny" }
+  },
+  "risk": {
+    "escalation_threshold": 0.5,
+    "escalate_when_detector_unavailable": true
+  }
+}
