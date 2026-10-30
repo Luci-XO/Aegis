@@ -16,7 +16,7 @@ the final authority, and a threat detector can only make decisions stricter.
 
 ## Quick start
 
-Requires Python 3.11+. The security core has **no third-party dependencies**,
+Requires Python 3.10+ (tested on 3.10, 3.11, 3.12, 3.13 and 3.14). The security core has **no third-party dependencies**,
 so it runs without an install step:
 
 ```bash
@@ -38,6 +38,19 @@ To try a real model later, set `AEGIS_LLM_PROVIDER`, `AEGIS_LLM_MODEL` and
 (`AEGIS_LLM_PROVIDER=ollama`).
 
 Optional editable install: `python -m pip install -e ".[dev]"`.
+
+### Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `python` not found, or it is Python 2 | Use `python3` on macOS/Linux, or `py -3` on Windows. |
+| Errors as soon as anything starts | Check `python --version`; Python 3.10 or newer is required. |
+| `No module named pytest` | Only the tests need it: `python -m pip install pytest`. The demos, benchmark and dashboard run without it. |
+| `No module named aegis` | Run commands from the repository root (the folder that contains `aegis/`). |
+| Dashboard: `Address already in use` | Pick another port: `python -m aegis.web --port 8080`. |
+| Dashboard opens but shows nothing | Use `http://127.0.0.1:8000`, not the file path; the page needs the server. |
+| Want the dashboard on another device | `python -m aegis.web --host 0.0.0.0` (demo server; use only on a trusted network). |
+| `AEGIS_APPROVAL_SECRET not set` warning | Harmless. A random key is used per run. To silence it, set the variable as shown in `.env.example`. |
 
 ## What the demo shows
 
