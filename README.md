@@ -8,10 +8,11 @@ rules (which tools, which resources, which recipients, which data may flow
 where, whether a human must approve) **before** it executes. The LLM is never
 the final authority, and a threat detector can only make decisions stricter.
 
-> Status: **Stage 6, dashboard.** Security core, agent, detector, four-way
-> benchmark with a held-out split, and a browser dashboard are done. All data is
-> synthetic and all tools are simulated; the whole project has no third-party
-> runtime dependencies.
+> Status: **complete prototype.** Security core, agent, rule detector, four-way
+> benchmark with a held-out split, browser dashboard, technical report and demo
+> script are all in place. All data is synthetic and all tools are simulated;
+> the whole project has **no third-party runtime dependencies** (only `pytest`
+> to run the tests), and reproduces from a clean clone with no install step.
 
 ## Quick start
 
@@ -133,6 +134,29 @@ control/data separation ([CaMeL](https://arxiv.org/abs/2503.18813)),
 the evaluation approach of [AgentDojo](https://arxiv.org/abs/2406.13352). It maps to
 OWASP LLM01 (Prompt Injection) and LLM06 (Excessive Agency) in the
 [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/).
+
+## Documentation
+
+- [docs/report.md](docs/report.md) - technical report: method, results, limitations, contribution
+- [docs/threat_model.md](docs/threat_model.md) - threat model and what is out of scope
+- [docs/architecture.md](docs/architecture.md) - security-core internals
+- [docs/agent_and_detector.md](docs/agent_and_detector.md) - agent, detector, run loop
+- [docs/benchmark.md](docs/benchmark.md) - benchmark methodology
+- [docs/benchmark_results.md](docs/benchmark_results.md) - generated results snapshot
+- [docs/dashboard.md](docs/dashboard.md) - dashboard and HTTP API
+- [docs/demo_script.md](docs/demo_script.md) - three-minute live demo script
+
+## Contribution, in one paragraph
+
+Aegis is not a new defense. It is a small, dependency-free reference
+implementation of action-level policy enforcement for AI agents, built around a
+deterministic gateway that the language model cannot overrule. Its value is
+engineering and evaluation: a four-way ablation (unprotected, detector-only,
+gateway-only, full) under a fully-hijacked agent, scored on the real environment
+state by a reference-policy oracle; a methodological freeze that separates the
+tuning set from a held-out split; and a result that is honest about its limits,
+including the cases where both detection and enforcement do not apply. Prior
+work it builds on is cited in [docs/report.md](docs/report.md).
 
 ## License
 
