@@ -187,9 +187,11 @@ def llm_judge(emails: Sequence[Email], client: Any, delay_s: float = 0.0,
                                      {"role": "user", "content": _render(e)}])
             label, flags = parse_judge(reply)
         except LLMError as exc:
-            label, flags = "ERROR", [str(exc)]
             if n == 1:
-                log(f"first LLM call failed: {exc}")
+                # A config problem (bad model or key) would fail all 100 calls; stop now.
+                raise LLMError(f"first LLM call failed, stopping: {exc}. "
+                               "Run: python scripts/list_llm_models.py") from None
+            label, flags = "ERROR", [str(exc)]
         preds.append(label)
         details.append({"id": e["id"], "gold": e["label"], "pred": label, "red_flags": flags})
         if n % 10 == 0:
