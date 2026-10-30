@@ -46,7 +46,7 @@ the built-in pure-Python model, so everything still runs.
 
    ```
    AEGIS_LLM_PROVIDER=gemini
-   AEGIS_LLM_MODEL=gemini-2.5-flash
+   AEGIS_LLM_MODEL=<id from scripts/list_llm_models.py>
    AEGIS_LLM_API_KEY=your-new-key
    ```
 
