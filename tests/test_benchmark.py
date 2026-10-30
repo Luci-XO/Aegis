@@ -153,6 +153,22 @@ def test_baselines_do_execute_forbidden_actions(bench):
     assert sum(c.unauthorized_executions for c in _rows(bench, "A_unprotected")) > 0
 
 
+def _attack_successes(bench, config):
+    return sum(bool(c.attacker_goal_met) for c in _rows(bench, config) if c.label == "attack")
+
+
+def test_detector_only_helps_but_is_not_sufficient(bench):
+    """Finding: B blocks some attacks A lets through, but far fewer than the gateway."""
+    a, b = _attack_successes(bench, "A_unprotected"), _attack_successes(bench, "B_detector_only")
+    gateway = _attack_successes(bench, "D_aegis") // 2  # two approver rows
+    assert gateway < b < a
+
+
+def test_gateway_configs_match_or_beat_detector_only(bench):
+    """The gateway alone is at least as good on security as detection alone."""
+    assert _attack_successes(bench, "C_gateway_only") // 2 <= _attack_successes(bench, "B_detector_only")
+
+
 def test_rubber_stamp_does_not_change_what_policy_denies(bench):
     for cfg in ("C_gateway_only", "D_aegis"):
         intent = {c.case_id: c.unauthorized_executions for c in _rows(bench, cfg, "intent")}
