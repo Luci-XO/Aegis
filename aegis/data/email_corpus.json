@@ -1,0 +1,2472 @@
+{
+ "name": "Gmail Security Agent - Test Corpus",
+ "source": "100 synthetic emails E001-E100 supplied by the project owner (PDF + answer key)",
+ "note": "All domains use the reserved .example TLD. 'family' groups emails that share a body template; evaluate with family-grouped splits to avoid template leakage.",
+ "emails": [
+  {
+   "id": "E001",
+   "subject": "[cobalt] Pull request #444: fix pagination bug",
+   "from_name": "CodeHost Notifications",
+   "from": "notifications@code-host.example",
+   "reply_to": "notifications@code-host.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 01 Oct 2026 18:51 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "A new review was requested on pull request #444 in devteam/cobalt.\nView it on CodeHost: https://code-host.example/cobalt/pull/444\nYou are receiving this because you were requested for review.",
+   "family": "pr",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E002",
+   "subject": "Password expires today - keep your access",
+   "from_name": "Netflix Billing",
+   "from": "no-reply@netflix-billing-update.example",
+   "reply_to": "support-desk@secure-notify.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 02 Oct 2026 03:32 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://netflix-billing-update.example/login?session=2492e46f4a919478\nFailure to act will result in loss of access.\nNetflix Billing Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E003",
+   "subject": "Electricity bill unpaid - disconnection tonight",
+   "from_name": "Power Supply Alert",
+   "from": "notice@secure-alerts-in.example",
+   "reply_to": "notice@secure-alerts-in.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 02 Oct 2026 08:23 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Your power will be cut at 9:30 PM. Call 98XXXXXX00 immediately to avoid disconnection.",
+   "family": "util",
+   "label": "PHISHING",
+   "category": "India-specific scam",
+   "tricky": false,
+   "red_flags": [
+    "Utility scam",
+    "phone callback"
+   ]
+  },
+  {
+   "id": "E004",
+   "subject": "Photos from the trip",
+   "from_name": "Isha Reddy",
+   "from": "isha.reddy@mailbox-demo.example",
+   "reply_to": "isha.reddy@mailbox-demo.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 02 Oct 2026 17:13 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hey Ayan,\nAre you free this weekend? Thinking of grabbing food near campus and going over the DSA notes.\nIsha",
+   "family": "friend",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E005",
+   "subject": "Payment confirmation #31475",
+   "from_name": "Remittance Advice",
+   "from": "accounts@remit-advice-center.example",
+   "reply_to": "accounts@remit-advice-center.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 02 Oct 2026 23:17 +0530",
+   "auth": {
+    "spf": "softfail",
+    "dkim": "fail",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "Invoice_31475.xlsm"
+   ],
+   "body": "Hello,\nYour payment is overdue. Please see the attached document and enable content/macros to view the details. Settle today to avoid legal action.\nRegards,\nAccounts Dept",
+   "family": "macro",
+   "label": "PHISHING",
+   "category": "Malicious attachment / fake invoice",
+   "tricky": false,
+   "red_flags": [
+    "Risky attachment type (.xlsm)",
+    "macro/enable-content lure",
+    "unknown sender",
+    "pressure"
+   ]
+  },
+  {
+   "id": "E006",
+   "subject": "Cheap meds, no prescription!!!",
+   "from_name": "Special Offers",
+   "from": "deals@mega-promos.example",
+   "reply_to": "deals@mega-promos.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 03 Oct 2026 14:06 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "Order online today. Discreet shipping. 80% OFF. Click: https://pharma-deals-24.example/buy\nTo stop receiving these, reply STOP.",
+   "family": "pharma",
+   "label": "SPAM",
+   "category": "Spam / bulk promo",
+   "tricky": false,
+   "red_flags": [
+    "Pharma spam",
+    "no sender legitimacy",
+    "unsolicited"
+   ]
+  },
+  {
+   "id": "E007",
+   "subject": "[falcon] Pull request #169: fix pagination bug",
+   "from_name": "CodeHost Notifications",
+   "from": "notifications@code-host.example",
+   "reply_to": "notifications@code-host.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 03 Oct 2026 18:52 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "A new review was requested on pull request #169 in devteam/falcon.\nView it on CodeHost: https://code-host.example/falcon/pull/169\nYou are receiving this because you were requested for review.",
+   "family": "pr",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E008",
+   "subject": "Your order #602467 has shipped",
+   "from_name": "ShopRight",
+   "from": "orders@shopright.example",
+   "reply_to": "orders@shopright.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 03 Oct 2026 19:59 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi Ayan,\nYour USB-C hub has shipped and should arrive in 3-5 days.\nOrder #602467\nTrack: https://shopright.example/track/602467\nThanks for shopping with us.",
+   "family": "ship",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E009",
+   "subject": "We could not process your last payment",
+   "from_name": "Amazon Orders",
+   "from": "no-reply@amazon-order-help.example",
+   "reply_to": "support-desk@mail-helper.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 04 Oct 2026 07:28 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://amazon-order-help.example/login?session=ab1f277ca7f46d3e\nFailure to act will result in loss of access.\nAmazon Orders Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E010",
+   "subject": "Pre-approved loan - no documents needed",
+   "from_name": "Special Offers",
+   "from": "deals@hot-deals.example",
+   "reply_to": "deals@hot-deals.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 04 Oct 2026 16:19 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "Get Rs 5,00,000 in 10 minutes. No CIBIL check. Apply: https://instaloan-now.example\nTo stop receiving these, reply STOP.",
+   "family": "loan",
+   "label": "SPAM",
+   "category": "Spam / bulk promo",
+   "tricky": false,
+   "red_flags": [
+    "Loan spam",
+    "no sender legitimacy",
+    "unsolicited"
+   ]
+  },
+  {
+   "id": "E011",
+   "subject": "Project files as discussed",
+   "from_name": "Neha Kapoor",
+   "from": "neha.kapoor@devteam-internal.example",
+   "reply_to": "neha.kapoor@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 04 Oct 2026 19:05 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [
+    "project_files.zip"
+   ],
+   "body": "Hi Ayan,\nAttached is the zipped project folder we discussed in standup. Let me know if the build works on your side.\nNeha",
+   "family": "zipfiles",
+   "label": "LEGIT",
+   "category": "Legit - Tricky (zip attachment)",
+   "tricky": true,
+   "red_flags": [
+    "Legit: known sender, context match, auth pass"
+   ]
+  },
+  {
+   "id": "E012",
+   "subject": "Sync tomorrow at 16:30?",
+   "from_name": "Rahul Verma",
+   "from": "rahul.verma@devteam-internal.example",
+   "reply_to": "rahul.verma@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 04 Oct 2026 19:57 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi Ayan,\nCan we do a quick sync tomorrow at 16:30 to go over the Echo sprint board? About 20 minutes.\nThanks,\nRahul",
+   "family": "sync",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E013",
+   "subject": "Cheap meds, no prescription!!!",
+   "from_name": "Special Offers",
+   "from": "deals@hot-deals.example",
+   "reply_to": "deals@hot-deals.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 05 Oct 2026 04:39 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "Order online today. Discreet shipping. 80% OFF. Click: https://pharma-deals-24.example/buy\nTo stop receiving these, reply STOP.",
+   "family": "pharma",
+   "label": "SPAM",
+   "category": "Spam / bulk promo",
+   "tricky": false,
+   "red_flags": [
+    "Pharma spam",
+    "no sender legitimacy",
+    "unsolicited"
+   ]
+  },
+  {
+   "id": "E014",
+   "subject": "Your verification code",
+   "from_name": "Demo Bank Alerts",
+   "from": "alerts@demobank.example",
+   "reply_to": "alerts@demobank.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 05 Oct 2026 18:57 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "703472 is your one-time verification code. It expires in 10 minutes.\nNever share this code with anyone, including bank staff. We will never call to ask for it.",
+   "family": "otp",
+   "label": "LEGIT",
+   "category": "Legitimate - OTP",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E015",
+   "subject": "Password expires in 7 days",
+   "from_name": "IT Helpdesk",
+   "from": "helpdesk@devteam-internal.example",
+   "reply_to": "helpdesk@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 06 Oct 2026 01:41 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hello,\nPer company policy your password expires in 7 days. Change it any time from the internal portal:\nhttps://sso.devteam-internal.example/change-password\nIf you did not expect this email, contact the helpdesk on ext. 4400.",
+   "family": "pwd7",
+   "label": "LEGIT",
+   "category": "Legit - Tricky (urgent tone)",
+   "tricky": true,
+   "red_flags": [
+    "Legit: internal domain, auth pass, no threats"
+   ]
+  },
+  {
+   "id": "E016",
+   "subject": "Password expires today - keep your access",
+   "from_name": "Google Security",
+   "from": "no-reply@accounts-google-verify.example",
+   "reply_to": "support-desk@mail-helper.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 06 Oct 2026 06:30 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://accounts-google-verify.example/login?session=b1273dba2e6fa438\nFailure to act will result in loss of access.\nGoogle Security Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E017",
+   "subject": "Electricity bill unpaid - disconnection tonight",
+   "from_name": "Courier Desk",
+   "from": "pay@quickservice-mail.example",
+   "reply_to": "pay@quickservice-mail.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 06 Oct 2026 21:16 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Your power will be cut at 9:30 PM. Call 98XXXXXX00 immediately to avoid disconnection.",
+   "family": "util",
+   "label": "PHISHING",
+   "category": "India-specific scam",
+   "tricky": false,
+   "red_flags": [
+    "Utility scam",
+    "phone callback"
+   ]
+  },
+  {
+   "id": "E018",
+   "subject": "Action required: verify your identity within 24 hours",
+   "from_name": "Microsoft 365 Support",
+   "from": "no-reply@microsoft365-login-secure.example",
+   "reply_to": "support-desk@mail-helper.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 07 Oct 2026 10:39 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://microsoft365-login-secure.example/login?session=2a4c48a7414a4d88\nFailure to act will result in loss of access.\nMicrosoft 365 Support Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E019",
+   "subject": "We could not process your last payment",
+   "from_name": "LinkedIn Security",
+   "from": "no-reply@linkedin-verifyid.example",
+   "reply_to": "support-desk@mail-helper.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 07 Oct 2026 19:06 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://linkedin-verifyid.example/login?session=b0860abab438f634\nFailure to act will result in loss of access.\nLinkedIn Security Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E020",
+   "subject": "Lunch Saturday?",
+   "from_name": "Rahul Verma",
+   "from": "rahul.verma@mailbox-demo.example",
+   "reply_to": "rahul.verma@mailbox-demo.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 07 Oct 2026 22:59 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hey Ayan,\nAre you free this weekend? Thinking of grabbing food near campus and going over the DSA notes.\nRahul",
+   "family": "friend",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E021",
+   "subject": "KYC update required - account will be blocked",
+   "from_name": "Payments Team",
+   "from": "pay@secure-alerts-in.example",
+   "reply_to": "pay@secure-alerts-in.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 08 Oct 2026 05:45 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear customer, your bank KYC is pending. Update within 24 hours or your account will be frozen:\nhttps://demobank-kyc-update.example/verify",
+   "family": "kyc",
+   "label": "PHISHING",
+   "category": "India-specific scam",
+   "tricky": false,
+   "red_flags": [
+    "Fake KYC",
+    "urgency",
+    "lookalike domain"
+   ]
+  },
+  {
+   "id": "E022",
+   "subject": "Mid-term seating arrangement",
+   "from_name": "Prof. R. Khanna",
+   "from": "faculty@usict-campus.example",
+   "reply_to": "faculty@usict-campus.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 08 Oct 2026 10:55 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Dear students,\nPlease check the course page for the latest update. The submission window is extended by two days.\nRegards,\nProf. R. Khanna",
+   "family": "faculty",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E023",
+   "subject": "Your verification code",
+   "from_name": "Demo Bank Alerts",
+   "from": "alerts@demobank.example",
+   "reply_to": "alerts@demobank.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 08 Oct 2026 20:09 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "887507 is your one-time verification code. It expires in 10 minutes.\nNever share this code with anyone, including bank staff. We will never call to ask for it.",
+   "family": "otp",
+   "label": "LEGIT",
+   "category": "Legitimate - OTP",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E024",
+   "subject": "Job offer - Work from home, Rs 50,000/week",
+   "from_name": "Mr. Daniel Okoro",
+   "from": "daniel.okoro@mailbox-free.example",
+   "reply_to": "daniel.okoro@mailbox-free.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 09 Oct 2026 11:01 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "No interview needed! Pay a refundable Rs 2,500 registration fee to receive your starter kit and begin earning today.",
+   "family": "E024",
+   "label": "PHISHING",
+   "category": "Advance-fee / scam",
+   "tricky": false,
+   "red_flags": [
+    "Fake job",
+    "upfront fee"
+   ]
+  },
+  {
+   "id": "E025",
+   "subject": "Payroll direct deposit update",
+   "from_name": "Meera Joshi",
+   "from": "director.desk@mailbox-free.example",
+   "reply_to": "ceo.private@secure-mailer.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 10 Oct 2026 00:00 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "details.pdf"
+   ],
+   "body": "Hi, I changed banks and need my salary credited to a new account before this month's payroll. Please update today. Details attached.",
+   "family": "payroll",
+   "label": "PHISHING",
+   "category": "Business email compromise (BEC)",
+   "tricky": false,
+   "red_flags": [
+    "Payroll diversion",
+    "urgency",
+    "free-mail sender"
+   ]
+  },
+  {
+   "id": "E026",
+   "subject": "Booking confirmed - PNR KDA6RL",
+   "from_name": "RailBook",
+   "from": "tickets@railbook.example",
+   "reply_to": "tickets@railbook.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 10 Oct 2026 07:19 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [
+    "ticket_KDA6RL.pdf"
+   ],
+   "body": "Your journey is confirmed.\nPNR: KDA6RL\nDate: 18 Oct 2026\nView ticket: https://railbook.example/pnr/KDA6RL",
+   "family": "pnr",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E027",
+   "subject": "This week in Open Source: 5 links worth your time",
+   "from_name": "The Weekly Byte",
+   "from": "hello@weeklybyte.example",
+   "reply_to": "hello@weeklybyte.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 10 Oct 2026 13:00 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi there,\nThis week: a deep dive on Open Source, two conference talk recordings, and a reading list.\nRead online: https://weeklybyte.example/issues/207\nYou subscribed at weeklybyte.example. Unsubscribe: https://weeklybyte.example/unsubscribe",
+   "family": "news",
+   "label": "LEGIT",
+   "category": "Legitimate - Newsletter",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E028",
+   "subject": "[echo] Pull request #330: fix pagination bug",
+   "from_name": "CodeHost Notifications",
+   "from": "notifications@code-host.example",
+   "reply_to": "notifications@code-host.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 10 Oct 2026 17:13 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "A new review was requested on pull request #330 in devteam/echo.\nView it on CodeHost: https://code-host.example/echo/pull/330\nYou are receiving this because you were requested for review.",
+   "family": "pr",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E029",
+   "subject": "Payroll direct deposit update",
+   "from_name": "Director Office",
+   "from": "ceo.office@mailbox-free.example",
+   "reply_to": "ceo.private@secure-mailer.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 11 Oct 2026 03:38 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "details.pdf"
+   ],
+   "body": "Hi, I changed banks and need my salary credited to a new account before this month's payroll. Please update today. Details attached.",
+   "family": "payroll",
+   "label": "PHISHING",
+   "category": "Business email compromise (BEC)",
+   "tricky": false,
+   "red_flags": [
+    "Payroll diversion",
+    "urgency",
+    "free-mail sender"
+   ]
+  },
+  {
+   "id": "E030",
+   "subject": "Invoice #78767 for October",
+   "from_name": "Cloudnine Software Billing",
+   "from": "billing@cloudnine.example",
+   "reply_to": "billing@cloudnine.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 11 Oct 2026 05:03 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [
+    "Invoice_78767.pdf"
+   ],
+   "body": "Hello,\nPlease find attached invoice #78767 for October services. Payment is due in 30 days to the account on file (unchanged from previous invoices).\nThank you for your business.\nCloudnine Software Accounts Team",
+   "family": "invoice",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E031",
+   "subject": "Pre-approved loan - no documents needed",
+   "from_name": "Special Offers",
+   "from": "deals@mega-promos.example",
+   "reply_to": "deals@mega-promos.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 11 Oct 2026 19:27 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "Get Rs 5,00,000 in 10 minutes. No CIBIL check. Apply: https://instaloan-now.example\nTo stop receiving these, reply STOP.",
+   "family": "loan",
+   "label": "SPAM",
+   "category": "Spam / bulk promo",
+   "tricky": false,
+   "red_flags": [
+    "Loan spam",
+    "no sender legitimacy",
+    "unsolicited"
+   ]
+  },
+  {
+   "id": "E032",
+   "subject": "Updated bank details for payment",
+   "from_name": "Meera Joshi",
+   "from": "meera.joshi@mailbox-free.example",
+   "reply_to": "ceo.private@secure-mailer.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 12 Oct 2026 02:57 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Please note our bank account has changed. All future payments must go to the new account below. Kindly confirm once the next payment is scheduled.\nA/C: 0000 1111 2222\nIFSC: DEMO0001234",
+   "family": "bankchange",
+   "label": "PHISHING",
+   "category": "Business email compromise (BEC)",
+   "tricky": false,
+   "red_flags": [
+    "Vendor bank-detail change",
+    "no verification channel"
+   ]
+  },
+  {
+   "id": "E033",
+   "subject": "Your order #921426 has shipped",
+   "from_name": "ShopRight",
+   "from": "orders@shopright.example",
+   "reply_to": "orders@shopright.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 12 Oct 2026 04:33 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi Ayan,\nYour laptop stand has shipped and should arrive in 3-5 days.\nOrder #921426\nTrack: https://shopright.example/track/921426\nThanks for shopping with us.",
+   "family": "ship",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E034",
+   "subject": "Weekly update: Project Delta-Sync",
+   "from_name": "Rohan Das",
+   "from": "rohan.das@devteam-internal.example",
+   "reply_to": "rohan.das@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 12 Oct 2026 17:26 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi team,\nQuick update on Project Delta-Sync:\n- API integration: done\n- Unit tests: 82% coverage\n- Pending: docs review\nNext review is Friday. Shout if anything is blocking you.\nRohan",
+   "family": "proj",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E035",
+   "subject": "Payment confirmation #63136",
+   "from_name": "Remittance Advice",
+   "from": "accounts@invoice-portal-dept.example",
+   "reply_to": "accounts@invoice-portal-dept.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 13 Oct 2026 06:15 +0530",
+   "auth": {
+    "spf": "softfail",
+    "dkim": "fail",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "Invoice_63136.zip"
+   ],
+   "body": "Hello,\nYour payment is overdue. Please see the attached document and enable content/macros to view the details. Settle today to avoid legal action.\nRegards,\nAccounts Dept",
+   "family": "macro",
+   "label": "PHISHING",
+   "category": "Malicious attachment / fake invoice",
+   "tricky": false,
+   "red_flags": [
+    "Risky attachment type (.zip)",
+    "macro/enable-content lure",
+    "unknown sender",
+    "pressure"
+   ]
+  },
+  {
+   "id": "E036",
+   "subject": "Booking confirmed - PNR DVRRH6",
+   "from_name": "RailBook",
+   "from": "tickets@railbook.example",
+   "reply_to": "tickets@railbook.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 13 Oct 2026 17:45 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [
+    "ticket_DVRRH6.pdf"
+   ],
+   "body": "Your journey is confirmed.\nPNR: DVRRH6\nDate: 26 Oct 2026\nView ticket: https://railbook.example/pnr/DVRRH6",
+   "family": "pnr",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E037",
+   "subject": "Cheap meds, no prescription!!!",
+   "from_name": "Special Offers",
+   "from": "deals@mega-promos.example",
+   "reply_to": "deals@mega-promos.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 14 Oct 2026 05:32 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "Order online today. Discreet shipping. 80% OFF. Click: https://pharma-deals-24.example/buy\nTo stop receiving these, reply STOP.",
+   "family": "pharma",
+   "label": "SPAM",
+   "category": "Spam / bulk promo",
+   "tricky": false,
+   "red_flags": [
+    "Pharma spam",
+    "no sender legitimacy",
+    "unsolicited"
+   ]
+  },
+  {
+   "id": "E038",
+   "subject": "Invoice #93586 for October",
+   "from_name": "Greenleaf Stationers Billing",
+   "from": "billing@greenleaf.example",
+   "reply_to": "billing@greenleaf.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 14 Oct 2026 14:43 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [
+    "Invoice_93586.pdf"
+   ],
+   "body": "Hello,\nPlease find attached invoice #93586 for October services. Payment is due in 30 days to the account on file (unchanged from previous invoices).\nThank you for your business.\nGreenleaf Stationers Accounts Team",
+   "family": "invoice",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E039",
+   "subject": "Weekly update: Project Falcon",
+   "from_name": "Isha Reddy",
+   "from": "isha.reddy@devteam-internal.example",
+   "reply_to": "isha.reddy@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 15 Oct 2026 02:51 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi team,\nQuick update on Project Falcon:\n- API integration: done\n- Unit tests: 82% coverage\n- Pending: docs review\nNext review is Friday. Shout if anything is blocking you.\nIsha",
+   "family": "proj",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E040",
+   "subject": "Notes from yesterday's lecture",
+   "from_name": "Rohan Das",
+   "from": "rohan.das@mailbox-demo.example",
+   "reply_to": "rohan.das@mailbox-demo.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 15 Oct 2026 12:26 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hey Ayan,\nAre you free this weekend? Thinking of grabbing food near campus and going over the DSA notes.\nRohan",
+   "family": "friend",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E041",
+   "subject": "Your account will be suspended",
+   "from_name": "LinkedIn Security",
+   "from": "no-reply@linkedin-verifyid.example",
+   "reply_to": "support-desk@secure-notify.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 16 Oct 2026 02:00 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://linkedin-verifyid.example/login?session=6f82f25b3bcf44a3\nFailure to act will result in loss of access.\nLinkedIn Security Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E042",
+   "subject": "You have 1 new voicemail (45 sec)",
+   "from_name": "Voice Message Service",
+   "from": "vm@voice-msg-delivery.example",
+   "reply_to": "vm@voice-msg-delivery.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 16 Oct 2026 07:35 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "VM_playback.html"
+   ],
+   "body": "You received a new voice message. Open the attachment to listen. If it does not play, sign in with your email password to authorize playback.",
+   "family": "voicemail",
+   "label": "PHISHING",
+   "category": "Malicious attachment / fake voicemail",
+   "tricky": false,
+   "red_flags": [
+    "HTML attachment",
+    "credential request inside",
+    "unknown sender"
+   ]
+  },
+  {
+   "id": "E043",
+   "subject": "Electricity bill unpaid - disconnection tonight",
+   "from_name": "Tax Dept Notice",
+   "from": "notice@govt-notice-india.example",
+   "reply_to": "notice@govt-notice-india.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 16 Oct 2026 16:19 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Your power will be cut at 9:30 PM. Call 98XXXXXX00 immediately to avoid disconnection.",
+   "family": "util",
+   "label": "PHISHING",
+   "category": "India-specific scam",
+   "tricky": false,
+   "red_flags": [
+    "Utility scam",
+    "phone callback"
+   ]
+  },
+  {
+   "id": "E044",
+   "subject": "[atlas] Pull request #382: fix pagination bug",
+   "from_name": "CodeHost Notifications",
+   "from": "notifications@code-host.example",
+   "reply_to": "notifications@code-host.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 17 Oct 2026 03:20 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "A new review was requested on pull request #382 in devteam/atlas.\nView it on CodeHost: https://code-host.example/atlas/pull/382\nYou are receiving this because you were requested for review.",
+   "family": "pr",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E045",
+   "subject": "You have won USD 1,500,000!",
+   "from_name": "Barrister Collins",
+   "from": "collins.law@quick-mails.example",
+   "reply_to": "collins.law@quick-mails.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 17 Oct 2026 05:22 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "Congratulations! Your email was selected in the International Online Lottery. To claim, send your full name, address, ID copy and a processing fee of USD 150.",
+   "family": "lottery",
+   "label": "PHISHING",
+   "category": "Advance-fee / scam",
+   "tricky": false,
+   "red_flags": [
+    "Lottery scam",
+    "fee request",
+    "PII harvesting"
+   ]
+  },
+  {
+   "id": "E046",
+   "subject": "Action required: verify your identity within 24 hours",
+   "from_name": "University IT",
+   "from": "no-reply@usict-campus-portal-login.example",
+   "reply_to": "support-desk@mail-helper.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 17 Oct 2026 14:33 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://usict-campus-portal-login.example/login?session=0646ca52286da209\nFailure to act will result in loss of access.\nUniversity IT Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E047",
+   "subject": "You have 1 new voicemail (32 sec)",
+   "from_name": "Voice Message Service",
+   "from": "vm@voice-msg-delivery.example",
+   "reply_to": "vm@voice-msg-delivery.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 17 Oct 2026 23:57 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "VM_playback.html"
+   ],
+   "body": "You received a new voice message. Open the attachment to listen. If it does not play, sign in with your email password to authorize playback.",
+   "family": "voicemail",
+   "label": "PHISHING",
+   "category": "Malicious attachment / fake voicemail",
+   "tricky": false,
+   "red_flags": [
+    "HTML attachment",
+    "credential request inside",
+    "unknown sender"
+   ]
+  },
+  {
+   "id": "E048",
+   "subject": "Security alert: unusual sign-in to your account",
+   "from_name": "University IT",
+   "from": "no-reply@usict-campus-portal-login.example",
+   "reply_to": "support-desk@secure-notify.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 18 Oct 2026 10:37 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://usict-campus-portal-login.example/login?session=d7ac8968fd516104\nFailure to act will result in loss of access.\nUniversity IT Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E049",
+   "subject": "Mid-term seating arrangement",
+   "from_name": "Prof. A. Banerjee",
+   "from": "faculty@usict-campus.example",
+   "reply_to": "faculty@usict-campus.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 18 Oct 2026 16:39 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Dear students,\nPlease check the course page for the latest update. The submission window is extended by two days.\nRegards,\nProf. A. Banerjee",
+   "family": "faculty",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E050",
+   "subject": "Action required: verify your identity within 24 hours",
+   "from_name": "Instagram Support",
+   "from": "no-reply@instagram-appeal-center.example",
+   "reply_to": "support-desk@secure-notify.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 19 Oct 2026 01:29 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://instagram-appeal-center.example/login?session=16159e8c05948fd7\nFailure to act will result in loss of access.\nInstagram Support Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E051",
+   "subject": "Payment confirmation #69580",
+   "from_name": "Order Desk",
+   "from": "accounts@invoice-portal-dept.example",
+   "reply_to": "accounts@invoice-portal-dept.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 19 Oct 2026 07:24 +0530",
+   "auth": {
+    "spf": "softfail",
+    "dkim": "fail",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "Invoice_69580.zip"
+   ],
+   "body": "Hello,\nYour payment is overdue. Please see the attached document and enable content/macros to view the details. Settle today to avoid legal action.\nRegards,\nAccounts Dept",
+   "family": "macro",
+   "label": "PHISHING",
+   "category": "Malicious attachment / fake invoice",
+   "tricky": false,
+   "red_flags": [
+    "Risky attachment type (.zip)",
+    "macro/enable-content lure",
+    "unknown sender",
+    "pressure"
+   ]
+  },
+  {
+   "id": "E052",
+   "subject": "New sign-in from Chrome on Windows",
+   "from_name": "CodeHost Security",
+   "from": "security@code-host.example",
+   "reply_to": "security@code-host.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 19 Oct 2026 19:10 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "We noticed a sign-in to your account from a new device.\nIf this was you, no action is needed. If not, review your sessions at https://code-host.example/settings/sessions",
+   "family": "signin",
+   "label": "LEGIT",
+   "category": "Legit - Tricky (security alert)",
+   "tricky": true,
+   "red_flags": [
+    "Legit: own domain link, auth pass, no pressure"
+   ]
+  },
+  {
+   "id": "E053",
+   "subject": "Need the report by 5 PM today",
+   "from_name": "Meera Joshi (Manager)",
+   "from": "meera.joshi@devteam-internal.example",
+   "reply_to": "meera.joshi@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 20 Oct 2026 01:27 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Ayan, the client moved their review up. Can you push the Q3 summary to the shared drive by 5 PM today? Thanks - Meera",
+   "family": "E053",
+   "label": "LEGIT",
+   "category": "Legit - Tricky (urgent from manager)",
+   "tricky": true,
+   "red_flags": [
+    "Legit: internal sender, normal ask, no money/credentials"
+   ]
+  },
+  {
+   "id": "E054",
+   "subject": "Turn Rs 5,000 into Rs 5 lakh with this crypto coin",
+   "from_name": "Special Offers",
+   "from": "deals@bulk-offers.example",
+   "reply_to": "deals@bulk-offers.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 20 Oct 2026 08:05 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "Insiders are buying. 100x guaranteed. Join our private group now: https://moon-coin-vip.example\nTo stop receiving these, reply STOP.",
+   "family": "E054",
+   "label": "SPAM",
+   "category": "Spam / bulk promo",
+   "tricky": false,
+   "red_flags": [
+    "Crypto pump spam",
+    "no sender legitimacy",
+    "unsolicited"
+   ]
+  },
+  {
+   "id": "E055",
+   "subject": "Booking confirmed - PNR AYMPNU",
+   "from_name": "RailBook",
+   "from": "tickets@railbook.example",
+   "reply_to": "tickets@railbook.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 20 Oct 2026 11:40 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [
+    "ticket_AYMPNU.pdf"
+   ],
+   "body": "Your journey is confirmed.\nPNR: AYMPNU\nDate: 21 Oct 2026\nView ticket: https://railbook.example/pnr/AYMPNU",
+   "family": "pnr",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E056",
+   "subject": "Mid-term seating arrangement",
+   "from_name": "Prof. A. Banerjee",
+   "from": "faculty@usict-campus.example",
+   "reply_to": "faculty@usict-campus.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 20 Oct 2026 13:29 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Dear students,\nPlease check the course page for the latest update. The submission window is extended by two days.\nRegards,\nProf. A. Banerjee",
+   "family": "faculty",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E057",
+   "subject": "Your order #684529 has shipped",
+   "from_name": "ShopRight",
+   "from": "orders@shopright.example",
+   "reply_to": "orders@shopright.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 20 Oct 2026 23:34 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi Ayan,\nYour notebook set has shipped and should arrive in 3-5 days.\nOrder #684529\nTrack: https://shopright.example/track/684529\nThanks for shopping with us.",
+   "family": "ship",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E058",
+   "subject": "Flash sale: 30% off, ends tonight",
+   "from_name": "ShopRight Deals",
+   "from": "offers@shopright.example",
+   "reply_to": "offers@shopright.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 21 Oct 2026 13:41 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Our October sale is live. 30% off selected items until midnight.\nShop: https://shopright.example/sale\nUnsubscribe: https://shopright.example/unsubscribe",
+   "family": "E058",
+   "label": "LEGIT",
+   "category": "Legit - Tricky (marketing)",
+   "tricky": true,
+   "red_flags": [
+    "Legit marketing: real domain, unsubscribe, auth pass"
+   ]
+  },
+  {
+   "id": "E059",
+   "subject": "Invoice #62701 for October",
+   "from_name": "Greenleaf Stationers Billing",
+   "from": "billing@greenleaf.example",
+   "reply_to": "billing@greenleaf.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 21 Oct 2026 17:09 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [
+    "Invoice_62701.pdf"
+   ],
+   "body": "Hello,\nPlease find attached invoice #62701 for October services. Payment is due in 30 days to the account on file (unchanged from previous invoices).\nThank you for your business.\nGreenleaf Stationers Accounts Team",
+   "family": "invoice",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E060",
+   "subject": "Your verification code",
+   "from_name": "Demo Bank Alerts",
+   "from": "alerts@demobank.example",
+   "reply_to": "alerts@demobank.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 22 Oct 2026 06:36 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "401572 is your one-time verification code. It expires in 10 minutes.\nNever share this code with anyone, including bank staff. We will never call to ask for it.",
+   "family": "otp",
+   "label": "LEGIT",
+   "category": "Legitimate - OTP",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E061",
+   "subject": "Sync tomorrow at 15:00?",
+   "from_name": "Rahul Verma",
+   "from": "rahul.verma@devteam-internal.example",
+   "reply_to": "rahul.verma@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 22 Oct 2026 11:29 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi Ayan,\nCan we do a quick sync tomorrow at 15:00 to go over the Echo sprint board? About 20 minutes.\nThanks,\nRahul",
+   "family": "sync",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E062",
+   "subject": "Sync tomorrow at 15:00?",
+   "from_name": "Sneha Iyer",
+   "from": "sneha.iyer@devteam-internal.example",
+   "reply_to": "sneha.iyer@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 22 Oct 2026 20:59 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi Ayan,\nCan we do a quick sync tomorrow at 15:00 to go over the Cobalt sprint board? About 20 minutes.\nThanks,\nSneha",
+   "family": "sync",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E063",
+   "subject": "New sign-in from Chrome on Windows",
+   "from_name": "CodeHost Security",
+   "from": "security@code-host.example",
+   "reply_to": "security@code-host.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 23 Oct 2026 06:22 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "We noticed a sign-in to your account from a new device.\nIf this was you, no action is needed. If not, review your sessions at https://code-host.example/settings/sessions",
+   "family": "signin",
+   "label": "LEGIT",
+   "category": "Legit - Tricky (security alert)",
+   "tricky": true,
+   "red_flags": [
+    "Legit: own domain link, auth pass, no pressure"
+   ]
+  },
+  {
+   "id": "E064",
+   "subject": "Confidential business proposal",
+   "from_name": "Claims Dept",
+   "from": "daniel.okoro@quick-mails.example",
+   "reply_to": "daniel.okoro@quick-mails.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 23 Oct 2026 13:24 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "I am a bank officer with USD 12.5M of dormant funds. I need a foreign partner and offer you 30%. Reply with your phone number and bank details.",
+   "family": "advfee",
+   "label": "PHISHING",
+   "category": "Advance-fee / scam",
+   "tricky": false,
+   "red_flags": [
+    "Advance-fee fraud",
+    "PII harvesting"
+   ]
+  },
+  {
+   "id": "E065",
+   "subject": "Reminder: Workshop: Intro to Docker",
+   "from_name": "Campus Calendar",
+   "from": "calendar@usict-campus.example",
+   "reply_to": "calendar@usict-campus.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 24 Oct 2026 00:39 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "This is an automated reminder:\nWorkshop: Intro to Docker\nDate: 10 Oct 2026\nManage reminders in your campus portal settings.",
+   "family": "reminder",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E066",
+   "subject": "Updated bank details for payment",
+   "from_name": "CEO Office",
+   "from": "ceo.office@mailbox-free.example",
+   "reply_to": "m.joshi.work@secure-mailer.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 24 Oct 2026 02:57 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Please note our bank account has changed. All future payments must go to the new account below. Kindly confirm once the next payment is scheduled.\nA/C: 0000 1111 2222\nIFSC: DEMO0001234",
+   "family": "bankchange",
+   "label": "PHISHING",
+   "category": "Business email compromise (BEC)",
+   "tricky": false,
+   "red_flags": [
+    "Vendor bank-detail change",
+    "no verification channel"
+   ]
+  },
+  {
+   "id": "E067",
+   "subject": "Password expires in 7 days",
+   "from_name": "IT Helpdesk",
+   "from": "helpdesk@devteam-internal.example",
+   "reply_to": "helpdesk@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 24 Oct 2026 13:50 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hello,\nPer company policy your password expires in 7 days. Change it any time from the internal portal:\nhttps://sso.devteam-internal.example/change-password\nIf you did not expect this email, contact the helpdesk on ext. 4400.",
+   "family": "pwd7",
+   "label": "LEGIT",
+   "category": "Legit - Tricky (urgent tone)",
+   "tricky": true,
+   "red_flags": [
+    "Legit: internal domain, auth pass, no threats"
+   ]
+  },
+  {
+   "id": "E068",
+   "subject": "Security alert: unusual sign-in to your account",
+   "from_name": "Netflix Billing",
+   "from": "no-reply@netflix-billing-update.example",
+   "reply_to": "support-desk@mail-helper.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 24 Oct 2026 17:59 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://netflix-billing-update.example/login?session=000befe1601f1b66\nFailure to act will result in loss of access.\nNetflix Billing Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E069",
+   "subject": "This week in Web Performance: 5 links worth your time",
+   "from_name": "The Weekly Byte",
+   "from": "hello@weeklybyte.example",
+   "reply_to": "hello@weeklybyte.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 24 Oct 2026 18:58 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi there,\nThis week: a deep dive on Web Performance, two conference talk recordings, and a reading list.\nRead online: https://weeklybyte.example/issues/244\nYou subscribed at weeklybyte.example. Unsubscribe: https://weeklybyte.example/unsubscribe",
+   "family": "news",
+   "label": "LEGIT",
+   "category": "Legitimate - Newsletter",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E070",
+   "subject": "OVERDUE: Invoice 83315 - final notice",
+   "from_name": "Billing",
+   "from": "accounts@remit-advice-center.example",
+   "reply_to": "accounts@remit-advice-center.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 25 Oct 2026 03:22 +0530",
+   "auth": {
+    "spf": "softfail",
+    "dkim": "fail",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "Invoice_83315.iso"
+   ],
+   "body": "Hello,\nYour payment is overdue. Please see the attached document and enable content/macros to view the details. Settle today to avoid legal action.\nRegards,\nAccounts Dept",
+   "family": "macro",
+   "label": "PHISHING",
+   "category": "Malicious attachment / fake invoice",
+   "tricky": false,
+   "red_flags": [
+    "Risky attachment type (.iso)",
+    "macro/enable-content lure",
+    "unknown sender",
+    "pressure"
+   ]
+  },
+  {
+   "id": "E071",
+   "subject": "Electricity bill unpaid - disconnection tonight",
+   "from_name": "Courier Desk",
+   "from": "pay@govt-notice-india.example",
+   "reply_to": "pay@govt-notice-india.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 25 Oct 2026 07:58 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Your power will be cut at 9:30 PM. Call 98XXXXXX00 immediately to avoid disconnection.",
+   "family": "util",
+   "label": "PHISHING",
+   "category": "India-specific scam",
+   "tricky": false,
+   "red_flags": [
+    "Utility scam",
+    "phone callback"
+   ]
+  },
+  {
+   "id": "E072",
+   "subject": "Remittance advice",
+   "from_name": "Order Desk",
+   "from": "accounts@orderdesk-docs.example",
+   "reply_to": "accounts@orderdesk-docs.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 25 Oct 2026 12:02 +0530",
+   "auth": {
+    "spf": "softfail",
+    "dkim": "fail",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "Invoice_50116.docm"
+   ],
+   "body": "Hello,\nYour payment is overdue. Please see the attached document and enable content/macros to view the details. Settle today to avoid legal action.\nRegards,\nAccounts Dept",
+   "family": "macro",
+   "label": "PHISHING",
+   "category": "Malicious attachment / fake invoice",
+   "tricky": false,
+   "red_flags": [
+    "Risky attachment type (.docm)",
+    "macro/enable-content lure",
+    "unknown sender",
+    "pressure"
+   ]
+  },
+  {
+   "id": "E073",
+   "subject": "Weekly update: Project Falcon",
+   "from_name": "Neha Kapoor",
+   "from": "neha.kapoor@devteam-internal.example",
+   "reply_to": "neha.kapoor@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 25 Oct 2026 19:51 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi team,\nQuick update on Project Falcon:\n- API integration: done\n- Unit tests: 82% coverage\n- Pending: docs review\nNext review is Friday. Shout if anything is blocking you.\nNeha",
+   "family": "proj",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E074",
+   "subject": "Check out this talk",
+   "from_name": "Arjun Nair",
+   "from": "arjun.nair@mailbox-demo.example",
+   "reply_to": "arjun.nair@mailbox-demo.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 26 Oct 2026 05:01 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Found this great talk on system design: https://short.example/x7Kq2\nWorth the 30 minutes.\nArjun",
+   "family": "E074",
+   "label": "LEGIT",
+   "category": "Legit - Tricky (short link)",
+   "tricky": true,
+   "red_flags": [
+    "Legit: friend, benign link (shortener is a weak signal only)"
+   ]
+  },
+  {
+   "id": "E075",
+   "subject": "Password expires today - keep your access",
+   "from_name": "Google Security",
+   "from": "no-reply@accounts-google-verify.example",
+   "reply_to": "support-desk@mail-helper.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 26 Oct 2026 14:30 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://accounts-google-verify.example/login?session=7489a1418113c3d3\nFailure to act will result in loss of access.\nGoogle Security Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E076",
+   "subject": "Pre-approved loan - no documents needed",
+   "from_name": "Special Offers",
+   "from": "deals@hot-deals.example",
+   "reply_to": "deals@hot-deals.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 26 Oct 2026 17:09 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "Get Rs 5,00,000 in 10 minutes. No CIBIL check. Apply: https://instaloan-now.example\nTo stop receiving these, reply STOP.",
+   "family": "loan",
+   "label": "SPAM",
+   "category": "Spam / bulk promo",
+   "tricky": false,
+   "red_flags": [
+    "Loan spam",
+    "no sender legitimacy",
+    "unsolicited"
+   ]
+  },
+  {
+   "id": "E077",
+   "subject": "Updated bank details for payment",
+   "from_name": "Meera Joshi",
+   "from": "meera.joshi@mailbox-free.example",
+   "reply_to": "ceo.private@secure-mailer.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 27 Oct 2026 02:25 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Please note our bank account has changed. All future payments must go to the new account below. Kindly confirm once the next payment is scheduled.\nA/C: 0000 1111 2222\nIFSC: DEMO0001234",
+   "family": "bankchange",
+   "label": "PHISHING",
+   "category": "Business email compromise (BEC)",
+   "tricky": false,
+   "red_flags": [
+    "Vendor bank-detail change",
+    "no verification channel"
+   ]
+  },
+  {
+   "id": "E078",
+   "subject": "Invoice #39266 for October",
+   "from_name": "Bluepeak Hosting Billing",
+   "from": "billing@bluepeak.example",
+   "reply_to": "billing@bluepeak.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 27 Oct 2026 06:31 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [
+    "Invoice_39266.pdf"
+   ],
+   "body": "Hello,\nPlease find attached invoice #39266 for October services. Payment is due in 30 days to the account on file (unchanged from previous invoices).\nThank you for your business.\nBluepeak Hosting Accounts Team",
+   "family": "invoice",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E079",
+   "subject": "Confidential business proposal",
+   "from_name": "Mr. Daniel Okoro",
+   "from": "claims@mailbox-free.example",
+   "reply_to": "claims@mailbox-free.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 27 Oct 2026 20:31 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "I am a bank officer with USD 12.5M of dormant funds. I need a foreign partner and offer you 30%. Reply with your phone number and bank details.",
+   "family": "advfee",
+   "label": "PHISHING",
+   "category": "Advance-fee / scam",
+   "tricky": false,
+   "red_flags": [
+    "Advance-fee fraud",
+    "PII harvesting"
+   ]
+  },
+  {
+   "id": "E080",
+   "subject": "Password expires today - keep your access",
+   "from_name": "Amazon Orders",
+   "from": "no-reply@amazon-order-help.example",
+   "reply_to": "support-desk@mail-helper.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 28 Oct 2026 01:38 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://amazon-order-help.example/login?session=1c35e0cc6320c609\nFailure to act will result in loss of access.\nAmazon Orders Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E081",
+   "subject": "Your account will be suspended",
+   "from_name": "University IT",
+   "from": "no-reply@usict-campus-portal-login.example",
+   "reply_to": "support-desk@mail-helper.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 28 Oct 2026 15:22 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://usict-campus-portal-login.example/login?session=fd198474809f50a5\nFailure to act will result in loss of access.\nUniversity IT Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E082",
+   "subject": "Urgent wire transfer",
+   "from_name": "CEO Office",
+   "from": "director.desk@mailbox-free.example",
+   "reply_to": "m.joshi.work@secure-mailer.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 29 Oct 2026 04:05 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "I need an urgent wire for a confidential acquisition. I'll send details shortly. Do not discuss with anyone and reply only to this email.",
+   "family": "E082",
+   "label": "PHISHING",
+   "category": "Business email compromise (BEC)",
+   "tricky": false,
+   "red_flags": [
+    "Wire fraud",
+    "secrecy",
+    "Reply-To differs"
+   ]
+  },
+  {
+   "id": "E083",
+   "subject": "This week in Open Source: 5 links worth your time",
+   "from_name": "The Weekly Byte",
+   "from": "hello@weeklybyte.example",
+   "reply_to": "hello@weeklybyte.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 29 Oct 2026 12:55 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi there,\nThis week: a deep dive on Open Source, two conference talk recordings, and a reading list.\nRead online: https://weeklybyte.example/issues/265\nYou subscribed at weeklybyte.example. Unsubscribe: https://weeklybyte.example/unsubscribe",
+   "family": "news",
+   "label": "LEGIT",
+   "category": "Legitimate - Newsletter",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E084",
+   "subject": "Boost your Google ranking in 24h",
+   "from_name": "Special Offers",
+   "from": "deals@mega-promos.example",
+   "reply_to": "deals@mega-promos.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Thu, 29 Oct 2026 15:44 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "We'll put your website on page 1 for just Rs 999. Reply for our price list.\nTo stop receiving these, reply STOP.",
+   "family": "E084",
+   "label": "SPAM",
+   "category": "Spam / bulk promo",
+   "tricky": false,
+   "red_flags": [
+    "SEO spam",
+    "no sender legitimacy",
+    "unsolicited"
+   ]
+  },
+  {
+   "id": "E085",
+   "subject": "Income Tax Refund of Rs 24,590 approved",
+   "from_name": "Power Supply Alert",
+   "from": "alerts@govt-notice-india.example",
+   "reply_to": "alerts@govt-notice-india.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 30 Oct 2026 01:46 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Click to claim your refund and enter your card details: https://incometax-refund-claim.example",
+   "family": "E085",
+   "label": "PHISHING",
+   "category": "India-specific scam",
+   "tricky": false,
+   "red_flags": [
+    "Tax refund lure",
+    "card data request"
+   ]
+  },
+  {
+   "id": "E086",
+   "subject": "Payroll direct deposit update",
+   "from_name": "Meera Joshi",
+   "from": "ceo.office@mailbox-free.example",
+   "reply_to": "m.joshi.work@secure-mailer.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Fri, 30 Oct 2026 13:50 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "details.pdf"
+   ],
+   "body": "Hi, I changed banks and need my salary credited to a new account before this month's payroll. Please update today. Details attached.",
+   "family": "payroll",
+   "label": "PHISHING",
+   "category": "Business email compromise (BEC)",
+   "tricky": false,
+   "red_flags": [
+    "Payroll diversion",
+    "urgency",
+    "free-mail sender"
+   ]
+  },
+  {
+   "id": "E087",
+   "subject": "KYC update required - account will be blocked",
+   "from_name": "Customer Care",
+   "from": "care@govt-notice-india.example",
+   "reply_to": "care@govt-notice-india.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 31 Oct 2026 04:40 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear customer, your bank KYC is pending. Update within 24 hours or your account will be frozen:\nhttps://demobank-kyc-update.example/verify",
+   "family": "kyc",
+   "label": "PHISHING",
+   "category": "India-specific scam",
+   "tricky": false,
+   "red_flags": [
+    "Fake KYC",
+    "urgency",
+    "lookalike domain"
+   ]
+  },
+  {
+   "id": "E088",
+   "subject": "UPI payment failed - re-authorise",
+   "from_name": "Courier Desk",
+   "from": "notice@secure-alerts-in.example",
+   "reply_to": "notice@secure-alerts-in.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 31 Oct 2026 10:43 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Your UPI payment of Rs 4,999 failed. Re-enter your UPI PIN to complete the transaction:\nhttps://upi-reauth-secure.example",
+   "family": "E088",
+   "label": "PHISHING",
+   "category": "India-specific scam",
+   "tricky": false,
+   "red_flags": [
+    "Asks for UPI PIN"
+   ]
+  },
+  {
+   "id": "E089",
+   "subject": "Reminder: Library book return",
+   "from_name": "Campus Calendar",
+   "from": "calendar@usict-campus.example",
+   "reply_to": "calendar@usict-campus.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sat, 31 Oct 2026 17:25 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "This is an automated reminder:\nLibrary book return\nDate: 07 Oct 2026\nManage reminders in your campus portal settings.",
+   "family": "reminder",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E090",
+   "subject": "Electricity bill unpaid - disconnection tonight",
+   "from_name": "Power Supply Alert",
+   "from": "courier@govt-notice-india.example",
+   "reply_to": "courier@govt-notice-india.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 01 Nov 2026 05:01 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Your power will be cut at 9:30 PM. Call 98XXXXXX00 immediately to avoid disconnection.",
+   "family": "util",
+   "label": "PHISHING",
+   "category": "India-specific scam",
+   "tricky": false,
+   "red_flags": [
+    "Utility scam",
+    "phone callback"
+   ]
+  },
+  {
+   "id": "E091",
+   "subject": "You have won USD 1,500,000!",
+   "from_name": "HR Remote Jobs",
+   "from": "claims@quick-mails.example",
+   "reply_to": "claims@quick-mails.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 01 Nov 2026 12:12 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "none"
+   },
+   "attachments": [],
+   "body": "Congratulations! Your email was selected in the International Online Lottery. To claim, send your full name, address, ID copy and a processing fee of USD 150.",
+   "family": "lottery",
+   "label": "PHISHING",
+   "category": "Advance-fee / scam",
+   "tricky": false,
+   "red_flags": [
+    "Lottery scam",
+    "fee request",
+    "PII harvesting"
+   ]
+  },
+  {
+   "id": "E092",
+   "subject": "Scanned document attached",
+   "from_name": "Remittance Advice",
+   "from": "accounts@orderdesk-docs.example",
+   "reply_to": "accounts@orderdesk-docs.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Sun, 01 Nov 2026 21:47 +0530",
+   "auth": {
+    "spf": "softfail",
+    "dkim": "fail",
+    "dmarc": "fail"
+   },
+   "attachments": [
+    "Invoice_12037.docm"
+   ],
+   "body": "Hello,\nYour payment is overdue. Please see the attached document and enable content/macros to view the details. Settle today to avoid legal action.\nRegards,\nAccounts Dept",
+   "family": "macro",
+   "label": "PHISHING",
+   "category": "Malicious attachment / fake invoice",
+   "tricky": false,
+   "red_flags": [
+    "Risky attachment type (.docm)",
+    "macro/enable-content lure",
+    "unknown sender",
+    "pressure"
+   ]
+  },
+  {
+   "id": "E093",
+   "subject": "Reminder: Workshop: Intro to Docker",
+   "from_name": "Campus Calendar",
+   "from": "calendar@usict-campus.example",
+   "reply_to": "calendar@usict-campus.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 02 Nov 2026 08:47 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "This is an automated reminder:\nWorkshop: Intro to Docker\nDate: 07 Oct 2026\nManage reminders in your campus portal settings.",
+   "family": "reminder",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E094",
+   "subject": "Sync tomorrow at 16:30?",
+   "from_name": "Arjun Nair",
+   "from": "arjun.nair@devteam-internal.example",
+   "reply_to": "arjun.nair@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Mon, 02 Nov 2026 21:40 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi Ayan,\nCan we do a quick sync tomorrow at 16:30 to go over the Falcon sprint board? About 20 minutes.\nThanks,\nArjun",
+   "family": "sync",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E095",
+   "subject": "Action required: verify your identity within 24 hours",
+   "from_name": "LinkedIn Security",
+   "from": "no-reply@linkedin-verifyid.example",
+   "reply_to": "support-desk@secure-notify.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 03 Nov 2026 07:22 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Dear user,\nWe detected unusual activity on your account. To avoid permanent suspension you must verify your details within 24 hours.\nVerify now: https://linkedin-verifyid.example/login?session=34c6b0baf64bf3b8\nFailure to act will result in loss of access.\nLinkedIn Security Team",
+   "family": "cred",
+   "label": "PHISHING",
+   "category": "Credential phishing",
+   "tricky": false,
+   "red_flags": [
+    "Lookalike domain",
+    "urgency + threat",
+    "Reply-To mismatch",
+    "SPF/DMARC fail",
+    "generic greeting"
+   ]
+  },
+  {
+   "id": "E096",
+   "subject": "Parcel on hold - pay Rs 29 customs fee",
+   "from_name": "Payments Team",
+   "from": "notice@govt-notice-india.example",
+   "reply_to": "notice@govt-notice-india.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 03 Nov 2026 11:05 +0530",
+   "auth": {
+    "spf": "fail",
+    "dkim": "none",
+    "dmarc": "fail"
+   },
+   "attachments": [],
+   "body": "Your parcel is held at the depot. Pay a small fee to release: https://parcel-release-india.example/pay",
+   "family": "E096",
+   "label": "PHISHING",
+   "category": "India-specific scam",
+   "tricky": false,
+   "red_flags": [
+    "Delivery scam",
+    "micro-payment lure"
+   ]
+  },
+  {
+   "id": "E097",
+   "subject": "Project files as discussed",
+   "from_name": "Isha Reddy",
+   "from": "isha.reddy@devteam-internal.example",
+   "reply_to": "isha.reddy@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Tue, 03 Nov 2026 14:10 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [
+    "project_files.zip"
+   ],
+   "body": "Hi Ayan,\nAttached is the zipped project folder we discussed in standup. Let me know if the build works on your side.\nIsha",
+   "family": "zipfiles",
+   "label": "LEGIT",
+   "category": "Legit - Tricky (zip attachment)",
+   "tricky": true,
+   "red_flags": [
+    "Legit: known sender, context match, auth pass"
+   ]
+  },
+  {
+   "id": "E098",
+   "subject": "This week in Machine Learning: 5 links worth your time",
+   "from_name": "The Weekly Byte",
+   "from": "hello@weeklybyte.example",
+   "reply_to": "hello@weeklybyte.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 04 Nov 2026 01:01 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi there,\nThis week: a deep dive on Machine Learning, two conference talk recordings, and a reading list.\nRead online: https://weeklybyte.example/issues/122\nYou subscribed at weeklybyte.example. Unsubscribe: https://weeklybyte.example/unsubscribe",
+   "family": "news",
+   "label": "LEGIT",
+   "category": "Legitimate - Newsletter",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  },
+  {
+   "id": "E099",
+   "subject": "Reminder: invoice due in 3 days",
+   "from_name": "Bluepeak Hosting Billing",
+   "from": "billing@bluepeak.example",
+   "reply_to": "billing@bluepeak.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 04 Nov 2026 10:55 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [
+    "Invoice_48213.pdf"
+   ],
+   "body": "Friendly reminder that invoice #48213 is due in 3 days. Bank details are unchanged. Questions? Reply to this email.",
+   "family": "E099",
+   "label": "LEGIT",
+   "category": "Legit - Tricky (payment reminder)",
+   "tricky": true,
+   "red_flags": [
+    "Legit: matches prior vendor, no bank change"
+   ]
+  },
+  {
+   "id": "E100",
+   "subject": "Weekly update: Project Cobalt",
+   "from_name": "Isha Reddy",
+   "from": "isha.reddy@devteam-internal.example",
+   "reply_to": "isha.reddy@devteam-internal.example",
+   "to": "ayan.test@mailbox-demo.example",
+   "date": "Wed, 04 Nov 2026 23:26 +0530",
+   "auth": {
+    "spf": "pass",
+    "dkim": "pass",
+    "dmarc": "pass"
+   },
+   "attachments": [],
+   "body": "Hi team,\nQuick update on Project Cobalt:\n- API integration: done\n- Unit tests: 82% coverage\n- Pending: docs review\nNext review is Friday. Shout if anything is blocking you.\nIsha",
+   "family": "proj",
+   "label": "LEGIT",
+   "category": "Legitimate",
+   "tricky": false,
+   "red_flags": [
+    "Normal, expected sender/context"
+   ]
+  }
+ ]
+}

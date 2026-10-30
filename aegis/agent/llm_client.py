@@ -55,6 +55,11 @@ class OpenAICompatibleClient:
         try:
             with urllib.request.urlopen(req, timeout=self.timeout_s) as resp:  # noqa: S310
                 data = json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            hint = {400: "bad request or model name", 401: "API key rejected",
+                    403: "API key lacks permission", 404: "unknown model or base URL",
+                    429: "rate limited or out of quota"}.get(exc.code, "server error")
+            raise LLMError(f"LLM request failed: HTTP {exc.code} ({hint})") from None
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
             raise LLMError(f"LLM request failed: {type(exc).__name__}") from None
         try:
@@ -63,13 +68,51 @@ class OpenAICompatibleClient:
             raise LLMError("unexpected LLM response shape") from None
 
 
+PROVIDER_BASE_URLS = {
+    "openai": "https://api.openai.com/v1",
+    "ollama": "http://localhost:11434/v1",
+    # Gemini's OpenAI-compatible endpoint: https://ai.google.dev/gemini-api/docs/openai
+    "gemini": "https://generativelanguage.googleapis.com/v1beta/openai",
+}
+
+
+def load_env_file(path: str = ".env") -> dict[str, str]:
+    """Read KEY=VALUE lines from a .env file without overriding real environment variables.
+
+    Minimal on purpose (no dependency on python-dotenv): blank lines and lines
+    starting with '#' are ignored, and surrounding quotes are stripped. Returns
+    the merged view; os.environ itself is not modified.
+    """
+    merged: dict[str, str] = {}
+    try:
+        with open(path, encoding="utf-8") as fh:
+            for raw in fh:
+                line = raw.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, _, value = line.partition("=")
+                key, value = key.strip(), value.strip()
+                if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+                    value = value[1:-1]
+                if key:
+                    merged[key] = value
+    except FileNotFoundError:
+        pass
+    merged.update({k: v for k, v in os.environ.items()})
+    return merged
+
+
 def client_from_env(env: dict[str, str] | None = None) -> OpenAICompatibleClient | None:
-    """Return a client if AEGIS_LLM_PROVIDER is set, otherwise None (use the scripted agent)."""
-    e = os.environ if env is None else env
+    """Return a client if AEGIS_LLM_PROVIDER is set, otherwise None (use the scripted agent).
+
+    With env=None, settings come from the process environment plus a .env file
+    in the current directory (real environment variables win).
+    """
+    e = load_env_file() if env is None else env
     provider = (e.get("AEGIS_LLM_PROVIDER") or "").strip().lower()
     if not provider:
         return None
-    defaults = {"openai": "https://api.openai.com/v1", "ollama": "http://localhost:11434/v1"}
+    defaults = PROVIDER_BASE_URLS
     base = e.get("AEGIS_LLM_BASE_URL") or defaults.get(provider)
     model = e.get("AEGIS_LLM_MODEL")
     if not base or not model:

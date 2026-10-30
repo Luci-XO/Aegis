@@ -29,7 +29,12 @@ python scripts/run_scenarios.py    # hijacked agent + detector + approver on dev
 python -m aegis.eval               # four-way benchmark on dev + held-out splits
 python -m aegis.web                # dashboard at http://127.0.0.1:8000
 python scripts/mutation_check.py   # inject 26 security bugs, confirm tests catch them
+python scripts/eval_email_classifier.py   # phishing/spam classifier on the 100-email corpus
 ```
+
+Optional extras: `pip install scikit-learn` for the scikit-learn classifier
+backend, and a Gemini key in `.env` for real-model runs. See
+[docs/email_classifier.md](docs/email_classifier.md).
 
 To try a real model later, set `AEGIS_LLM_PROVIDER`, `AEGIS_LLM_MODEL` and
 (for hosted APIs) `AEGIS_LLM_API_KEY`, then run
@@ -157,6 +162,7 @@ OWASP LLM01 (Prompt Injection) and LLM06 (Excessive Agency) in the
 - [docs/benchmark.md](docs/benchmark.md) - benchmark methodology
 - [docs/benchmark_results.md](docs/benchmark_results.md) - generated results snapshot
 - [docs/dashboard.md](docs/dashboard.md) - dashboard and HTTP API
+- [docs/email_classifier.md](docs/email_classifier.md) - phishing/spam classifier (optional scikit-learn), Gemini judge, VS Code setup
 - [docs/demo_script.md](docs/demo_script.md) - three-minute live demo script
 
 ## Contribution, in one paragraph
