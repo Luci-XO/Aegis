@@ -74,7 +74,14 @@ def main() -> int:
             print("--llm needs AEGIS_LLM_PROVIDER, AEGIS_LLM_MODEL and AEGIS_LLM_API_KEY (env or .env)")
             return 2
         print(f"LLM judge: {client.model} via {client.base_url}")
-        _, s, details = ev.llm_judge(emails, client, delay_s=a.delay)
+        from aegis.agent.llm_client import LLMError
+
+        try:
+            _, s, details = ev.llm_judge(emails, client, delay_s=a.delay)
+        except LLMError as exc:
+            print(f"\nLLM judge stopped: {exc}")
+            print("The non-LLM results above are still valid.")
+            return 1
         results["llm judge"] = {**s, "model": client.model, "details": details}
         lines.append(row(f"LLM judge ({client.model})", "all 100 (zero-shot)", s))
 

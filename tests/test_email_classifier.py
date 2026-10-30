@@ -198,3 +198,52 @@ def test_http_errors_report_status_without_leaking_body(monkeypatch):
 def test_corpus_json_has_no_real_looking_keys():
     raw = json.dumps(EMAILS)
     assert "AIza" not in raw and "AQ.Ab8" not in raw
+
+
+def test_transient_errors_are_retried_then_succeed(monkeypatch):
+    calls = {"n": 0}
+
+    class Resp:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return b'{"choices": [{"message": {"content": "ok"}}]}'
+
+    def flaky(*a, **k):
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise urllib.error.HTTPError("https://x", 503, "Unavailable", {}, None)
+        return Resp()
+
+    monkeypatch.setattr("urllib.request.urlopen", flaky)
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    c = OpenAICompatibleClient(base_url="https://example.invalid/v1", model="m")
+    assert c.complete([{"role": "user", "content": "hi"}]) == "ok" and calls["n"] == 3
+
+
+def test_permanent_errors_are_not_retried(monkeypatch):
+    calls = {"n": 0}
+
+    def bad(*a, **k):
+        calls["n"] += 1
+        raise urllib.error.HTTPError("https://x", 404, "Not Found", {}, None)
+
+    monkeypatch.setattr("urllib.request.urlopen", bad)
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    with pytest.raises(LLMError):
+        OpenAICompatibleClient(base_url="https://example.invalid/v1", model="m").complete([])
+    assert calls["n"] == 1
+
+
+def test_retries_give_up_with_clear_message(monkeypatch):
+    def down(*a, **k):
+        raise urllib.error.HTTPError("https://x", 503, "Unavailable", {}, None)
+
+    monkeypatch.setattr("urllib.request.urlopen", down)
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    with pytest.raises(LLMError, match="HTTP 503"):
+        OpenAICompatibleClient(base_url="https://example.invalid/v1", model="m", retries=2).complete([])
