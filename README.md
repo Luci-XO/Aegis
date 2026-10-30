@@ -8,9 +8,10 @@ rules (which tools, which resources, which recipients, which data may flow
 where, whether a human must approve) **before** it executes. The LLM is never
 the final authority, and a threat detector can only make decisions stricter.
 
-> Status: **Milestone 1, security core.** Gateway, policy engine, approvals,
-> audit log, simulated tools and tests are done. The agent, detector, benchmark
-> and dashboard come next. All data is synthetic and all tools are simulated.
+> Status: **Stage 4, agent and detector.** Security core (gateway, policy,
+> approvals, audit), task templates, a rule-based detector, scripted and LLM
+> agents, and the run loop are done. The benchmark and dashboard come next.
+> All data is synthetic and all tools are simulated.
 
 ## Quick start
 
@@ -23,8 +24,15 @@ cd Aegis
 python -m pip install pytest      # only needed to run tests
 python -m pytest                   # run the test suite
 python scripts/demo_core.py        # CLI walkthrough of an attack being blocked
-python scripts/mutation_check.py   # inject 18 security bugs, confirm tests catch them
+python scripts/run_scenarios.py    # hijacked agent + detector + approver on 10 dev scenarios
+python scripts/mutation_check.py   # inject 23 security bugs, confirm tests catch them
 ```
+
+To try a real model later, set `AEGIS_LLM_PROVIDER`, `AEGIS_LLM_MODEL` and
+(for hosted APIs) `AEGIS_LLM_API_KEY`, then run
+`python scripts/run_scenarios.py --agent llm`. A local
+[Ollama](https://ollama.com) server works without a key
+(`AEGIS_LLM_PROVIDER=ollama`).
 
 Optional editable install: `python -m pip install -e ".[dev]"`.
 
@@ -52,11 +60,13 @@ instruction in an invoice email, while the detector is stubbed to report
 aegis/
   core/        schemas, policy engine, gateway, approvals, audit log, rule catalogue
   tools/       argument validation, simulated tools, in-memory sandbox
+  detect/      rule-based detector, fail-safe wrapper, risk aggregation
+  agent/       task templates, scripted + LLM agents, approvers, runner, scenarios
   policies/    default.json (the policy file)
-  data/        synthetic emails and files (fictional, .example domains)
-tests/         validation, policy, gateway, approvals, audit, randomised invariants
-scripts/       demo_core.py, mutation_check.py
-docs/          threat_model.md, architecture.md
+  data/        synthetic emails/files and dev scenarios (fictional, .example domains)
+tests/         core, detector, tasks, runner, LLM agent (fake client), invariants
+scripts/       demo_core.py, run_scenarios.py, mutation_check.py
+docs/          threat_model.md, architecture.md, agent_and_detector.md
 ```
 
 ## What is tested
@@ -71,8 +81,11 @@ docs/          threat_model.md, architecture.md
 - Targeted tests for schema rejection (path traversal, homoglyphs, header
   injection), each policy rule, approval binding, fail-closed paths, audit
   tamper detection, and audit redaction.
-- **Mutation check:** `scripts/mutation_check.py` injects 18 deliberate
-  security bugs. The full suite catches all 18.
+- **End-to-end runs:** five attack scenarios × four detector conditions
+  (rules, always-safe, crashing, none) × two approvers (careful, rubber-stamp):
+  no attacker destination receives anything. Benign tasks complete.
+- **Mutation check:** `scripts/mutation_check.py` injects 23 deliberate
+  security bugs. The full suite catches all 23.
 
 ## Guarantees and limits
 

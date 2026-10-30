@@ -61,6 +61,22 @@ MUTANTS = [
      'ADDRESS = re.compile(r"[^@\\s]{1,64}@[^@\\s]{1,63}(\\.[^@\\s]{1,63})+")'),
     ("audit chain not checked", "aegis/core/audit.py",
      "            if _hash(prev_hash, body) != rhash:", "            if False:"),
+    # Stage 4
+    ("detector crash reported as safe", "aegis/detect/base.py",
+     '            log.warning("detector %s raised", self.name, exc_info=True)\n            return None',
+     '            return RiskReport(score=0.0, detector="crashed")'),
+    ("missing detector result ignored in aggregate", "aegis/detect/base.py",
+     "    if any(r is None for r in reports):\n        return None",
+     "    if False:\n        return None"),
+    ("untrusted content not delimited", "aegis/agent/llm_agent.py",
+     '            return f"<<DATA {marker}>>\\n{text}\\n<</DATA {marker}>>"',
+     "            return text"),
+    ("user rejection ignored", "aegis/agent/runner.py",
+     "if req is not None and self.approver.decide(req, task):",
+     "if req is not None:"),
+    ("subject treated as trusted", "aegis/tools/registry.py",
+     '"subject": {"trust": "untrusted", "text": email.subject},',
+     '"subject": email.subject,'),
 ]
 
 HELPER = "\n\ndef approval_token_absent(token):\n    return token is None\n"

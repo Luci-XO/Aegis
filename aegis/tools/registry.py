@@ -54,8 +54,9 @@ def _read_email(env: SandboxEnv, args: Mapping[str, ArgValue], ctx: ToolContext)
     return ToolOutput(
         content={
             "email_id": email.id,
-            "from": email.sender,
-            "subject": email.subject,
+            "from": email.sender,  # mail-system metadata (treated as trusted in this simulation)
+            # The subject is written by the sender, so it is as untrusted as the body.
+            "subject": {"trust": "untrusted", "text": email.subject},
             # Marked so the agent layer can keep it out of the instruction channel.
             "body": {"trust": "untrusted", "text": email.body},
         },
