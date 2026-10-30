@@ -16,7 +16,8 @@ the process.
 | Application code, policy file, tool registry | Trusted |
 | The user's task selection, which produces the `TaskGrant` | Trusted |
 | The human approver, using the approval UI | Trusted (but may make mistakes) |
-| Email bodies, file contents, web pages, tool outputs | **Untrusted** |
+| Email bodies and subjects, file contents, web pages, tool outputs | **Untrusted** |
+| Email sender address (mail-system metadata) | Trusted in this simulation only; real headers can be spoofed |
 | Agent plans, tool-call requests, agent claims about results | **Untrusted** |
 | Detector risk scores | Advisory only, never an authorization |
 

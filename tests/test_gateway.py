@@ -11,7 +11,9 @@ from tests.conftest import INTERNAL_USER, SAFE, call, make_grant, send, session
 def test_benign_read_executes_and_returns_untrusted_marker(gateway):
     r = gateway.submit(call("read_email", email_id="e-001"), session(), risk=SAFE)
     assert r.status is Status.EXECUTED
+    # Both sender-written fields are untrusted; only mail-system metadata is not.
     assert r.output["body"]["trust"] == "untrusted"
+    assert r.output["subject"]["trust"] == "untrusted"
 
 
 def test_detector_miss_gateway_holds_payroll_exfiltration(gateway, env):
