@@ -40,6 +40,8 @@ _RULES = [
     RuleInfo("A006", "Approval expired", "The approval request expired."),
     RuleInfo("A007", "Session mismatch", "The token belongs to a different session."),
     RuleInfo("A008", "Action mismatch", "The submitted action differs from the approved action; the approval is revoked."),
+    # Baseline B only (detector-only configuration, used for comparison)
+    RuleInfo("B01", "Detector block", "Baseline B: side effect blocked because the detector flagged the input or gave no result."),
     # Gateway runtime
     RuleInfo("G001", "Audit unavailable", "The pre-execution audit record could not be written; the action is not executed."),
     RuleInfo("G002", "Tool execution failed", "The tool raised an error; the action did not complete."),

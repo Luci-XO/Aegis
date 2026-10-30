@@ -19,17 +19,34 @@ import logging
 import time
 from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Protocol
 
 from aegis.agent.approvers import Approver
 from aegis.agent.base import Agent
 from aegis.agent.tasks import TaskInstance
-from aegis.core.gateway import Gateway, GatewayResult, Status
+from aegis.core.approvals import ApprovalService
+from aegis.core.gateway import GatewayResult, Status
 from aegis.core.schemas import RiskReport
 from aegis.core.session import SessionState
 from aegis.detect.base import SafeDetector, combine
 
 log = logging.getLogger("aegis.runner")
+
+
+class Executor(Protocol):
+    """The Gateway, or a baseline executor used for comparison."""
+
+    @property
+    def approvals(self) -> ApprovalService | None: ...
+
+    def submit(
+        self,
+        raw: object,
+        session: SessionState,
+        risk: RiskReport | None = None,
+        approval_token: str | None = None,
+        case_id: str | None = None,
+    ) -> GatewayResult: ...
 
 
 @dataclass(frozen=True)
@@ -41,6 +58,13 @@ class StepRecord:
     approval: str | None  # None | "approved" | "rejected"
     risk_score: float | None
     gateway_ms: float
+    # The raw proposed request. Kept in memory for evaluation and the UI only;
+    # it is never written to the audit log.
+    request: object = None
+
+    @property
+    def executed(self) -> bool:
+        return self.status == Status.EXECUTED.value
 
 
 @dataclass
@@ -87,12 +111,12 @@ def _untrusted_texts(value: Any) -> Iterator[str]:
 class Runner:
     def __init__(
         self,
-        gateway: Gateway,
+        executor: Executor,
         approver: Approver,
         detector: SafeDetector | None,
         max_steps: int = 25,
     ) -> None:
-        self.gateway = gateway
+        self.executor = executor
         self.approver = approver
         self.detector = detector
         self.max_steps = max_steps
@@ -130,21 +154,23 @@ class Runner:
                 break
 
             risk = self._risk(reports)
-            gw = self.gateway.submit(step.request, session, risk=risk, case_id=case_id)
+            gw = self.executor.submit(step.request, session, risk=risk, case_id=case_id)
             gateway_ms = gw.latency_ms
             approval: str | None = None
             request_id = gw.approval_request_id
+            approvals = self.executor.approvals
             if gw.status is Status.PENDING_APPROVAL and request_id:
-                req = self.gateway.approvals.get(request_id)
-                if req is not None and self.approver.decide(req, task):
+                req = approvals.get(request_id) if approvals else None
+                if approvals and req is not None and self.approver.decide(req, task):
                     approval = "approved"
-                    token = self.gateway.approvals.approve(req.request_id)
-                    gw = self.gateway.submit(step.request, session, risk=risk,
-                                             approval_token=token, case_id=case_id)
+                    token = approvals.approve(req.request_id)
+                    gw = self.executor.submit(step.request, session, risk=risk,
+                                              approval_token=token, case_id=case_id)
                     gateway_ms += gw.latency_ms
                 else:
                     approval = "rejected"
-                    self.gateway.approvals.reject(request_id)
+                    if approvals:
+                        approvals.reject(request_id)
 
             if gw.executed and gw.output is not None and self.detector is not None:
                 for text in _untrusted_texts(gw.output):
@@ -159,6 +185,7 @@ class Runner:
             result.steps.append(StepRecord(
                 index=i, tool=gw.tool, status=self._status(gw, approval), rule_ids=gw.rule_ids,
                 approval=approval, risk_score=None if risk is None else risk.score, gateway_ms=gateway_ms,
+                request=step.request,
             ))
             agent_view = gw.for_agent()
             if approval == "rejected":
