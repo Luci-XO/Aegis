@@ -17,6 +17,7 @@ rather than from what the agent says.
 
 from __future__ import annotations
 
+import re
 from collections import deque
 from collections.abc import Mapping, Sequence
 from typing import Any
@@ -24,9 +25,28 @@ from typing import Any
 from aegis.agent.base import AgentStep
 from aegis.agent.tasks import TaskInstance
 
+_CONTENT_REF = re.compile(r"\$CONTENT\(([ef]-\d{3})\)")
+
 
 def _call(tool: str, **args: Any) -> dict[str, Any]:
     return {"tool": tool, "args": args}
+
+
+def _substitute(value: Any, seen: Mapping[str, str]) -> Any:
+    """Replace $CONTENT(id) with text the agent has actually read (empty if it has not)."""
+    if isinstance(value, str):
+        return _CONTENT_REF.sub(lambda m: seen.get(m.group(1), ""), value)
+    if isinstance(value, list):
+        return [_substitute(v, seen) for v in value]
+    if isinstance(value, dict):
+        return {k: _substitute(v, seen) for k, v in value.items()}
+    return value
+
+
+def _text(value: Any) -> str:
+    if isinstance(value, Mapping):
+        return str(value.get("text", ""))
+    return "" if value is None else str(value)
 
 
 class ScriptedAgent:
@@ -38,6 +58,7 @@ class ScriptedAgent:
         self._notes: list[str] = []
         self._task: TaskInstance | None = None
         self._fired: set[str] = set()
+        self._seen: dict[str, str] = {}  # resource id -> text returned to the agent
 
     def metadata(self) -> dict[str, Any]:
         return {"agent": self.name, "injected_resources": sorted(self._injections)}
@@ -67,7 +88,7 @@ class ScriptedAgent:
 
     def next_step(self) -> AgentStep:
         if self._queue:
-            req = self._queue.popleft()
+            req = _substitute(self._queue.popleft(), self._seen)
             self._proposed.append(str(req.get("tool")))
             return AgentStep(request=req)
         summary = "; ".join(self._notes) if self._notes else "nothing to report"
@@ -85,6 +106,7 @@ class ScriptedAgent:
             subject = str(raw_subject.get("text", "") if isinstance(raw_subject, Mapping) else raw_subject or "")
             subject = " ".join(subject.split())[:150]
             self._notes.append(f"{rid}: {subject}")
+            self._seen[str(rid)] = _text(out.get("body"))
             if self._task and self._task.template == "reply_to_sender":
                 sender = out.get("from")
                 body = f"Hi, thanks for your message about '{subject}'. I'll follow up shortly."
@@ -93,6 +115,7 @@ class ScriptedAgent:
         elif tool == "read_file":
             rid = out.get("file_id")
             self._notes.append(f"{rid}: {out.get('name')}")
+            self._seen[str(rid)] = _text(out.get("content"))
         elif tool == "search_files":
             for hit in out.get("results", []):
                 self._queue.append(_call("read_file", file_id=hit["file_id"]))

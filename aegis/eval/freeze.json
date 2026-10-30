@@ -1,0 +1,9 @@
+{
+  "frozen_at": "2026-10-30T03:52:11Z",
+  "note": "Policy, policy engine and detector frozen before the held-out split was written. Any change after this point must update this file, and results must then be labelled post-hoc.",
+  "sha256": {
+    "aegis/policies/default.json": "d23c7f447cc70d61bfb0e0f18240699e5280cf30fc326820b392fc5b22d71ea2",
+    "aegis/core/policy.py": "de7f99139bf92bc1d1f42e4e02b619a3b15cd4cad62c8c9190cb1391632f88b2",
+    "aegis/detect/rules.py": "9b4feb5ef39272cb6e74c0283de3df5cddae157a1395868243fb09d562cc4b05"
+  }
+}

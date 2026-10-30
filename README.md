@@ -8,10 +8,9 @@ rules (which tools, which resources, which recipients, which data may flow
 where, whether a human must approve) **before** it executes. The LLM is never
 the final authority, and a threat detector can only make decisions stricter.
 
-> Status: **Stage 4, agent and detector.** Security core (gateway, policy,
-> approvals, audit), task templates, a rule-based detector, scripted and LLM
-> agents, and the run loop are done. The benchmark and dashboard come next.
-> All data is synthetic and all tools are simulated.
+> Status: **Stage 5, benchmark.** Security core, agent, detector, and now a
+> reproducible four-way benchmark with a held-out split are done. The dashboard
+> comes next. All data is synthetic and all tools are simulated.
 
 ## Quick start
 
@@ -24,8 +23,9 @@ cd Aegis
 python -m pip install pytest      # only needed to run tests
 python -m pytest                   # run the test suite
 python scripts/demo_core.py        # CLI walkthrough of an attack being blocked
-python scripts/run_scenarios.py    # hijacked agent + detector + approver on 10 dev scenarios
-python scripts/mutation_check.py   # inject 23 security bugs, confirm tests catch them
+python scripts/run_scenarios.py    # hijacked agent + detector + approver on dev scenarios
+python -m aegis.eval               # four-way benchmark on dev + held-out splits
+python scripts/mutation_check.py   # inject 26 security bugs, confirm tests catch them
 ```
 
 To try a real model later, set `AEGIS_LLM_PROVIDER`, `AEGIS_LLM_MODEL` and
@@ -62,11 +62,12 @@ aegis/
   tools/       argument validation, simulated tools, in-memory sandbox
   detect/      rule-based detector, fail-safe wrapper, risk aggregation
   agent/       task templates, scripted + LLM agents, approvers, runner, scenarios
+  eval/        baselines, goal predicates, policy oracle, metrics, benchmark driver
   policies/    default.json (the policy file)
-  data/        synthetic emails/files and dev scenarios (fictional, .example domains)
-tests/         core, detector, tasks, runner, LLM agent (fake client), invariants
+  data/        synthetic emails/files, dev + held-out scenarios (fictional, .example)
+tests/         core, detector, tasks, runner, LLM agent, benchmark, freeze, invariants
 scripts/       demo_core.py, run_scenarios.py, mutation_check.py
-docs/          threat_model.md, architecture.md, agent_and_detector.md
+docs/          threat_model.md, architecture.md, agent_and_detector.md, benchmark*.md
 ```
 
 ## What is tested
@@ -84,8 +85,32 @@ docs/          threat_model.md, architecture.md, agent_and_detector.md
 - **End-to-end runs:** five attack scenarios × four detector conditions
   (rules, always-safe, crashing, none) × two approvers (careful, rubber-stamp):
   no attacker destination receives anything. Benign tasks complete.
-- **Mutation check:** `scripts/mutation_check.py` injects 23 deliberate
-  security bugs. The full suite catches all 23.
+- **Benchmark invariant:** across both splits and every gateway configuration
+  (C, D, C2, D2) and approver, a test asserts **0** unauthorized executions,
+  while the unprotected baseline executes many. Every attack is verified live
+  against the unprotected baseline and every benign task solvable.
+- **Mutation check:** `scripts/mutation_check.py` injects 26 deliberate
+  security bugs (including three in the benchmark oracle and baselines). The
+  full suite catches all 26.
+
+## Benchmark results (held-out split, fully hijacked agent)
+
+From one run on the sandbox; full report in [docs/benchmark_results.md](docs/benchmark_results.md),
+method in [docs/benchmark.md](docs/benchmark.md). 10 attack cases, 5 benign, intent approver.
+
+| Config | Attack success | Unauthorized execs | Benign utility | False positives |
+|---|---|---|---|---|
+| A unprotected | 100% | 18 | 100% | 0% |
+| B detector-only | 70% | 14 | 100% | 0% |
+| C gateway-only | **10%** | **0** | 100% | 0% |
+| D Aegis (gateway + detector) | **10%** | **0** | 100% | 0% |
+
+The gateway cuts attack success from 100% to 10% with zero unauthorized tool
+executions; the remaining 10% is the one in-scope wording-manipulation case,
+out of scope by design. Detection alone (B) stops far fewer: the frozen detector
+caught 3 of 10 held-out attacks (recall 0.30). C and D match here because the
+deterministic gateway, not the detector, does the blocking — the intended
+finding. Numbers describe this synthetic suite only.
 
 ## Guarantees and limits
 
