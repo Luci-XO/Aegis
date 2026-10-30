@@ -19,7 +19,7 @@ dev = ["pytest>=8"]
 include = ["aegis*"]
 
 [tool.setuptools.package-data]
-aegis = ["data/synthetic/*.json", "data/scenarios/*.json", "policies/*.json", "eval/freeze.json"]
+aegis = ["data/synthetic/*.json", "data/scenarios/*.json", "policies/*.json", "eval/freeze.json", "web/static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

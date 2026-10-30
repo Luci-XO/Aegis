@@ -8,9 +8,10 @@ rules (which tools, which resources, which recipients, which data may flow
 where, whether a human must approve) **before** it executes. The LLM is never
 the final authority, and a threat detector can only make decisions stricter.
 
-> Status: **Stage 5, benchmark.** Security core, agent, detector, and now a
-> reproducible four-way benchmark with a held-out split are done. The dashboard
-> comes next. All data is synthetic and all tools are simulated.
+> Status: **Stage 6, dashboard.** Security core, agent, detector, four-way
+> benchmark with a held-out split, and a browser dashboard are done. All data is
+> synthetic and all tools are simulated; the whole project has no third-party
+> runtime dependencies.
 
 ## Quick start
 
@@ -25,6 +26,7 @@ python -m pytest                   # run the test suite
 python scripts/demo_core.py        # CLI walkthrough of an attack being blocked
 python scripts/run_scenarios.py    # hijacked agent + detector + approver on dev scenarios
 python -m aegis.eval               # four-way benchmark on dev + held-out splits
+python -m aegis.web                # dashboard at http://127.0.0.1:8000
 python scripts/mutation_check.py   # inject 26 security bugs, confirm tests catch them
 ```
 
@@ -63,11 +65,12 @@ aegis/
   detect/      rule-based detector, fail-safe wrapper, risk aggregation
   agent/       task templates, scripted + LLM agents, approvers, runner, scenarios
   eval/        baselines, goal predicates, policy oracle, metrics, benchmark driver
+  web/         stdlib HTTP server, interactive session driver, static frontend
   policies/    default.json (the policy file)
   data/        synthetic emails/files, dev + held-out scenarios (fictional, .example)
-tests/         core, detector, tasks, runner, LLM agent, benchmark, freeze, invariants
-scripts/       demo_core.py, run_scenarios.py, mutation_check.py
-docs/          threat_model.md, architecture.md, agent_and_detector.md, benchmark*.md
+tests/         core, detector, tasks, runner, LLM agent, benchmark, web, freeze, invariants
+scripts/       demo_core.py, run_scenarios.py, demo_dashboard_flow.py, mutation_check.py
+docs/          threat_model, architecture, agent_and_detector, benchmark*, dashboard
 ```
 
 ## What is tested

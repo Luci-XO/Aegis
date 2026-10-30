@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aegis - AI-agent policy enforcement</title>
+  <link rel="icon" href="/static/favicon.svg" />
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">&#9683;</span>
+      <div>
+        <h1>Aegis</h1>
+        <p class="tagline">Deterministic policy enforcement between an AI agent and its tools</p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-view="demo" class="active">Live demo</button>
+      <button data-view="benchmark">Benchmark</button>
+      <button data-view="about">About</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- DEMO VIEW -->
+    <section id="view-demo" class="view active">
+      <div class="controls">
+        <label>Scenario
+          <select id="sel-scenario"></select>
+        </label>
+        <label>Configuration
+          <select id="sel-config"></select>
+        </label>
+        <label>Approver
+          <select id="sel-approver"></select>
+        </label>
+        <button id="btn-run" class="primary">Run</button>
+        <span id="run-note" class="muted"></span>
+      </div>
+
+      <div id="scenario-desc" class="scenario-desc"></div>
+
+      <div id="summary-strip" class="summary-strip" hidden></div>
+
+      <div id="pending-banner" class="pending-banner" hidden></div>
+
+      <div class="grid">
+        <div class="col">
+          <h2>Inbox &amp; files</h2>
+          <div id="inbox" class="scroll"></div>
+          <h2>File repository</h2>
+          <div id="files" class="chips"></div>
+        </div>
+        <div class="col col-wide">
+          <h2>Agent run <span id="task-template" class="pill"></span></h2>
+          <div id="task-desc" class="task-desc"></div>
+          <div id="steps" class="scroll steps"></div>
+        </div>
+        <div class="col">
+          <h2>What actually happened</h2>
+          <div id="outbox-wrap">
+            <h3>Outbox (messages that really left)</h3>
+            <div id="outbox" class="scroll-sm"></div>
+          </div>
+          <div id="claim-wrap" class="claim" hidden></div>
+          <h3>Audit trail <span id="audit-verified" class="pill"></span></h3>
+          <div id="audit" class="scroll-sm audit"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENCHMARK VIEW -->
+    <section id="view-benchmark" class="view">
+      <p class="muted">Computed on first open by <code>python -m aegis.eval</code>. Rates show 95% Wilson intervals.
+        See <code>docs/benchmark.md</code> for definitions.</p>
+      <div id="benchmark-meta" class="muted"></div>
+      <div id="benchmark"></div>
+    </section>
+
+    <!-- ABOUT VIEW -->
+    <section id="view-about" class="view">
+      <div class="about">
+        <h2>What this shows</h2>
+        <p>An AI agent reads untrusted emails and files and may draft or send mail. Every tool call passes a
+          deterministic <strong>policy gateway</strong> before it runs. The gateway, not the language model, has the
+          final say. A threat detector can only make a decision stricter, never looser.</p>
+        <h2>Configurations</h2>
+        <ul>
+          <li><strong>A - unprotected</strong>: the agent runs with the user's full permissions.</li>
+          <li><strong>B - detector only</strong>: sends are blocked when the detector flags the input (or fails).</li>
+          <li><strong>C - gateway only</strong>: policy gateway and approvals, no detector.</li>
+          <li><strong>D - Aegis</strong>: gateway plus detector.</li>
+        </ul>
+        <h2>Approvers</h2>
+        <ul>
+          <li><strong>manual</strong>: you approve or reject each sensitive action in the UI.</li>
+          <li><strong>intent</strong>: a careful human who checks recipients and attachments against the task.</li>
+          <li><strong>rubber_stamp</strong>: approves everything (worst case for the human).</li>
+          <li><strong>reject_all</strong>: approves nothing.</li>
+        </ul>
+        <p class="muted">All data is synthetic and all tools are simulated. Nothing leaves this process.
+          Email and file bodies are shown on purpose so you can see the hidden instructions.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
