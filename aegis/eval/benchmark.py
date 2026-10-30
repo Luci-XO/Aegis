@@ -147,8 +147,16 @@ def run_case(
     )
 
 
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def text_sha256(path: Path) -> str:
+    """SHA-256 of a text file with line endings normalised to LF.
+
+    Git on Windows checks files out with CRLF by default, which changes the
+    raw bytes but not the content. Normalising keeps hashes identical across
+    operating systems."""
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
+_sha256 = text_sha256
 
 
 def _git_commit() -> str | None:
