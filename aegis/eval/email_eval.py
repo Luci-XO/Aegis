@@ -189,8 +189,9 @@ def llm_judge(emails: Sequence[Email], client: Any, delay_s: float = 0.0,
         except LLMError as exc:
             if n == 1:
                 # A config problem (bad model or key) would fail all 100 calls; stop now.
-                raise LLMError(f"first LLM call failed, stopping: {exc}. "
-                               "Run: python scripts/list_llm_models.py") from None
+                hint = (" Run: python scripts/list_llm_models.py" if "HTTP 404" in str(exc) or "HTTP 400" in str(exc)
+                        else " This is usually temporary on Google's side; wait a few minutes and retry.")
+                raise LLMError(f"first LLM call failed, stopping: {exc}.{hint}") from None
             label, flags = "ERROR", [str(exc)]
         preds.append(label)
         details.append({"id": e["id"], "gold": e["label"], "pred": label, "red_flags": flags})

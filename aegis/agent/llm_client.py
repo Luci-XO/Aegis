@@ -22,6 +22,13 @@ class LLMError(RuntimeError):
     pass
 
 
+class _TransientError(LLMError):
+    """A failure worth retrying (rate limit, overload, network)."""
+
+
+TRANSIENT_HTTP = frozenset({429, 500, 502, 503, 504})
+
+
 class ChatClient(Protocol):
     model: str
     temperature: float
@@ -37,8 +44,23 @@ class OpenAICompatibleClient:
     temperature: float = 0.0
     timeout_s: float = 60.0
     max_tokens: int = 800
+    retries: int = 4  # extra attempts for temporary failures (429, 500, 502, 503, 504, network)
+    backoff_s: float = 5.0  # wait backoff_s, 2x, 4x ... between attempts
 
     def complete(self, messages: list[dict[str, str]]) -> str:
+        """Send one chat request, retrying temporary failures with exponential backoff."""
+        import time
+
+        for attempt in range(self.retries + 1):
+            try:
+                return self._complete_once(messages)
+            except _TransientError as exc:
+                if attempt == self.retries:
+                    raise LLMError(str(exc)) from None
+                time.sleep(self.backoff_s * (2 ** attempt))
+        raise LLMError("unreachable")  # pragma: no cover
+
+    def _complete_once(self, messages: list[dict[str, str]]) -> str:
         if not self.base_url.startswith(("https://", "http://localhost", "http://127.0.0.1")):
             raise LLMError("base_url must be https, or http on localhost")
         payload = json.dumps({
@@ -58,9 +80,15 @@ class OpenAICompatibleClient:
         except urllib.error.HTTPError as exc:
             hint = {400: "bad request or model name", 401: "API key rejected",
                     403: "API key lacks permission", 404: "unknown model or base URL",
-                    429: "rate limited or out of quota"}.get(exc.code, "server error")
-            raise LLMError(f"LLM request failed: HTTP {exc.code} ({hint})") from None
-        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+                    429: "rate limited or out of quota", 503: "model overloaded or unavailable, try later",
+                    }.get(exc.code, "server error")
+            msg = f"LLM request failed: HTTP {exc.code} ({hint})"
+            if exc.code in TRANSIENT_HTTP:
+                raise _TransientError(msg) from None
+            raise LLMError(msg) from None
+        except (urllib.error.URLError, TimeoutError) as exc:
+            raise _TransientError(f"LLM request failed: {type(exc).__name__}") from None
+        except json.JSONDecodeError as exc:
             raise LLMError(f"LLM request failed: {type(exc).__name__}") from None
         try:
             return str(data["choices"][0]["message"]["content"])

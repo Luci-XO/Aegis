@@ -98,6 +98,6 @@ def test_client_refuses_plain_http_to_remote_hosts():
 
 
 def test_network_failure_raises_llm_error():
-    c = OpenAICompatibleClient(base_url="http://127.0.0.1:9/v1", model="m", timeout_s=1)
+    c = OpenAICompatibleClient(base_url="http://127.0.0.1:9/v1", model="m", timeout_s=1, retries=0)
     with pytest.raises(LLMError):
         c.complete([{"role": "user", "content": "hi"}])
