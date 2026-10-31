@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from aegis.agent.approvers import Approver, IntentApprover, RejectAllApprover, RubberStampApprover
+from aegis.agent.base import Agent
 from aegis.agent.runner import StepRecord, _untrusted_texts
 from aegis.agent.scenarios import Scenario, build_stack
 from aegis.agent.scripted import ScriptedAgent
@@ -83,6 +84,8 @@ class InteractiveSession:
     config: str
     approver: str
     secret: bytes = field(default_factory=lambda: secrets.token_bytes(32))
+    # Optional: supply a different agent (e.g. an LLM agent). Default is the scripted agent.
+    agent_factory: Callable[[], Agent] | None = None
 
     def __post_init__(self) -> None:
         if self.config not in UI_CONFIGS:
@@ -102,7 +105,8 @@ class InteractiveSession:
         self._stack = stack
         self._executor = stack.executor
         self._session = SessionState(self.session_id, stack.task.grant)
-        self._agent = ScriptedAgent(self.scenario.injections or None)
+        self._agent: Agent = (self.agent_factory() if self.agent_factory
+                              else ScriptedAgent(self.scenario.injections or None))
         self._agent.start(stack.task)
         self._reports: list[RiskReport | None] = []
         self._steps: list[dict[str, Any]] = []

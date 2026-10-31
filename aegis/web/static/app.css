@@ -285,3 +285,26 @@ table.full td:first-child { text-align: left; font-weight: 700; }
 .cp-icon .ic { width: 13px; height: 13px; stroke-width: 3.5; vertical-align: 0; }
 .arrow .ic { width: .8em; height: .8em; vertical-align: .05em; stroke-width: 3; }
 .mail-subj .ic { color: var(--brand); }
+
+/* ---------- test your own email ---------- */
+.upload { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.4rem; box-shadow: var(--shadow); margin-bottom: 1.6rem; }
+.drop { border: 2px dashed #c7d2fe; border-radius: 14px; padding: 1.6rem; text-align: center; display: flex; flex-direction: column; gap: .5rem; align-items: center; background: #f8faff; transition: background .15s, border-color .15s; }
+.drop.over { background: #eef2ff; border-color: var(--brand); }
+.drop-icon .ic { width: 40px; height: 40px; color: var(--brand); stroke-width: 1.8; }
+.or { text-align: center; color: var(--muted); margin: 1rem 0 .6rem; font-size: .9rem; position: relative; }
+.or::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid var(--line); }
+.or span { position: relative; background: var(--panel); padding: 0 .8rem; }
+textarea { width: 100%; font: inherit; font-family: ui-monospace, Consolas, monospace; font-size: .88rem; border: 1px solid var(--line); border-radius: 10px; padding: .8rem; resize: vertical; color: var(--ink); }
+textarea:focus, select:focus { outline: 2px solid #c7d2fe; border-color: var(--brand); }
+.examples { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; margin: .8rem 0 1rem; }
+.chip-btn { font: inherit; font-size: .85rem; font-weight: 600; border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: .35rem .85rem; cursor: pointer; color: var(--ink-2); }
+.chip-btn:hover { border-color: var(--brand); color: var(--brand); }
+.controls-inline { display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
+.controls-inline label { display: flex; flex-direction: column; font-size: .8rem; color: var(--muted); gap: .3rem; font-weight: 600; }
+.an-k { color: var(--muted); font-weight: 700; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; }
+.an-v { font-size: 1.7rem; font-weight: 900; margin: .2rem 0; }
+.an-v.bad { color: var(--bad); }
+.an-v.good { color: var(--good); }
+.an-sub { color: var(--ink-2); font-size: .92rem; }
+.an-list { margin: .6rem 0 0; padding-left: 1.1rem; color: var(--ink-2); font-size: .88rem; }
+.an-list li { margin-bottom: .2rem; }

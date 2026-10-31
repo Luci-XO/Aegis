@@ -103,7 +103,8 @@ def red_flags(email: Mapping[str, Any]) -> list[str]:
     so treat counts on that corpus as development measurements."""
     flags = []
     auth = email.get("auth") or {}
-    if auth.get("spf") != "pass" or auth.get("dmarc") != "pass":
+    # Only judge authentication when results are known (pasted text has none).
+    if auth and (auth.get("spf") != "pass" or auth.get("dmarc") != "pass"):
         flags.append(f"authentication failed (SPF={auth.get('spf')}, DMARC={auth.get('dmarc')})")
     if _domain(email.get("reply_to", "")) != _domain(email.get("from", "")):
         flags.append("Reply-To domain differs from sender")

@@ -1,0 +1,13 @@
+From: Raj Patel <raj.patel@aegis-corp.example>
+To: priya.sharma@aegis-corp.example
+Subject: Lunch on Friday?
+Authentication-Results: mx.example; spf=pass; dkim=pass; dmarc=pass
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Hey Priya,
+
+Are you free for lunch on Friday? There's a new place near the office.
+
+Raj
