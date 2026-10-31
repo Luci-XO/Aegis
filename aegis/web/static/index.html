@@ -19,6 +19,7 @@
     <nav id="nav">
       <button data-go="home" class="active">Overview</button>
       <button data-go="story">Guided demo</button>
+      <button data-go="custom">Test your own email</button>
       <button data-go="explore">Try it yourself</button>
       <button data-go="results">Results</button>
       <button data-go="built">How it's built</button>
@@ -89,6 +90,47 @@
     <section id="view-story" class="view">
       <div id="story-nav" class="story-nav"></div>
       <div id="story-body"></div>
+    </section>
+
+    <!-- ============================== CUSTOM EMAIL ============================== -->
+    <section id="view-custom" class="view">
+      <div class="page-intro">
+        <h2>Test your own email</h2>
+        <p>Upload an email file or paste any email text. Aegis runs it twice, without protection and with Aegis,
+          and shows exactly what happens. Nothing is ever sent: every action runs in a simulation.</p>
+      </div>
+      <div class="upload">
+        <div id="drop" class="drop">
+          <div class="drop-icon" data-icon="mail"></div>
+          <div><b>Drop an email file here</b> (.eml or .txt)</div>
+          <div class="muted">In Gmail: open the email, click the three-dot menu, then <i>Download message</i>.
+            In Outlook on the web: the three-dot menu, then <i>Download</i>.</div>
+          <label class="btn ghost">Choose a file<input type="file" id="file-input" accept=".eml,.txt,message/rfc822,text/plain" hidden /></label>
+          <div id="file-name" class="muted"></div>
+        </div>
+        <div class="or"><span>or paste the email</span></div>
+        <textarea id="paste" rows="9" placeholder="Paste an email here. Headers (From:, Subject:) are optional."></textarea>
+        <div class="examples">
+          <span class="lbl">Try an example:</span>
+          <button class="chip-btn" data-example="attack">Hidden payroll request</button>
+          <button class="chip-btn" data-example="polite">Polite request for customer data</button>
+          <button class="chip-btn" data-example="benign">Normal email</button>
+        </div>
+        <div class="controls-inline">
+          <label>What the user asked the assistant
+            <select id="custom-task">
+              <option value="reply">Reply to this email</option>
+              <option value="summarize">Summarise my inbox</option>
+            </select>
+          </label>
+          <label>Which AI reads it
+            <select id="custom-agent"><option value="simulated">Simulated fooled assistant (does whatever the email asks)</option></select>
+          </label>
+          <button id="custom-run" class="btn primary big">Run it</button>
+          <span id="custom-note" class="muted"></span>
+        </div>
+      </div>
+      <div id="custom-body"></div>
     </section>
 
     <!-- ============================== EXPLORE ============================== -->

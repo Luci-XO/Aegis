@@ -37,6 +37,7 @@ from aegis.web.interactive import AUTO_APPROVERS, UI_CONFIGS, InteractiveSession
 log = logging.getLogger("aegis.web")
 
 MAX_BODY = 64 * 1024
+MAX_UPLOAD = 512 * 1024  # uploaded emails
 MAX_SESSIONS = 200
 SESSION_ID = re.compile(r"[0-9a-f]{32}", re.ASCII)
 _STATIC_TYPES = {
@@ -90,6 +91,16 @@ class _BenchmarkCache:
             return self._data
 
 
+def _llm_status() -> dict[str, Any]:
+    from aegis.agent.llm_client import LLMError, client_from_env
+
+    try:
+        client = client_from_env()
+    except LLMError:
+        client = None
+    return {"available": client is not None, "model": client.model if client else None}
+
+
 def _static_dir() -> Path:
     return Path(str(resources.files("aegis") / "web" / "static"))
 
@@ -120,9 +131,9 @@ class Handler(BaseHTTPRequestHandler):
     def _error(self, status: int, message: str) -> None:
         self._send_json({"error": message}, status)
 
-    def _read_json(self) -> dict[str, Any]:
+    def _read_json(self, limit: int = MAX_BODY) -> dict[str, Any]:
         length = int(self.headers.get("Content-Length") or 0)
-        if length <= 0 or length > MAX_BODY:
+        if length <= 0 or length > limit:
             raise SessionError("missing or oversized request body")
         raw = self.rfile.read(length)
         try:
@@ -161,6 +172,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._decide()
             if method == "POST" and path == "/api/compare":
                 return self._compare()
+            if method == "POST" and path == "/api/custom":
+                return self._custom()
             self._error(HTTPStatus.NOT_FOUND, "not found")
         except SessionError as exc:
             self._error(HTTPStatus.BAD_REQUEST, str(exc))
@@ -171,7 +184,8 @@ class Handler(BaseHTTPRequestHandler):
     # -- endpoints ---------------------------------------------------------
 
     def _meta(self) -> dict[str, Any]:
-        out: dict[str, Any] = {"configs": UI_CONFIGS, "approvers": _APPROVERS, "splits": {}}
+        out: dict[str, Any] = {"configs": UI_CONFIGS, "approvers": _APPROVERS, "splits": {},
+                               "llm": _llm_status()}
         for split, by_id in self.scenarios_by_split.items():
             out["splits"][split] = [
                 {"id": s["id"], "label": s["label"], "category": s["category"],
@@ -218,6 +232,35 @@ class Handler(BaseHTTPRequestHandler):
         out = {side: InteractiveSession(secrets.token_hex(16), scenario, cfg, "intent").snapshot()
                for side, cfg in (("left", left), ("right", right))}
         self._send_json(out)
+
+    def _custom(self) -> None:
+        """Run a user-supplied email without and with Aegis."""
+        from aegis.web.custom import CustomEmailError, analyze, build_custom_scenario, parse_email
+
+        data = self._read_json(limit=MAX_UPLOAD)
+        raw, task, agent = data.get("raw"), data.get("task", "reply"), data.get("agent", "simulated")
+        if agent not in ("simulated", "llm"):
+            raise SessionError("agent must be 'simulated' or 'llm'")
+        try:
+            email = parse_email(raw if isinstance(raw, str) else "")
+            scenario, plan = build_custom_scenario(email, str(task))
+        except CustomEmailError as exc:
+            raise SessionError(str(exc)) from None
+        factory = None
+        if agent == "llm":
+            from aegis.agent.llm_agent import LLMAgent
+            from aegis.agent.llm_client import LLMError, client_from_env
+
+            try:
+                client = client_from_env()
+            except LLMError:
+                client = None
+            if client is None:
+                raise SessionError("no real AI is configured: add AEGIS_LLM_* settings to .env")
+            factory = lambda: LLMAgent(client)  # noqa: E731
+        out = {side: InteractiveSession(secrets.token_hex(16), scenario, cfg, "intent", agent_factory=factory).snapshot()
+               for side, cfg in (("left", "A_unprotected"), ("right", "D_aegis"))}
+        self._send_json({"email": email, "plan": plan, "analysis": analyze(email), "agent": agent, **out})
 
     def _find_scenario(self, scenario_id: Any):
         if not isinstance(scenario_id, str):

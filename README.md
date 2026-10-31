@@ -28,6 +28,11 @@ exactly which rules refused it:
 
 ![Hidden instruction demo](docs/images/demo-hidden-instruction.png)
 
+**Test your own email.** Upload an `.eml` file (or paste text) and Aegis runs it
+with and without protection. Sample files are in [examples/emails](examples/emails).
+
+![Upload your own email](docs/images/upload-your-own-email.png)
+
 **Results on attacks written after the rules were frozen:**
 
 ![Results](docs/images/results.png)

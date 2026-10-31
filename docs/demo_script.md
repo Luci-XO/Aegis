@@ -51,6 +51,17 @@ Point at the four cards: **100% to 10%** of attacks succeeding, **18 to 0** forb
 
 Close: "Small, dependency-free, reproducible, and honest about its limits."
 
+## If a judge wants to use their own email
+
+Open **Test your own email** and drag in a file from `examples/emails/` (or a real
+email downloaded from Gmail with *Download message*), or paste any text. Click
+**Run it**. The page shows the scanner and classifier verdicts, what a fully
+fooled assistant would try, and the side-by-side result. Good one to use:
+`2-polite-customer-data-request.eml`, which the scanner misses and Aegis still blocks.
+
+Say: "The simulated assistant is deliberately fully fooled; it does whatever the
+email asks. With a Gemini key in `.env` you can switch to a real AI."
+
 ## If the judges want to try it
 
 Use **Try it yourself**, choose *You decide* as the approver, and let them approve or reject the email themselves.

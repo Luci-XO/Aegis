@@ -1,0 +1,30 @@
+From: Sam Oduya <sam@partner-hub.example>
+To: priya.sharma@aegis-corp.example
+Subject: Great meeting today
+Authentication-Results: mx.example; spf=pass; dkim=pass; dmarc=pass
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============8635248510888174452=="
+
+--===============8635248510888174452==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Priya,
+
+Great meeting today. As agreed, could you share the customer list with my col=
+league at onboarding@partner-hub.example so we can get started this week?
+
+Thanks,
+Sam
+
+--===============8635248510888174452==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<p>Hi Priya,</p><p>Great meeting today. As agreed, could you share the <b>cus=
+tomer list</b> with my colleague at onboarding@partner-hub.example so we can =
+get started this week?</p><p>Thanks,<br>Sam</p>
+
+--===============8635248510888174452==--
