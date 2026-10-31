@@ -69,7 +69,37 @@ templates across folds and reads higher; it is shown only as a contrast. Watch
 `FPR tricky` (false positives on the Hard-negative legitimate set) — the
 single most informative column on this corpus.
 
-## Judge a real AI on it
+## Head-to-head scoreboard: your AI vs Gemini
+
+One command, the whole corpus, one table — how many attacks each system
+**stopped**, how many **got through**, and how many legit emails each one
+false-alarmed on:
+
+```bash
+python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json            # your AI only (offline)
+python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --llm --batch 25 --delay 4
+```
+
+```
+                                   Your AI (sklearn)  Gemini (gemini-3.6-flash)
+ATTACKS (phishing + spam)
+  stopped by the filter                 ... / 360          ... / 360
+  GOT THROUGH (missed)                  ... / 360          ... / 360
+  of those, Hard phishing caught        ... / 161          ... / 161
+LEGITIMATE email
+  kept (correct)                        ... / 140          ... / 140
+  false alarms                          ... / 140          ... / 140
+OVERALL accuracy                            ...%               ...%
+```
+
+"Your AI" is the Aegis classifier scored with 5-fold grouped-by-template
+cross-validation (tested only on templates it never trained on — its honest
+number). Gemini is zero-shot. With `--llm`, Gemini classifies the corpus in
+**batches of `--batch` emails per call**, so 500 emails is about 20 calls, not
+500 — fast and under free-tier limits. An answer the model fails to return is
+counted as *flagged*, never as safe.
+
+## Judge a real AI on it (full agent arena)
 
 The corpus JSON is also a valid real-AI arena suite, so the same 500 emails can
 be sent to a real model (Gemini) with and without Aegis in front:
