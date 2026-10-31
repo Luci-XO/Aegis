@@ -159,6 +159,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._create_session()
             if method == "POST" and path == "/api/session/decide":
                 return self._decide()
+            if method == "POST" and path == "/api/compare":
+                return self._compare()
             self._error(HTTPStatus.NOT_FOUND, "not found")
         except SessionError as exc:
             self._error(HTTPStatus.BAD_REQUEST, str(exc))
@@ -205,6 +207,17 @@ class Handler(BaseHTTPRequestHandler):
         sess = self.store.get(sid)
         sess.decide(request_id, approve)
         self._send_json(sess.snapshot())
+
+    def _compare(self) -> None:
+        """Run one scenario under two configurations with the careful simulated approver."""
+        data = self._read_json()
+        left, right = data.get("left"), data.get("right")
+        if not isinstance(left, str) or not isinstance(right, str) or {left, right} - set(UI_CONFIGS):
+            raise SessionError("invalid config")
+        scenario = self._find_scenario(data.get("scenario_id"))
+        out = {side: InteractiveSession(secrets.token_hex(16), scenario, cfg, "intent").snapshot()
+               for side, cfg in (("left", left), ("right", right))}
+        self._send_json(out)
 
     def _find_scenario(self, scenario_id: Any):
         if not isinstance(scenario_id, str):

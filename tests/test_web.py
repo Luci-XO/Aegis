@@ -162,3 +162,39 @@ def test_benchmark_endpoint(server):
     status, data = _get(server, "/api/benchmark")
     assert status == 200
     assert data["summaries"] and "attack_success_rate" in data["summaries"][0]
+
+
+# --- judge-friendly UI support -------------------------------------------------
+
+def test_snapshot_reports_outcome_and_marks_attacker_steps():
+    s = InteractiveSession("1" * 32, BY_ID["dev-03-payroll-reply"], "D_aegis", "intent").snapshot()
+    assert s["outcome"] == {"final": True, "attack": False, "user": True}
+    assert s["malicious_sources"] == ["e-002"]
+    injected = [st for st in s["steps"] if st["injected"]]
+    assert len(injected) == 1 and injected[0]["status"] == "denied"
+    a = InteractiveSession("2" * 32, BY_ID["dev-03-payroll-reply"], "A_unprotected", "intent").snapshot()
+    assert a["outcome"]["attack"] is True
+
+
+def test_compare_endpoint_runs_both_sides(server):
+    status, data = _post(server, "/api/compare",
+                         {"scenario_id": "dev-03-payroll-reply", "left": "A_unprotected", "right": "D_aegis"})
+    assert status == 200
+    assert data["left"]["outcome"]["attack"] is True and data["right"]["outcome"]["attack"] is False
+
+
+@pytest.mark.parametrize("body", [
+    {"scenario_id": "dev-03-payroll-reply", "left": "A_unprotected", "right": "evil"},
+    {"scenario_id": "dev-03-payroll-reply", "left": 1, "right": "D_aegis"},
+    {"scenario_id": "nope", "left": "A_unprotected", "right": "D_aegis"},
+])
+def test_compare_rejects_bad_input(server, body):
+    status, data = _post(server, "/api/compare", body)
+    assert status == 400 and "error" in data
+
+
+def test_frontend_never_uses_innerhtml():
+    from importlib import resources
+
+    js = (resources.files("aegis") / "web" / "static" / "app.js").read_text("utf-8")
+    assert ".innerHTML" not in js and "insertAdjacentHTML" not in js
