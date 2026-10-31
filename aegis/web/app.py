@@ -91,6 +91,41 @@ class _BenchmarkCache:
             return self._data
 
 
+def _llm_factory(agent: Any, mode: Any) -> Any:
+    """None for the simulated assistant; otherwise a factory for a real-model agent."""
+    if agent in (None, "simulated"):
+        return None
+    if agent != "llm":
+        raise SessionError("agent must be 'simulated' or 'llm'")
+    mode = mode or "careful"
+    if mode not in ("naive", "careful"):
+        raise SessionError("mode must be 'naive' or 'careful'")
+    from aegis.agent.llm_agent import LLMAgent
+    from aegis.agent.llm_client import LLMError, client_from_env
+
+    try:
+        client = client_from_env()
+    except LLMError:
+        client = None
+    if client is None:
+        raise SessionError("no real AI is configured: add AEGIS_LLM_* settings to .env")
+    return lambda: LLMAgent(client, mode=mode)
+
+
+def _real_ai_results() -> dict[str, Any]:
+    """Latest real-AI arena results written by scripts/run_real_ai_benchmark.py."""
+    import os
+
+    path = Path(os.environ.get("AEGIS_REAL_AI_RESULTS", "results/real_ai/latest.json"))
+    if not path.is_file():
+        return {"available": False}
+    try:
+        data: dict[str, Any] = json.loads(path.read_text("utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"available": False, "error": "results file could not be read"}
+    return {"available": True, **data}
+
+
 def _llm_status() -> dict[str, Any]:
     from aegis.agent.llm_client import LLMError, client_from_env
 
@@ -164,6 +199,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._serve_static(path[len("/static/"):])
             if method == "GET" and path == "/api/meta":
                 return self._send_json(self._meta())
+            if method == "GET" and path == "/api/real-ai":
+                return self._send_json(_real_ai_results())
             if method == "GET" and path == "/api/benchmark":
                 return self._send_json(self.benchmark.get())
             if method == "POST" and path == "/api/session":
@@ -229,7 +266,8 @@ class Handler(BaseHTTPRequestHandler):
         if not isinstance(left, str) or not isinstance(right, str) or {left, right} - set(UI_CONFIGS):
             raise SessionError("invalid config")
         scenario = self._find_scenario(data.get("scenario_id"))
-        out = {side: InteractiveSession(secrets.token_hex(16), scenario, cfg, "intent").snapshot()
+        factory = _llm_factory(data.get("agent"), data.get("mode"))
+        out = {side: InteractiveSession(secrets.token_hex(16), scenario, cfg, "intent", agent_factory=factory).snapshot()
                for side, cfg in (("left", left), ("right", right))}
         self._send_json(out)
 
@@ -246,18 +284,7 @@ class Handler(BaseHTTPRequestHandler):
             scenario, plan = build_custom_scenario(email, str(task))
         except CustomEmailError as exc:
             raise SessionError(str(exc)) from None
-        factory = None
-        if agent == "llm":
-            from aegis.agent.llm_agent import LLMAgent
-            from aegis.agent.llm_client import LLMError, client_from_env
-
-            try:
-                client = client_from_env()
-            except LLMError:
-                client = None
-            if client is None:
-                raise SessionError("no real AI is configured: add AEGIS_LLM_* settings to .env")
-            factory = lambda: LLMAgent(client)  # noqa: E731
+        factory = _llm_factory(agent, data.get("mode"))
         out = {side: InteractiveSession(secrets.token_hex(16), scenario, cfg, "intent", agent_factory=factory).snapshot()
                for side, cfg in (("left", "A_unprotected"), ("right", "D_aegis"))}
         self._send_json({"email": email, "plan": plan, "analysis": analyze(email), "agent": agent, **out})

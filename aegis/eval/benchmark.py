@@ -117,7 +117,9 @@ def scripted_factory(sc: Scenario) -> Agent:
 def run_case(
     sc: Scenario, cfg: Config, approver_name: str, agent: Agent, trial: int,
     policy: Policy, detector: SafeDetector, secret: bytes,
+    capture: list[Any] | None = None,
 ) -> CaseResult:
+    """Run one case. If `capture` is a list, the RunResult (with every step) is appended to it."""
     clock = FakeClock()
     stack = build_stack(
         sc, APPROVERS[approver_name](), detector if cfg.use_detector else None, secret,
@@ -125,6 +127,8 @@ def run_case(
         executor_kind=cfg.executor, detector_threshold=policy.escalation_threshold,
     )
     res = stack.runner.run(agent, stack.task, session_id=f"{sc.id}-t{trial}", case_id=sc.id)
+    if capture is not None:
+        capture.append((res, stack))
     ctx = goals.GoalContext(env=stack.env, steps=res.steps)
     user_goal = sc.user_goal or goals.default_user_goal(stack.task, stack.initial_env)
     tool_grant = stack.task.grant if cfg.executor == "gateway" else full_access_grant(stack.initial_env)

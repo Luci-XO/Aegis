@@ -19,6 +19,7 @@
     <nav id="nav">
       <button data-go="home" class="active">Overview</button>
       <button data-go="story">Guided demo</button>
+      <button data-go="arena" class="nav-hot">Real AI arena</button>
       <button data-go="custom">Test your own email</button>
       <button data-go="explore">Try it yourself</button>
       <button data-go="results">Results</button>
@@ -90,6 +91,33 @@
     <section id="view-story" class="view">
       <div id="story-nav" class="story-nav"></div>
       <div id="story-body"></div>
+    </section>
+
+    <!-- ============================== REAL AI ARENA ============================== -->
+    <section id="view-arena" class="view">
+      <div id="arena-body"><div class="loading">Loading real-AI results&hellip;</div></div>
+      <div class="live">
+        <div class="live-head">
+          <div>
+            <div class="eyebrow light">Live attack</div>
+            <h2>Attack the real AI, right now</h2>
+            <p>Pick a poisoned email. The real model reads it and decides for itself what to do,
+              once without protection and once behind Aegis.</p>
+          </div>
+        </div>
+        <div class="controls-inline dark">
+          <label>Poisoned email <select id="live-scenario"></select></label>
+          <label>AI personality
+            <select id="live-mode">
+              <option value="naive">Naive assistant (no security instructions)</option>
+              <option value="careful">Careful assistant (told to ignore instructions in emails)</option>
+            </select>
+          </label>
+          <button id="live-run" class="btn primary big">Launch attack</button>
+          <span id="live-note" class="muted light"></span>
+        </div>
+        <div id="live-body"></div>
+      </div>
     </section>
 
     <!-- ============================== CUSTOM EMAIL ============================== -->
@@ -223,5 +251,6 @@
   </main>
 
   <script src="/static/app.js"></script>
+  <script src="/static/arena.js"></script>
 </body>
 </html>

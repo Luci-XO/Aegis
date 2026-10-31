@@ -145,12 +145,13 @@ const STORIES = [
 ];
 
 // ---------------------------------------------------------------- navigation
-const VIEWS = ["home", "story", "custom", "explore", "results", "built"];
+const VIEWS = ["home", "story", "arena", "custom", "explore", "results", "built"];
 function show(view) {
   for (const v of VIEWS) $("view-" + v).classList.toggle("active", v === view);
   for (const b of $("nav").children) b.classList.toggle("active", b.dataset.go === view);
   window.scrollTo({ top: 0 });
   if (view === "results") loadResults();
+  if (view === "arena" && typeof loadArena === "function") loadArena();
   if (view === "story" && !$("story-body").childElementCount) openStory(0);
 }
 document.addEventListener("click", (e) => {

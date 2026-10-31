@@ -33,6 +33,11 @@ with and without protection. Sample files are in [examples/emails](examples/emai
 
 ![Upload your own email](docs/images/upload-your-own-email.png)
 
+**Real AI arena.** Attack a real model (Gemini, OpenAI or local) with poisoned
+emails: `python scripts/run_real_ai_benchmark.py`. The dashboard shows how often
+the AI was fooled and what Aegis prevented, one tile per email, plus a live
+attack button. See [docs/real_ai.md](docs/real_ai.md).
+
 **Results on attacks written after the rules were frozen:**
 
 ![Results](docs/images/results.png)
@@ -185,6 +190,7 @@ OWASP LLM01 (Prompt Injection) and LLM06 (Excessive Agency) in the
 - [docs/benchmark.md](docs/benchmark.md) - benchmark methodology
 - [docs/benchmark_results.md](docs/benchmark_results.md) - generated results snapshot
 - [docs/dashboard.md](docs/dashboard.md) - dashboard and HTTP API
+- [docs/real_ai.md](docs/real_ai.md) - attacking a real AI (Gemini) and the Real AI arena page
 - [docs/email_classifier.md](docs/email_classifier.md) - phishing/spam classifier (optional scikit-learn), Gemini judge, VS Code setup
 - [docs/demo_script.md](docs/demo_script.md) - three-minute live demo script
 
