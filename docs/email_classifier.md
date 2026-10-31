@@ -115,3 +115,13 @@ moves recall by about 2 points.
   Aegis benchmark numbers are unchanged. `ClassifierDetector` lets you plug it
   into the gateway as a risk signal, which (like any detector) can only
   escalate a decision, never permit a denied action.
+
+## A larger, harder corpus (500 emails)
+
+A second evaluation set of **500 synthetic emails** (325 phishing / 140 legit /
+35 spam, graded Easy/Medium/Hard) is available. Build it with
+`python scripts/build_corpus_500.py` and evaluate with
+`python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json`.
+Its Hard split (lookalike domains, conversation hijacking, low-urgency BEC,
+hard-negative legitimate mail) is where a classifier and a real model such as
+Gemini diverge most. See [docs/corpus_500.md](corpus_500.md).
