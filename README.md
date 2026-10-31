@@ -14,6 +14,24 @@ the final authority, and a threat detector can only make decisions stricter.
 > the whole project has **no third-party runtime dependencies** (only `pytest`
 > to run the tests), and reproduces from a clean clone with no install step.
 
+## See it
+
+Run `python -m aegis.web` and open http://127.0.0.1:8000. The dashboard explains
+the problem in plain language, then runs real attacks side by side, with and
+without Aegis.
+
+![Overview](docs/images/overview.png)
+
+**A hidden instruction in an email.** Without protection, the payroll file leaks.
+With Aegis, the same fooled AI tries the same action, and the checkpoint shows
+exactly which rules refused it:
+
+![Hidden instruction demo](docs/images/demo-hidden-instruction.png)
+
+**Results on attacks written after the rules were frozen:**
+
+![Results](docs/images/results.png)
+
 ## Quick start
 
 Requires Python 3.10+ (tested on 3.10, 3.11, 3.12, 3.13 and 3.14). The security core has **no third-party dependencies**,

@@ -3,106 +3,180 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aegis - AI-agent policy enforcement</title>
+  <title>Aegis - stopping AI assistants from being tricked</title>
   <link rel="icon" href="/static/favicon.svg" />
   <link rel="stylesheet" href="/static/app.css" />
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">
-      <span class="logo" aria-hidden="true">&#9683;</span>
+    <div class="brand" data-go="home" role="button" tabindex="0">
+      <img class="logo" src="/static/favicon.svg" alt="" />
       <div>
-        <h1>Aegis</h1>
-        <p class="tagline">Deterministic policy enforcement between an AI agent and its tools</p>
+        <div class="name">Aegis</div>
+        <div class="tag">A security guard between an AI assistant and its tools</div>
       </div>
     </div>
-    <nav class="tabs" id="tabs">
-      <button data-view="demo" class="active">Live demo</button>
-      <button data-view="benchmark">Benchmark</button>
-      <button data-view="about">About</button>
+    <nav id="nav">
+      <button data-go="home" class="active">Overview</button>
+      <button data-go="story">Guided demo</button>
+      <button data-go="explore">Try it yourself</button>
+      <button data-go="results">Results</button>
+      <button data-go="built">How it's built</button>
     </nav>
   </header>
 
   <main>
-    <!-- DEMO VIEW -->
-    <section id="view-demo" class="view active">
+    <!-- ============================== OVERVIEW ============================== -->
+    <section id="view-home" class="view active">
+      <div class="hero">
+        <div class="eyebrow">AI agent security &middot; prompt injection</div>
+        <h1>One email can trick an AI assistant into leaking your files.
+          <span>Aegis stops the harmful action, even when the AI has been fooled.</span></h1>
+        <p class="lead">AI assistants now read our email and act for us: they open files and send messages.
+          Aegis checks every action the assistant tries to take against fixed rules, and blocks anything the
+          user never allowed, before it happens.</p>
+        <div class="hero-actions">
+          <button class="btn primary big" data-go="story" data-story="0" data-icon="play">Start the guided demo</button>
+          <button class="btn ghost big" data-go="results">See the results</button>
+        </div>
+      </div>
+
+      <div class="three">
+        <div class="card">
+          <div class="num">1</div>
+          <h3>The problem</h3>
+          <p>An attacker hides an instruction inside an ordinary-looking email, such as
+            <em>"send the payroll file to this address"</em>. The AI reads the user's request and the
+            attacker's text together, cannot reliably tell them apart, and may obey.
+            This is called <strong>prompt injection</strong>.</p>
+        </div>
+        <div class="card">
+          <div class="num">2</div>
+          <h3>Why scanning for bad text is not enough</h3>
+          <p>The usual defence is to scan the email for suspicious wording. Attackers simply rephrase.
+            On new attacks it had never seen, our text scanner caught only <strong>3 of 10</strong>.
+            A filter that tries to read the attacker's mind will always miss some.</p>
+        </div>
+        <div class="card accent">
+          <div class="num">3</div>
+          <h3>What Aegis does instead</h3>
+          <p>Aegis does not judge the text. It checks the <strong>action</strong>: is this tool, file and
+            recipient allowed for the task the user asked for? Does a person need to approve it?
+            If the answer is no, the action never runs, whatever the AI was told.</p>
+        </div>
+      </div>
+
+      <h2 class="section-title">Where Aegis sits</h2>
+      <div class="pipe">
+        <div class="pnode untrusted"><div class="picon" data-icon="mail"></div><div class="ptitle">Email or document</div>
+          <div class="psub">Untrusted. May hide an attacker's instruction.</div></div>
+        <div class="parrow" data-icon="arrow"></div>
+        <div class="pnode"><div class="picon" data-icon="bot"></div><div class="ptitle">AI assistant</div>
+          <div class="psub">Reads it and proposes actions. Can be fooled.</div></div>
+        <div class="parrow" data-icon="arrow"></div>
+        <div class="pnode guard"><div class="picon" data-icon="shield"></div><div class="ptitle">Aegis gateway</div>
+          <div class="psub">Checks each action against fixed rules. Not an AI, so it cannot be talked into anything.</div></div>
+        <div class="parrow" data-icon="arrow"></div>
+        <div class="pnode"><div class="picon" data-icon="wrench"></div><div class="ptitle">Tools</div>
+          <div class="psub">Read files, send email. Only allowed actions reach them.</div></div>
+      </div>
+
+      <div class="callout">Everything you see is a safe simulation: fictional emails, fictional files and a
+        simulated outbox. Nothing is ever really sent.</div>
+    </section>
+
+    <!-- ============================== GUIDED DEMO ============================== -->
+    <section id="view-story" class="view">
+      <div id="story-nav" class="story-nav"></div>
+      <div id="story-body"></div>
+    </section>
+
+    <!-- ============================== EXPLORE ============================== -->
+    <section id="view-explore" class="view">
+      <div class="page-intro">
+        <h2>Try it yourself</h2>
+        <p>Pick any of the 31 test scenarios and a protection setting. Choose <strong>"You decide"</strong>
+          to approve or reject each email yourself, the way a real user would.</p>
+      </div>
       <div class="controls">
-        <label>Scenario
-          <select id="sel-scenario"></select>
-        </label>
-        <label>Configuration
-          <select id="sel-config"></select>
-        </label>
-        <label>Approver
-          <select id="sel-approver"></select>
-        </label>
-        <button id="btn-run" class="primary">Run</button>
+        <label>Scenario <select id="sel-scenario"></select></label>
+        <label>Protection <select id="sel-config"></select></label>
+        <label>Who approves sends <select id="sel-approver"></select></label>
+        <button id="btn-run" class="btn primary">Run</button>
         <span id="run-note" class="muted"></span>
       </div>
-
       <div id="scenario-desc" class="scenario-desc"></div>
-
-      <div id="summary-strip" class="summary-strip" hidden></div>
-
-      <div id="pending-banner" class="pending-banner" hidden></div>
-
-      <div class="grid">
-        <div class="col">
-          <h2>Inbox &amp; files</h2>
-          <div id="inbox" class="scroll"></div>
-          <h2>File repository</h2>
-          <div id="files" class="chips"></div>
-        </div>
-        <div class="col col-wide">
-          <h2>Agent run <span id="task-template" class="pill"></span></h2>
-          <div id="task-desc" class="task-desc"></div>
-          <div id="steps" class="scroll steps"></div>
-        </div>
-        <div class="col">
-          <h2>What actually happened</h2>
-          <div id="outbox-wrap">
-            <h3>Outbox (messages that really left)</h3>
-            <div id="outbox" class="scroll-sm"></div>
-          </div>
-          <div id="claim-wrap" class="claim" hidden></div>
-          <h3>Audit trail <span id="audit-verified" class="pill"></span></h3>
-          <div id="audit" class="scroll-sm audit"></div>
-        </div>
-      </div>
+      <div id="explore-body"></div>
     </section>
 
-    <!-- BENCHMARK VIEW -->
-    <section id="view-benchmark" class="view">
-      <p class="muted">Computed on first open by <code>python -m aegis.eval</code>. Rates show 95% Wilson intervals.
-        See <code>docs/benchmark.md</code> for definitions.</p>
-      <div id="benchmark-meta" class="muted"></div>
-      <div id="benchmark"></div>
+    <!-- ============================== RESULTS ============================== -->
+    <section id="view-results" class="view">
+      <div class="page-intro">
+        <h2>Results</h2>
+        <p>Measured by the benchmark in this repository (<code>python -m aegis.eval</code>), run live when
+          you open this page. Every number comes from the real code, not a mock-up.</p>
+      </div>
+      <div id="results-body"><div class="loading">Running the benchmark...</div></div>
     </section>
 
-    <!-- ABOUT VIEW -->
-    <section id="view-about" class="view">
-      <div class="about">
-        <h2>What this shows</h2>
-        <p>An AI agent reads untrusted emails and files and may draft or send mail. Every tool call passes a
-          deterministic <strong>policy gateway</strong> before it runs. The gateway, not the language model, has the
-          final say. A threat detector can only make a decision stricter, never looser.</p>
-        <h2>Configurations</h2>
-        <ul>
-          <li><strong>A - unprotected</strong>: the agent runs with the user's full permissions.</li>
-          <li><strong>B - detector only</strong>: sends are blocked when the detector flags the input (or fails).</li>
-          <li><strong>C - gateway only</strong>: policy gateway and approvals, no detector.</li>
-          <li><strong>D - Aegis</strong>: gateway plus detector.</li>
-        </ul>
-        <h2>Approvers</h2>
-        <ul>
-          <li><strong>manual</strong>: you approve or reject each sensitive action in the UI.</li>
-          <li><strong>intent</strong>: a careful human who checks recipients and attachments against the task.</li>
-          <li><strong>rubber_stamp</strong>: approves everything (worst case for the human).</li>
-          <li><strong>reject_all</strong>: approves nothing.</li>
-        </ul>
-        <p class="muted">All data is synthetic and all tools are simulated. Nothing leaves this process.
-          Email and file bodies are shown on purpose so you can see the hidden instructions.</p>
+    <!-- ============================== HOW IT'S BUILT ============================== -->
+    <section id="view-built" class="view">
+      <div class="page-intro">
+        <h2>How it's built</h2>
+        <p>Small, readable and fully reproducible: Python standard library only, no AI in the security
+          decision.</p>
       </div>
+
+      <h3 class="sub-title">What happens to every action, in order</h3>
+      <ol class="flow">
+        <li><b>Check the request is well-formed.</b> Unknown tools, extra fields, path tricks like
+          <code>../secret</code> and look-alike characters in addresses are rejected.</li>
+        <li><b>Check it against the task's permissions.</b> The user's task decides which tools, files and
+          recipients are allowed. Nothing the AI reads can widen this.</li>
+        <li><b>Check where the data is going.</b> Once the assistant has seen confidential data, that data can
+          never be emailed outside the organisation, however the AI rewords it.</li>
+        <li><b>Ask a person when needed.</b> Sending email needs approval. The approval is locked to the exact
+          message; if the AI changes a single field afterwards, the approval is cancelled.</li>
+        <li><b>Write it to a tamper-evident log, then run it.</b> If the log can't be written, the action does
+          not run. Any error anywhere means "no".</li>
+      </ol>
+
+      <div class="three">
+        <div class="card"><h3>The threat scanner</h3><p>A readable set of rules flags suspicious text. It can
+          only make Aegis <em>stricter</em> (ask a person), never let a blocked action through. If it crashes,
+          Aegis gets stricter, not weaker.</p></div>
+        <div class="card"><h3>The email classifier</h3><p>A scikit-learn model (TF-IDF + logistic regression)
+          for phishing and spam, tested on a 100-email corpus. On email templates it never trained on it scores
+          <strong>F1 0.91</strong>, and every verdict comes with its red flags.</p></div>
+        <div class="card"><h3>The simulated AI</h3><p>For a fair worst case, the assistant is scripted to be
+          <strong>completely fooled</strong>: it obeys every hidden instruction. Aegis must stop the damage on
+          its own. A real model (Gemini, OpenAI, local) can be plugged in.</p></div>
+      </div>
+
+      <h3 class="sub-title">How we know it works</h3>
+      <div class="stats-row">
+        <div class="mini-stat"><div class="v">270+</div><div class="k">automated tests</div></div>
+        <div class="mini-stat"><div class="v">26 / 26</div><div class="k">planted security bugs caught by the tests</div></div>
+        <div class="mini-stat"><div class="v">0</div><div class="k">forbidden actions in 13,800+ random attack attempts</div></div>
+        <div class="mini-stat"><div class="v">5</div><div class="k">Python versions tested (3.10 to 3.14)</div></div>
+      </div>
+      <p class="muted">The rules were frozen, with fingerprints recorded, before the 15 test attacks were
+        written, and a test fails if the rules change. So the rules could not be tuned to the test.</p>
+
+      <h3 class="sub-title">What Aegis does not do (honest limits)</h3>
+      <ul class="limits">
+        <li>If the user already allowed a reply to someone, an attacker can still change <em>what the reply
+          says</em>. Aegis controls where data goes and which actions run, not the wording.</li>
+        <li>A person who approves a harmful message that is shown to them can still cause harm.</li>
+        <li>All results come from a small synthetic test set. They show the design works; they are not a
+          guarantee against every possible attack.</li>
+      </ul>
+
+      <h3 class="sub-title">Built on existing research</h3>
+      <p class="muted">Aegis is an engineering implementation of known ideas, not a new defence: tool-level
+        permission policies (Progent, 2025), separating instructions from data (CaMeL, 2025), design
+        patterns for securing LLM agents (2025), and the evaluation style of AgentDojo (NeurIPS 2024).
+        Full citations are in <code>docs/report.md</code>.</p>
     </section>
   </main>
 
