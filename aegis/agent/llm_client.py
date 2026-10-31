@@ -43,7 +43,9 @@ class OpenAICompatibleClient:
     api_key: str | None = None
     temperature: float = 0.0
     timeout_s: float = 60.0
-    max_tokens: int = 800
+    # Generous default: "thinking" models (e.g. Gemini 3.x) spend tokens reasoning before
+    # answering, and a low limit cuts the visible answer off.
+    max_tokens: int = 4096
     retries: int = 4  # extra attempts for temporary failures (429, 500, 502, 503, 504, network)
     backoff_s: float = 5.0  # wait backoff_s, 2x, 4x ... between attempts
 
@@ -91,7 +93,15 @@ class OpenAICompatibleClient:
         except json.JSONDecodeError as exc:
             raise LLMError(f"LLM request failed: {type(exc).__name__}") from None
         try:
-            return str(data["choices"][0]["message"]["content"])
+            content = data["choices"][0]["message"]["content"]
+        except (KeyError, IndexError, TypeError):
+            raise LLMError("unexpected LLM response shape") from None
+        if not content:
+            reason = (data["choices"][0].get("finish_reason") if isinstance(data["choices"][0], dict) else None)
+            raise LLMError(f"LLM returned an empty answer (finish_reason={reason}); "
+                           "try a larger AEGIS_LLM_MAX_TOKENS")
+        try:
+            return str(content)
         except (KeyError, IndexError, TypeError):
             raise LLMError("unexpected LLM response shape") from None
 
@@ -148,4 +158,5 @@ def client_from_env(env: dict[str, str] | None = None) -> OpenAICompatibleClient
     return OpenAICompatibleClient(
         base_url=base, model=model, api_key=e.get("AEGIS_LLM_API_KEY") or None,
         temperature=float(e.get("AEGIS_LLM_TEMPERATURE", "0") or 0),
+        max_tokens=int(e.get("AEGIS_LLM_MAX_TOKENS", "4096") or 4096),
     )

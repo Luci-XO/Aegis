@@ -83,7 +83,16 @@ def main() -> int:
             print("The non-LLM results above are still valid.")
             return 1
         results["llm judge"] = {**s, "model": client.model, "details": details}
-        lines.append(row(f"LLM judge ({client.model})", "all 100 (zero-shot)", s))
+        bad = s["errors_unparsed"]
+        lines.append(row(f"LLM judge ({client.model})", f"all 100 (zero-shot, {bad} unparsed = flagged)", s))
+        if s.get("parsed_only") and bad:
+            po = s["parsed_only"]
+            lines.append(row(f"LLM judge ({client.model})", f"parsed answers only (n={po['n']})", po))
+        if bad:
+            samples = [d for d in details if d["pred"] == "ERROR"][:3]
+            print(f"\n{bad} of 100 Gemini answers could not be parsed. First examples:")
+            for d in samples:
+                print(f"  {d['id']}: {d['red_flags'][0] if d['red_flags'] else ''} | reply: {d['raw_reply']!r}")
 
     print("\n".join(lines))
     best = results["classifier (text) / 5-fold grouped by template"]

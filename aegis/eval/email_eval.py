@@ -182,6 +182,7 @@ def llm_judge(emails: Sequence[Email], client: Any, delay_s: float = 0.0,
 
     preds, details = [], []
     for n, e in enumerate(emails, 1):
+        reply = ""
         try:
             reply = client.complete([{"role": "system", "content": JUDGE_SYSTEM},
                                      {"role": "user", "content": _render(e)}])
@@ -194,9 +195,13 @@ def llm_judge(emails: Sequence[Email], client: Any, delay_s: float = 0.0,
                 raise LLMError(f"first LLM call failed, stopping: {exc}.{hint}") from None
             label, flags = "ERROR", [str(exc)]
         preds.append(label)
-        details.append({"id": e["id"], "gold": e["label"], "pred": label, "red_flags": flags})
+        details.append({"id": e["id"], "gold": e["label"], "pred": label, "red_flags": flags,
+                        "raw_reply": None if label != "ERROR" else str(reply)[:300]})
         if n % 10 == 0:
             log(f"  judged {n}/{len(emails)}")
         if delay_s:
             time.sleep(delay_s)
-    return preds, score(emails, preds), details
+    result = score(emails, preds)
+    parsed = [(e, p) for e, p in zip(emails, preds, strict=True) if p != "ERROR"]
+    result["parsed_only"] = score([e for e, _ in parsed], [p for _, p in parsed]) if parsed else None
+    return preds, result, details

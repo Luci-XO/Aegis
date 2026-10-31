@@ -247,3 +247,45 @@ def test_retries_give_up_with_clear_message(monkeypatch):
     monkeypatch.setattr("time.sleep", lambda s: None)
     with pytest.raises(LLMError, match="HTTP 503"):
         OpenAICompatibleClient(base_url="https://example.invalid/v1", model="m", retries=2).complete([])
+
+
+class TruncatingJudge(FakeJudge):
+    """Simulates a thinking model whose answer is cut off for every other email."""
+
+    calls = 0
+
+    def complete(self, messages):
+        self.calls += 1
+        if self.calls % 2 == 0:
+            return '{"label": "LEG'
+        return super().complete(messages)
+
+
+def test_unparsed_answers_are_counted_and_parsed_only_metrics_reported():
+    preds, s, details = ev.llm_judge(EMAILS[:20], TruncatingJudge(), log=lambda *_: None)
+    assert s["errors_unparsed"] == 10
+    assert s["parsed_only"]["n"] == 10 and s["parsed_only"]["malicious"]["f1"] in (1.0, None)
+    errs = [d for d in details if d["pred"] == "ERROR"]
+    assert errs and errs[0]["raw_reply"] == '{"label": "LEG'
+
+
+def test_empty_answer_raises_clear_error(monkeypatch):
+    class Resp:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return b'{"choices": [{"message": {"content": null}, "finish_reason": "length"}]}'
+
+    monkeypatch.setattr("urllib.request.urlopen", lambda *a, **k: Resp())
+    with pytest.raises(LLMError, match="finish_reason=length"):
+        OpenAICompatibleClient(base_url="https://example.invalid/v1", model="m").complete([])
+
+
+def test_max_tokens_default_and_override():
+    base = {"AEGIS_LLM_PROVIDER": "gemini", "AEGIS_LLM_MODEL": "m"}
+    assert client_from_env(base).max_tokens == 4096
+    assert client_from_env({**base, "AEGIS_LLM_MAX_TOKENS": "8192"}).max_tokens == 8192
