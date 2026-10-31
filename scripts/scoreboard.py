@@ -109,6 +109,7 @@ def main() -> int:
 
     gem_name: str | None = None
     gem: dict[str, Any] | None = None
+    gem_preds: list[str] | None = None
     if a.llm:
         from aegis.agent.llm_client import LLMError, client_from_env
 
@@ -128,6 +129,16 @@ def main() -> int:
             gem = tally(emails, gem_preds)
 
     print_board(f"Your AI ({backend})", my, gem_name, gem)
+    if gem is not None and gem["unparsed"] and gem_preds is not None:
+        answered = [(e, p) for e, p in zip(emails, gem_preds, strict=True) if p != "ERROR"]
+        po = tally([e for e, _ in answered], [p for _, p in answered])
+        print(f"\nNote: Gemini returned a usable answer for only {len(answered)}/{len(emails)} emails; the "
+              f"{gem['unparsed']} missing ones (likely rate-limited batches) are counted as flagged above, "
+              f"which inflates both its 'stopped' and its 'false alarms'.")
+        print(f"On just the {len(answered)} it answered ({po['malicious']} malicious, {po['legit']} legit): "
+              f"attacks stopped {pct(po['stopped'], po['malicious'])}, "
+              f"false alarms {pct(po['false_alarms'], po['legit'])}, accuracy {po['accuracy'] * 100:.0f}%.")
+        print("Rerun with gemini-2.5-flash and a smaller --batch (e.g. 10) to get all 500 for a fair comparison.")
     if not a.llm:
         print("\nAdd --llm (with .env set, on a networked machine) to put Gemini in the right-hand column.")
     return 0
