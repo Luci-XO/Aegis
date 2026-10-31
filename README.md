@@ -119,7 +119,7 @@ aegis/
   data/        synthetic emails/files, dev + held-out scenarios (fictional, .example)
 tests/         core, detector, tasks, runner, LLM agent, benchmark, web, freeze, invariants
 scripts/       demo_core.py, run_scenarios.py, demo_dashboard_flow.py, mutation_check.py
-docs/          threat_model, architecture, agent_and_detector, benchmark*, dashboard
+docs/          pitch, threat_model, architecture, agent_and_detector, benchmark*, dashboard
 ```
 
 ## What is tested
