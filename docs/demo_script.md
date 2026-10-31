@@ -45,6 +45,14 @@ Line to say: "This attack was written after our rules were frozen, and a test en
 
 Both sides fail. "If the user already allowed a reply, an attacker can change its wording. We show this on purpose; the person approving the send is the defence here."
 
+## Optional: Real AI arena (30 s, if you ran the real-AI benchmark)
+
+Open **Real AI arena**. Say: "This is a real model, not our simulation. It was
+fooled by X of N attacks. Without protection that caused real harm X times;
+with Aegis, zero." Toggle **Careful assistant** to show that a safety prompt
+helps but does not close the gap. Click a blue tile to show exactly what the
+model tried. Only press **Launch attack** live if the network is reliable.
+
 ## 2:35 Results tab (25 s)
 
 Point at the four cards: **100% to 10%** of attacks succeeding, **18 to 0** forbidden actions run, **100%** of normal tasks still completed, and the scanner alone catching **3 of 10**.
