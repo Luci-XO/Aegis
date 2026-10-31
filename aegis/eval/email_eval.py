@@ -34,9 +34,15 @@ from aegis.detect.rules import RuleDetector
 Email = Mapping[str, Any]
 
 
-def load_corpus() -> list[dict[str, Any]]:
-    path = resources.files("aegis") / "data" / "email_corpus.json"
-    emails: list[dict[str, Any]] = json.loads(path.read_text("utf-8"))["emails"]
+def load_corpus(path: str | None = None) -> list[dict[str, Any]]:
+    """Load the email corpus. With no path, the built-in 100-email corpus;
+    with a path, any JSON in the same schema (e.g. the 500-email corpus built
+    by scripts/build_corpus_500.py)."""
+    from pathlib import Path
+
+    src = Path(path).read_text("utf-8") if path else (
+        resources.files("aegis") / "data" / "email_corpus.json").read_text("utf-8")
+    emails: list[dict[str, Any]] = json.loads(src)["emails"]
     return emails
 
 

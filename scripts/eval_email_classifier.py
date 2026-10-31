@@ -1,10 +1,13 @@
-"""Evaluate email threat detectors on the 100-email corpus.
+"""Evaluate email threat detectors on an email corpus.
 
 Usage:
-  python scripts/eval_email_classifier.py                  # rules + classifier (stdlib or sklearn)
+  python scripts/eval_email_classifier.py                  # built-in 100-email corpus
+  python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json
   python scripts/eval_email_classifier.py --backend sklearn
   python scripts/eval_email_classifier.py --llm --delay 4  # also Gemini/OpenAI judge (needs .env)
   python scripts/eval_email_classifier.py --json results/email_eval.json
+
+Build the 500-email corpus first with: python scripts/build_corpus_500.py
 
 The grouped cross-validation row is the honest number for a learned model:
 whole template families are held out, so the model is tested on templates it
@@ -35,12 +38,15 @@ def row(name: str, split: str, s: dict) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--backend", choices=["auto", "stdlib", "sklearn"], default="auto")
+    ap.add_argument("--corpus", default=None,
+                    help="path to a corpus JSON (default: built-in 100-email corpus). "
+                         "Build the 500-email corpus with scripts/build_corpus_500.py")
     ap.add_argument("--llm", action="store_true", help="also run an LLM judge (AEGIS_LLM_* in env or .env)")
     ap.add_argument("--delay", type=float, default=0.0, help="seconds between LLM calls (free-tier rate limits)")
     ap.add_argument("--json", help="write full results to this path")
     a = ap.parse_args()
 
-    emails = ev.load_corpus()
+    emails = ev.load_corpus(a.corpus)
     backend = a.backend
     if backend == "auto":
         backend = "sklearn" if sklearn_available() else "stdlib"
@@ -51,11 +57,12 @@ def main() -> int:
     lines = ["| Detector | Evaluation | Precision | Recall | F1 | 3-class acc | FPR legit | FPR tricky | FP / FN |",
              "|---|---|---|---|---|---|---|---|---|"]
 
+    n = len(emails)
     for name, fn in [("auth-header rule", ev.auth_rule), ("red-flag rules (text)", ev.redflag_rule),
                      ("injection rules-v1", ev.injection_rule)]:
         s = ev.score(emails, [fn(e) for e in emails])
         results[name] = s
-        lines.append(row(name, "all 100 (no training)", s))
+        lines.append(row(name, f"all {n} (no training)", s))
 
     for headers in (False, True):
         label = "classifier (text+headers)" if headers else "classifier (text)"
@@ -84,7 +91,7 @@ def main() -> int:
             return 1
         results["llm judge"] = {**s, "model": client.model, "details": details}
         bad = s["errors_unparsed"]
-        lines.append(row(f"LLM judge ({client.model})", f"all 100 (zero-shot, {bad} unparsed = flagged)", s))
+        lines.append(row(f"LLM judge ({client.model})", f"all {n} (zero-shot, {bad} unparsed = flagged)", s))
         if s.get("parsed_only") and bad:
             po = s["parsed_only"]
             lines.append(row(f"LLM judge ({client.model})", f"parsed answers only (n={po['n']})", po))
@@ -103,8 +110,9 @@ def main() -> int:
         print(f"wrote {a.json}")
 
     clf = EmailClassifier(backend).fit(emails, [e["label"] for e in emails])
-    ex = next(e for e in emails if e["id"] == "E002")
-    print(f"\nExample explanation (model trained on all 100, shown for E002):\n  {clf.predict([ex])[0].explain()}")
+    ex = next((e for e in emails if e["label"] == "PHISHING"), emails[0])
+    print(f"\nExample explanation (model trained on all {len(emails)}, shown for {ex['id']}):\n"
+          f"  {clf.predict([ex])[0].explain()}")
     return 0
 
 

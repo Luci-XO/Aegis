@@ -1,0 +1,89 @@
+# 500-email adversarial corpus
+
+A second, larger evaluation set: **500 synthetic emails (E0001–E0500)** supplied
+by the project owner as a PDF plus a companion labels CSV. Every address and
+link uses the reserved `.example` TLD, so nothing here resolves or reaches a
+real person.
+
+| | |
+|---|---|
+| Size | 500 emails |
+| By label | PHISHING 325, LEGIT 140, SPAM 35 |
+| By difficulty | Hard 161, Medium 204, Easy 135 |
+| Hard adversarial techniques | lookalike/homoglyph domains, conversation hijacking off a fabricated prior thread, low-urgency BEC, quiet CFO impersonation, OAuth-consent and e-signature clones, calendar-invite phishing |
+
+This complements the built-in 100-email corpus. Its value for a demo is the
+**Hard** split: hard-negative legitimate email (marketing, internal notices,
+security alerts that are genuinely benign) and hard adversarial phishing that
+reads clean. That gap — false positives on hard negatives, recall on hard
+phishing — is where a classifier and a real model such as Gemini differ most.
+
+## Why this isn't committed in full
+
+The labels CSV and the corpus JSON built from it are **git-ignored** (see
+`.gitignore`); only `aegis/data/email_corpus_500.sample.csv` (the first 30
+rows) is committed, so the format and the build are visible and tested in CI
+without shipping a 500-row generated file. Regenerate the full corpus locally
+from your copy of the CSV.
+
+## Build it
+
+1. Save the companion labels CSV as `aegis/data/email_corpus_500.csv`.
+2. Build the corpus JSON:
+
+   ```bash
+   python scripts/build_corpus_500.py
+   # wrote aegis/data/email_corpus_500.json
+   #   500 emails, N template families
+   #   by label: LEGIT=140, PHISHING=325, SPAM=35
+   #   hard-negative LEGIT (tricky): ...
+   ```
+
+### Bodies are reconstructed, and that is honest
+
+The CSV carries every structured field (id, label, difficulty, category,
+sender, Reply-To, subject, SPF/DKIM/DMARC, attachments, notes) but **not** the
+body text, which lives only in the PDF. Each category/subject in this corpus
+maps to one fixed body template, so `build_corpus_500.py` reconstructs the body
+from those templates.
+
+This is **feature-equivalent** for the TF-IDF classifier: its tokenizer
+collapses every number to `<num>` and every long hex id to `<hex>`, so
+per-email amounts, order numbers and session tokens never enter the feature
+space. What does matter — the template wording, the subject, the attachment
+extension, and the SPF/DKIM/DMARC and Reply-To headers — comes straight from
+the CSV or the fixed template and matches the PDF exactly. The reconstruction
+is noted in the corpus JSON's `source` field so the provenance is never hidden.
+
+## Evaluate the classifier on it
+
+```bash
+python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json
+# add --backend sklearn to use scikit-learn, --llm --delay 4 to add a Gemini judge
+```
+
+Read the **5-fold grouped-by-template** row as the honest number for the
+learned model: whole template families are held out, so the model is scored on
+templates it never trained on. The random-CV row leaks near-duplicate
+templates across folds and reads higher; it is shown only as a contrast. Watch
+`FPR tricky` (false positives on the Hard-negative legitimate set) — the
+single most informative column on this corpus.
+
+## Judge a real AI on it
+
+The corpus JSON is also a valid real-AI arena suite, so the same 500 emails can
+be sent to a real model (Gemini) with and without Aegis in front:
+
+```bash
+python scripts/run_real_ai_benchmark.py --suite aegis/data/email_corpus_500.json --limit 200 --delay 4
+python -m aegis.web     # open http://127.0.0.1:8000 -> "Real AI arena"
+```
+
+You can also point `--suite` at the CSV directly
+(`--suite aegis/data/email_corpus_500.csv`); the arena reads CSV sender/subject
+but **not** body, so prefer the built JSON when you want the model to see full
+message text.
+
+Gemini calls and `pip install` only work on your own machine — this build
+sandbox has no outbound network — so run the `--llm` and arena steps locally
+and send back the result table or a screenshot.
