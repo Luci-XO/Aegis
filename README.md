@@ -59,6 +59,7 @@ python -m aegis.web                # dashboard at http://127.0.0.1:8000
 python scripts/mutation_check.py   # inject 26 security bugs, confirm tests catch them
 python scripts/eval_email_classifier.py   # phishing/spam classifier on the 100-email corpus
 python scripts/build_corpus_500.py        # build the 500-email adversarial corpus (see docs/corpus_500.md)
+python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json  # your AI vs Gemini, one table
 ```
 
 Optional extras: `pip install scikit-learn` for the scikit-learn classifier
