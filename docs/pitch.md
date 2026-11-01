@@ -53,8 +53,9 @@ Have the dashboard already running: `python -m aegis.web` → http://127.0.0.1:8
    model, Gemini, behind Aegis." Show the arena: unprotected Gemini gets
    driven into the forbidden action; behind Aegis the forbidden action is
    blocked while the legitimate task still completes.
-5. **Numbers (30s).** "And we measured it honestly." Flash the scoreboard /
-   held-out results slide (below). "Held-out data, nothing cherry-picked."
+5. **Numbers (30s).** "And we measured it honestly." Open the **Scoreboard**
+   page (your AI vs Gemini, animated bars) or flash the held-out results slide.
+   "Held-out data, nothing cherry-picked."
 
 Close: "The agent can be as gullible as it likes. Aegis is the wall."
 

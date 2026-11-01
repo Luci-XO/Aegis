@@ -77,8 +77,14 @@ false-alarmed on:
 
 ```bash
 python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json            # your AI only (offline)
-python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --llm --batch 25 --delay 4
+python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --llm --batch 25 --delay 4 --json results/scoreboard.json
 ```
+
+Add `--json results/scoreboard.json` and the dashboard shows it live: start
+`python -m aegis.web`, open http://127.0.0.1:8000, and click **Scoreboard** for
+an animated your-AI-vs-Gemini view (stopped / got through / hard phishing /
+false alarms / accuracy). The CLI also prints an Easy/Medium/Hard breakdown of
+attacks stopped.
 
 ```
                                    Your AI (sklearn)  Gemini (gemini-3.6-flash)
