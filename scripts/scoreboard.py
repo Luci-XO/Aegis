@@ -46,12 +46,21 @@ def tally(emails: list[dict[str, Any]], preds: list[str]) -> dict[str, Any]:
     hard_total = sum(hard_ph)
     hard_stopped = sum(f for f, h in zip(flagged, hard_ph, strict=True) if h)
     correct = sum((f and m) or (not f and not m) for f, m in zip(flagged, mal, strict=True))
+    by_diff: dict[str, dict[str, int]] = {}
+    for e, f, m in zip(emails, flagged, mal, strict=True):
+        if not m:
+            continue
+        d = str(e.get("difficulty", "") or "unknown").capitalize()
+        slot = by_diff.setdefault(d, {"malicious": 0, "stopped": 0})
+        slot["malicious"] += 1
+        slot["stopped"] += int(f)
     return {
         "malicious": n_mal, "stopped": stopped, "got_through": n_mal - stopped,
         "legit": n_legit, "kept": n_legit - false_alarms, "false_alarms": false_alarms,
         "hard_total": hard_total, "hard_stopped": hard_stopped,
         "accuracy": correct / len(emails) if emails else 0.0,
         "unparsed": preds.count("ERROR"),
+        "by_difficulty": by_diff,
     }
 
 
@@ -79,6 +88,14 @@ def print_board(a_name: str, a: dict[str, Any], b_name: str | None, b: dict[str,
     print(f"{'LEGITIMATE email':30}")
     line("  kept (correct)", "kept", "legit")
     line("  false alarms", "false_alarms", "legit")
+    diffs = [d for d in ("Easy", "Medium", "Hard") if any(d in c["by_difficulty"] for c in cols)]
+    if diffs:
+        print(f"{'ATTACKS stopped by difficulty':30}")
+        for d in diffs:
+            cells = "  ".join(
+                f"{pct(c['by_difficulty'].get(d, {}).get('stopped', 0), c['by_difficulty'].get(d, {}).get('malicious', 0)):>{w}}"
+                for c in cols)
+            print(f"{'  ' + d:30}{cells}")
     accs = "  ".join(f"{(100 * c['accuracy']):>{w - 1}.0f}%" for c in cols)
     print(f"{'OVERALL accuracy':30}{accs}")
     if any(c["unparsed"] for c in cols):
@@ -94,6 +111,9 @@ def main() -> int:
     ap.add_argument("--llm", action="store_true", help="also run Gemini/OpenAI (needs AEGIS_LLM_* in .env)")
     ap.add_argument("--batch", type=int, default=25, help="emails per model call when --llm (default 25)")
     ap.add_argument("--delay", type=float, default=4.0, help="seconds between model calls")
+    ap.add_argument("--json", dest="json_out", default=None,
+                    help="also write the scoreboard to this JSON path (e.g. results/scoreboard.json, "
+                         "which the dashboard's Scoreboard page reads)")
     a = ap.parse_args()
 
     emails = ev.load_corpus(a.corpus)
@@ -141,6 +161,21 @@ def main() -> int:
         print("Rerun with gemini-2.5-flash and a smaller --batch (e.g. 10) to get all 500 for a fair comparison.")
     if not a.llm:
         print("\nAdd --llm (with .env set, on a networked machine) to put Gemini in the right-hand column.")
+
+    if a.json_out:
+        import json
+
+        out = {
+            "corpus": a.corpus or "built-in 100-email corpus",
+            "total": len(emails),
+            "malicious": sum(e["label"] in MALICIOUS for e in emails),
+            "legit": sum(e["label"] == "LEGIT" for e in emails),
+            "your_ai": {"name": f"Your AI ({backend})", **my},
+            "gemini": ({"name": gem_name, **gem} if gem else None),
+        }
+        Path(a.json_out).parent.mkdir(parents=True, exist_ok=True)
+        Path(a.json_out).write_text(json.dumps(out, indent=2), encoding="utf-8")
+        print(f"\nwrote {a.json_out}")
     return 0
 
 
