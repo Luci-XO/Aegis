@@ -3,3 +3,9 @@
 * text=auto eol=lf
 *.png binary
 *.ico binary
+*.pdf binary
+*.pptx binary
+*.zip binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
