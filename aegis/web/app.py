@@ -126,6 +126,20 @@ def _real_ai_results() -> dict[str, Any]:
     return {"available": True, **data}
 
 
+def _scoreboard_results() -> dict[str, Any]:
+    """Head-to-head written by scripts/scoreboard.py --json results/scoreboard.json."""
+    import os
+
+    path = Path(os.environ.get("AEGIS_SCOREBOARD_RESULTS", "results/scoreboard.json"))
+    if not path.is_file():
+        return {"available": False}
+    try:
+        data: dict[str, Any] = json.loads(path.read_text("utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"available": False, "error": "results file could not be read"}
+    return {"available": True, **data}
+
+
 def _llm_status() -> dict[str, Any]:
     from aegis.agent.llm_client import LLMError, client_from_env
 
@@ -201,6 +215,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send_json(self._meta())
             if method == "GET" and path == "/api/real-ai":
                 return self._send_json(_real_ai_results())
+            if method == "GET" and path == "/api/scoreboard":
+                return self._send_json(_scoreboard_results())
             if method == "GET" and path == "/api/benchmark":
                 return self._send_json(self.benchmark.get())
             if method == "POST" and path == "/api/session":

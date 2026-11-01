@@ -381,3 +381,21 @@ textarea:focus, select:focus { outline: 2px solid #c7d2fe; border-color: var(--b
 .thinking .dot:nth-child(2) { animation-delay: .2s; } .thinking .dot:nth-child(3) { animation-delay: .4s; }
 @keyframes blink { 0%, 80%, 100% { opacity: .2; transform: scale(.8); } 40% { opacity: 1; transform: scale(1.1); } }
 @media (max-width: 980px) { .astats { grid-template-columns: 1fr; } .fn-row { grid-template-columns: 1fr 50px; } .fn-label { grid-column: span 2; } .arena-hero { padding: 1.8rem; } .arena-hero h1 { font-size: 1.9rem; } }
+
+/* ---- Scoreboard page ---- */
+.sb-head { display: flex; gap: 1rem; margin: .5rem 0 .25rem; }
+.sb-head .sb-label { flex: 0 0 15rem; }
+.sb-grid { display: flex; flex-direction: column; gap: 1rem; }
+.sb-row { display: flex; gap: 1rem; align-items: flex-start; }
+.sb-label { flex: 0 0 15rem; font-weight: 600; padding-top: .35rem; }
+.sb-bars { display: flex; gap: 1.5rem; flex: 1 1 auto; flex-wrap: wrap; }
+.sb-sys { flex: 1 1 14rem; min-width: 12rem; }
+.sb-sys-name { font-size: .8rem; color: var(--muted, #667); margin-bottom: .2rem; }
+.sb-sys-name.strong { font-weight: 700; color: inherit; font-size: .85rem; }
+.sb-track { background: #e9edf3; border-radius: 6px; height: 1.25rem; overflow: hidden; }
+.sb-fill { height: 100%; border-radius: 6px; transition: width 1s cubic-bezier(.2,.7,.2,1); }
+.sb-fill.good { background: #2e9e5b; }
+.sb-fill.mid { background: #e0a128; }
+.sb-fill.bad { background: #d4453b; }
+.sb-num { font-size: .82rem; margin-top: .2rem; font-variant-numeric: tabular-nums; }
+@media (prefers-color-scheme: dark) { .sb-track { background: #26303c; } }
