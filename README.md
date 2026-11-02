@@ -53,8 +53,15 @@ after about 15 minutes without visitors, so the first visit after that takes
 up to a minute.
 
 The public dashboard runs the guided demo, "Test your own email" and the
-results pages. The Real AI arena shows nothing there, because its saved results
-live in `results/`, which is not committed. Do not add `AEGIS_LLM_API_KEY` to
+results pages. To show real Gemini results in the Real AI arena too, run the
+benchmark on your laptop and publish the results (the deployed site never calls
+the model itself):
+
+```bash
+python scripts/run_real_ai_benchmark.py --limit 20
+python scripts/publish_real_ai_results.py
+git add aegis/data/published && git commit -m "Publish real-AI results" && git push
+``` Do not add `AEGIS_LLM_API_KEY` to
 the deployed service: the dashboard has no login, so any visitor could spend
 your quota. All data and tools are simulated, so nothing real is exposed.
 

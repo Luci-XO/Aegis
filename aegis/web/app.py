@@ -112,32 +112,37 @@ def _llm_factory(agent: Any, mode: Any) -> Any:
     return lambda: LLMAgent(client, mode=mode)
 
 
-def _real_ai_results() -> dict[str, Any]:
-    """Latest real-AI arena results written by scripts/run_real_ai_benchmark.py."""
+# Results committed with scripts/publish_real_ai_results.py, so a deployed
+# dashboard (which never runs the model itself) can still show a real run.
+PUBLISHED_DIR = Path(__file__).resolve().parent.parent / "data" / "published"
+
+
+def _load_results(env_var: str, local: str, published_name: str) -> dict[str, Any]:
+    """Read results from $env_var if set; else the local results/ file; else the published copy."""
     import os
 
-    path = Path(os.environ.get("AEGIS_REAL_AI_RESULTS", "results/real_ai/latest.json"))
-    if not path.is_file():
-        return {"available": False}
-    try:
-        data: dict[str, Any] = json.loads(path.read_text("utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {"available": False, "error": "results file could not be read"}
-    return {"available": True, **data}
+    explicit = os.environ.get(env_var)
+    candidates = [(Path(explicit), False)] if explicit else [
+        (Path(local), False), (PUBLISHED_DIR / published_name, True)]
+    for path, published in candidates:
+        if not path.is_file():
+            continue
+        try:
+            data: dict[str, Any] = json.loads(path.read_text("utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return {"available": False, "error": "results file could not be read"}
+        return {"available": True, "published": published, **data}
+    return {"available": False}
+
+
+def _real_ai_results() -> dict[str, Any]:
+    """Latest real-AI arena results written by scripts/run_real_ai_benchmark.py."""
+    return _load_results("AEGIS_REAL_AI_RESULTS", "results/real_ai/latest.json", "real_ai.json")
 
 
 def _scoreboard_results() -> dict[str, Any]:
     """Head-to-head written by scripts/scoreboard.py --json results/scoreboard.json."""
-    import os
-
-    path = Path(os.environ.get("AEGIS_SCOREBOARD_RESULTS", "results/scoreboard.json"))
-    if not path.is_file():
-        return {"available": False}
-    try:
-        data: dict[str, Any] = json.loads(path.read_text("utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {"available": False, "error": "results file could not be read"}
-    return {"available": True, **data}
+    return _load_results("AEGIS_SCOREBOARD_RESULTS", "results/scoreboard.json", "scoreboard.json")
 
 
 def _llm_status() -> dict[str, Any]:

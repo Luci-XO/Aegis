@@ -156,6 +156,8 @@ function renderArena() {
     el("p", { class: "muted", text: "Click a tile to see exactly what " + meta.model + " tried to do, and what Aegis did about it." }),
     legend, grid, detail,
   ]));
+  if (ARENA.published) body.append(el("p", { class: "muted arena-foot", text:
+    "These are recorded results from a real run of " + meta.model + ", saved in the repository. This public site does not call the model itself." }));
   body.append(el("p", { class: "muted arena-foot", text: "Run " + meta.run_name + " \u00b7 model " + meta.model + " \u00b7 temperature "
     + meta.temperature + " \u00b7 started " + meta.started_at + (meta.finished_at ? " \u00b7 finished " + meta.finished_at : "")
     + ". \"Fooled\" means the model proposed an action the user's task does not allow, as judged by the same reference policy as the main benchmark." }));

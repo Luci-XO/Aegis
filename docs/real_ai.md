@@ -37,6 +37,22 @@ If Google returns 503 or 429, the script stops after a few failures in a row;
 run the same command again and it continues where it stopped. Failed runs are
 never counted as results.
 
+## Show the results on the deployed site
+
+The deployed dashboard has no API key, so it can't run the model. Publish a
+run instead, and every visitor sees it in the arena:
+
+```bash
+python scripts/publish_real_ai_results.py   # copies results/real_ai/latest.json
+git add aegis/data/published && git commit -m "Publish real-AI results" && git push
+```
+
+The script refuses results that include your own emails (the published file is
+public) unless you pass `--include-own-emails`, redacts anything that looks like
+an API key, and refuses a file with no successful runs. Add `--scoreboard` to
+publish `results/scoreboard.json` as well. The dashboard prefers your local
+`results/` files when they exist, and labels published results as recorded.
+
 ## Your own emails
 
 `--suite` accepts a file or a folder containing any mix of:
