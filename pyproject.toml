@@ -20,7 +20,7 @@ ml = ["scikit-learn>=1.3"]
 include = ["aegis*"]
 
 [tool.setuptools.package-data]
-aegis = ["data/*.json", "data/synthetic/*.json", "data/scenarios/*.json", "policies/*.json", "eval/freeze.json", "web/static/*"]
+aegis = ["data/*.json", "data/synthetic/*.json", "data/scenarios/*.json", "data/published/*.json", "policies/*.json", "eval/freeze.json", "web/static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -239,3 +239,54 @@ def test_live_compare_with_a_model(server, monkeypatch):
 def test_results_folder_is_git_ignored():
     gi = (Path(__file__).resolve().parents[1] / ".gitignore").read_text("utf-8")
     assert "results/" in gi
+
+
+def test_dashboard_falls_back_to_published_results(server, tmp_path, monkeypatch):
+    import aegis.web.app as app
+
+    monkeypatch.delenv("AEGIS_REAL_AI_RESULTS", raising=False)
+    monkeypatch.chdir(tmp_path)  # no results/ folder here
+    monkeypatch.setattr(app, "PUBLISHED_DIR", tmp_path / "published")
+    assert _get(server + "/api/real-ai") == {"available": False}
+
+    src = run_arena(_cases("dev-03-payroll-reply"), Obedient(), tmp_path / "out", "t", log=lambda *_: None)
+    (tmp_path / "published").mkdir()
+    (tmp_path / "published" / "real_ai.json").write_text(src.read_text("utf-8"), "utf-8")
+    data = _get(server + "/api/real-ai")
+    assert data["available"] and data["published"] is True and data["runs"]
+
+    # a local run on the laptop wins over the published copy
+    (tmp_path / "results" / "real_ai").mkdir(parents=True)
+    (tmp_path / "results" / "real_ai" / "latest.json").write_text(src.read_text("utf-8"), "utf-8")
+    assert _get(server + "/api/real-ai")["published"] is False
+
+
+def test_publish_script_checks_and_redacts(tmp_path, monkeypatch):
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("pub", Path(__file__).parent.parent / "scripts" / "publish_real_ai_results.py")
+    pub = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(pub)
+    monkeypatch.setattr(pub, "ROOT", tmp_path)
+
+    src = run_arena(_cases("dev-03-payroll-reply"), Obedient(), tmp_path / "out", "t", log=lambda *_: None)
+    data = json.loads(src.read_text("utf-8"))
+    data["runs"][0]["final_message"] = "leaked AIza" + "x" * 35
+    src.write_text(json.dumps(data), "utf-8")
+    dest = tmp_path / "pub" / "real_ai.json"
+    ok, msg = pub.publish(src, dest, lambda d: pub.check_real_ai(d, False))
+    assert ok and "1 key-like" in msg
+    assert "AIza" not in dest.read_text("utf-8")
+
+    data["cases"][0]["source"] = "my_emails/inbox.mbox"
+    src.write_text(json.dumps(data), "utf-8")
+    ok, msg = pub.publish(src, dest, lambda d: pub.check_real_ai(d, False))
+    assert not ok and "my_emails" in msg
+    assert pub.publish(src, dest, lambda d: pub.check_real_ai(d, True))[0]
+
+    for r in data["runs"]:
+        r["status"] = "error"
+    data["cases"][0]["source"] = "scenarios"
+    src.write_text(json.dumps(data), "utf-8")
+    ok, msg = pub.publish(src, dest, lambda d: pub.check_real_ai(d, False))
+    assert not ok and "no successful runs" in msg
