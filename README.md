@@ -42,6 +42,22 @@ attack button. See [docs/real_ai.md](docs/real_ai.md).
 
 ![Results](docs/images/results.png)
 
+## Deploy a public link
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Luci-XO/Aegis)
+
+Click the button, sign in with GitHub, and press **Apply**. Render reads
+[`render.yaml`](render.yaml) and gives you a public URL such as
+`https://aegis-xxxx.onrender.com` that anyone can open. The free plan sleeps
+after about 15 minutes without visitors, so the first visit after that takes
+up to a minute.
+
+The public dashboard runs the guided demo, "Test your own email" and the
+results pages. The Real AI arena shows nothing there, because its saved results
+live in `results/`, which is not committed. Do not add `AEGIS_LLM_API_KEY` to
+the deployed service: the dashboard has no login, so any visitor could spend
+your quota. All data and tools are simulated, so nothing real is exposed.
+
 ## Quick start
 
 Requires Python 3.10+ (tested on 3.10, 3.11, 3.12, 3.13 and 3.14). The security core has **no third-party dependencies**,
