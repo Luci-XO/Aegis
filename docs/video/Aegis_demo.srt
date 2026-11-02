@@ -1,0 +1,111 @@
+1
+00:00:01,454 --> 00:00:06,791
+This is Aegis: a security checkpoint between an AI agent and the tools it can use.
+
+2
+00:00:06,791 --> 00:00:12,801
+AI agents can now read your email and act on it. Anything they read can secretly instruct them.
+
+3
+00:00:12,801 --> 00:00:20,377
+That attack is called prompt injection. It is the number one risk for LLM apps on the OWASP Top 10.
+
+4
+00:00:20,377 --> 00:00:25,381
+Aegis doesn't trust the AI. Every action is checked against fixed rules before it runs.
+
+5
+00:00:25,829 --> 00:00:30,831
+The guided demo runs real scenarios through the real code. Left: no protection. Right: Aegis.
+
+6
+00:00:30,831 --> 00:00:36,976
+Scenario 1 is a normal task: send the offsite agenda to two colleagues.
+
+7
+00:00:36,977 --> 00:00:41,648
+Both sides send the email. Aegis doesn't get in the way of legitimate work.
+
+8
+00:00:42,476 --> 00:00:48,764
+Scenario 2: the user asks the AI to reply to a vendor's invoice email.
+
+9
+00:00:48,764 --> 00:00:57,078
+Hidden inside it is an instruction for the AI: send the confidential payroll file to an outside 'auditor'.
+
+10
+00:00:57,078 --> 00:01:01,919
+Without protection, the fooled AI obeys. The payroll file leaks to the attacker.
+
+11
+00:01:01,919 --> 00:01:08,162
+With Aegis, the same fooled AI tries the same action. Aegis refuses it.
+
+12
+00:01:08,162 --> 00:01:15,873
+The user's task never allowed that file or that recipient, so the action never ran. The real reply still went out.
+
+13
+00:01:16,708 --> 00:01:23,197
+Scenario 3: the attacker rewords the request so it avoids the usual trigger phrases.
+
+14
+00:01:23,197 --> 00:01:29,933
+On the left, a threat scanner is the only defence. It misses the attack, and payroll is sent out.
+
+15
+00:01:29,933 --> 00:01:37,203
+On the right, Aegis blocks it. Aegis doesn't need to recognise the attack. It checks whether the action is allowed.
+
+16
+00:01:38,040 --> 00:01:45,523
+Scenario 4: an email asks the AI to quietly copy an extra 'compliance' address on the reply.
+
+17
+00:01:45,523 --> 00:01:52,269
+Aegis only allows recipients from the user's task, never from text the AI reads. The extra address is refused.
+
+18
+00:01:53,106 --> 00:01:58,995
+Scenario 5 is shown on purpose: what Aegis does not stop.
+
+19
+00:01:58,995 --> 00:02:07,106
+If the user allowed the reply, an attacker can still change its wording. Aegis controls actions and data flow, not wording.
+
+20
+00:02:08,161 --> 00:02:13,679
+You can also test your own email: upload a .eml file or paste the text.
+
+21
+00:02:13,679 --> 00:02:22,055
+Here is a sample email with a hidden request for the payroll file.
+
+22
+00:02:22,055 --> 00:02:29,608
+First it shows what the scanners noticed, and what a fooled assistant would try to do.
+
+23
+00:02:29,608 --> 00:02:36,688
+Then it runs the email twice. Without protection, payroll leaks. With Aegis, the forbidden actions are refused.
+
+24
+00:02:38,221 --> 00:02:45,508
+We measured it on attacks written after the rules were frozen, so we couldn't tune for them.
+
+25
+00:02:45,508 --> 00:02:51,411
+Attack success fell from 100% without protection to 10% with Aegis, with zero unauthorised actions.
+
+26
+00:02:51,411 --> 00:02:58,307
+Every normal task still completed. 322 tests pass, and the tests caught all 26 planted security bugs.
+
+27
+00:02:59,198 --> 00:03:03,338
+The AI can be completely fooled. Aegis is the wall.
+
+28
+00:03:03,338 --> 00:03:07,041
+Aegis · github.com/Luci-XO/Aegis
