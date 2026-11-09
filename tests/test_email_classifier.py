@@ -223,7 +223,7 @@ def test_http_errors_report_status_without_leaking_body(monkeypatch):
 
 def test_corpus_json_has_no_real_looking_keys():
     raw = json.dumps(EMAILS)
-    # Catch accidentally committed API keys: Gemini (AIza.../AQ.Ab8...) and
+    # Catch accidentally committed API keys: Google-style (AIza.../AQ.Ab8...) and
     # OpenAI (sk- followed by a long secret, not words like "orderdesk-docs").
     assert "AIza" not in raw and "AQ.Ab8" not in raw
     assert not re.search(r"sk-[A-Za-z0-9_-]{20,}", raw)
