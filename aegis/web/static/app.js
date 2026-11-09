@@ -293,7 +293,7 @@ function emailCard(snap, highlight) {
 }
 
 function sidePanel(snap, story) {
-  const info = CONFIG_INFO[snap.config];
+  const info = (story && story.info) || CONFIG_INFO[snap.config];
   const key = snap.steps.find((s) => s.injected && s.tool === "send_email") || snap.steps.find((s) => s.injected)
     || snap.steps.find((s) => s.tool === "send_email");
   return el("div", { class: "side " + info.cls }, [
@@ -560,19 +560,18 @@ function initCustom() {
   $("custom-run").addEventListener("click", runCustom);
 }
 
-function setLlmOption(llm) {
-  const sel = $("custom-agent");
-  const opt = el("option", { value: "llm", text: llm && llm.available
-    ? "Real AI: " + llm.model + " (reads the email itself)" : "Real AI (add a model to .env to enable)" });
-  if (!(llm && llm.available)) opt.disabled = true;
-  sel.append(opt);
-}
+// Who reads the email on the "Test your own email" page.
+const CUSTOM_AGENT_INFO = {
+  normal: { name: "Normal AI", sub: "A typical assistant with no protection. It gets fooled and does whatever the email asks, with the user's full permissions.", cls: "bad" },
+  careful: { name: "Not-fooled AI", sub: "An assistant that ignores instructions hidden in the email and only does what the user asked. No protection around it.", cls: "mid" },
+  aegis: { name: "Aegis", sub: "The same fooled assistant, but every action it tries is checked by Aegis's fixed rules and threat scanner first.", cls: "good" },
+};
 
 async function runCustom() {
   const raw = $("paste").value;
   if (!raw.trim()) { $("custom-note").textContent = "Upload a file or paste an email first."; return; }
   $("custom-run").disabled = true;
-  $("custom-note").textContent = $("custom-agent").value === "llm" ? "Asking the real AI (this can take a minute)\u2026" : "Running\u2026";
+  $("custom-note").textContent = "Running\u2026";
   try {
     const data = await api("/api/custom", { raw, task: $("custom-task").value, agent: $("custom-agent").value });
     renderCustom(data);
@@ -629,7 +628,7 @@ function analysisCards(data) {
   ]);
   const acts = plan.actions.filter((a) => a.tool !== "read_email");
   const fooled = el("div", { class: "card an accent" }, [
-    el("div", { class: "an-k", text: data.agent === "llm" ? "What the email asks the AI to do" : "What a fooled assistant would try" }),
+    el("div", { class: "an-k", text: "What the email tries to make the AI do" }),
     el("div", { class: "an-v " + (acts.length ? "bad" : "good"), text: acts.length ? acts.length + " extra action" + (acts.length > 1 ? "s" : "") : "Nothing extra" }),
     el("div", { class: "an-sub", text: acts.length ? "Beyond what the user asked for:" : "The email asks for nothing beyond the user's task." }),
     el("ul", { class: "an-list" }, acts.map((a) => el("li", { text: describeAction(a, plan) }))),
@@ -643,24 +642,27 @@ function renderCustom(data) {
   body.append(el("h2", { class: "section-title", text: "1. What Aegis found in the email" }));
   body.append(analysisCards(data));
   body.append(customEmailCard(data.email));
-  body.append(el("h2", { class: "section-title", text: "2. What happened when the assistant acted on it" }));
-  body.append(el("div", { class: "ask" }, [el("span", { class: "lbl", text: "The user asked the assistant: " }), el("b", { text: "\u201c" + data.left.task.description.replace("email e-900", "this email") + "\u201d" })]));
-  body.append(el("div", { class: "compare" }, [
-    sidePanel(data.left, { consequence: consequenceFrom(data.left) }),
-    sidePanel(data.right, { consequence: consequenceFrom(data.right) }),
-  ]));
-  const L = data.left.outcome, R = data.right.outcome;
+  const run = data.run, info = CUSTOM_AGENT_INFO[data.agent];
+  body.append(el("h2", { class: "section-title", text: "2. What happened when the " + info.name + " acted on it" }));
+  body.append(el("div", { class: "ask" }, [el("span", { class: "lbl", text: "The user asked the assistant: " }), el("b", { text: "\u201c" + run.task.description.replace("email e-900", "this email") + "\u201d" })]));
+  body.append(sidePanel(run, { consequence: consequenceFrom(run), info }));
+  const o = run.outcome || {};
   let msg;
-  if (data.left.scenario.label !== "attack") msg = "This email asks for nothing beyond the user's task, so both sides behave the same and the task completes. Aegis adds no friction beyond one approval to send.";
-  else if (L.attack && !R.attack) msg = "Without protection, the assistant did what the email asked. With Aegis, the same actions were refused because the user's task never allowed those files or recipients. The user's real task still completed.";
-  else if (L.attack && R.attack) msg = "Both sides were affected. This happens when the email only changes something the user already allowed, such as the wording of a reply. The person approving the send is the defence here.";
-  else msg = "The email's request did not cause harm on either side.";
-  if (data.agent === "llm") msg += " This run used a real AI, which decides for itself whether to obey the email.";
+  if (run.scenario.label !== "attack") msg = "This email asks for nothing beyond the user's task, so nothing harmful was attempted and the task completed.";
+  else if (data.agent === "normal") msg = o.attack
+    ? "The normal AI was fooled: it did what the email asked, using the user's full permissions. Nothing stood in its way."
+    : "The email's request did not cause harm this time.";
+  else if (data.agent === "careful") msg = o.attack
+    ? "Even an AI that ignores hidden instructions was affected. This happens when the email only changes something the user already allowed, such as the wording of a reply."
+    : "This AI was not fooled, so the attack failed. But you are relying on the AI's judgement: a cleverer email can still trick a real model, and nothing would stop it.";
+  else msg = o.attack
+    ? "The email only changed something the user already allowed, such as the wording of a reply. The person approving the send is the defence here."
+    : "The AI was fully fooled and tried to do what the email asked, but Aegis refused those actions because the user's task never allowed those files or recipients. The user's real task still completed.";
   body.append(el("div", { class: "takeaway" }, [el("b", { text: "Result: " }), msg]));
-  if (data.agent !== "llm") body.append(el("p", { class: "muted", text:
-    "How the simulated assistant works: it is deliberately fully fooled. If the email asks to send, forward or share something, it opens the files the email names and emails them to the addresses the email names. This is the worst case; a real AI might refuse some requests." }));
+  body.append(el("p", { class: "muted", text:
+    "Try the same email with all three options. The normal and Aegis runs use the same deliberately fooled assistant (it opens the files the email names and sends them to the addresses the email names), so the only difference is Aegis." }));
 }
 
 // ---------------------------------------------------------------- start
 initCustom();
-initExplore().then(() => setLlmOption(META.llm)).catch((e) => { $("run-note").textContent = "Could not load scenarios: " + e.message; });
+initExplore().catch((e) => { $("run-note").textContent = "Could not load scenarios: " + e.message; });

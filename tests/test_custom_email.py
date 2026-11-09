@@ -155,29 +155,45 @@ def _post(base, body):
 
 
 def test_custom_endpoint_end_to_end(server):
-    status, data = _post(server, {"raw": ATTACK, "task": "reply", "agent": "simulated"})
+    status, data = _post(server, {"raw": ATTACK, "task": "reply", "agent": "normal"})
     assert status == 200
-    assert data["left"]["outcome"]["attack"] is True and data["right"]["outcome"]["attack"] is False
+    assert data["run"]["config"] == "A_unprotected" and data["run"]["outcome"]["attack"] is True
     assert data["email"]["sender"] == "accounts@billing-verify.example" and data["analysis"]["scanner"]["flagged"]
+
+
+@pytest.mark.parametrize("agent, config, attack", [
+    ("normal", "A_unprotected", True),    # fooled, unprotected: the attack lands
+    ("careful", "A_unprotected", False),  # not fooled: never tries the attack
+    ("aegis", "D_aegis", False),          # fooled, but Aegis refuses the actions
+])
+def test_custom_endpoint_three_assistants(server, agent, config, attack):
+    status, data = _post(server, {"raw": ATTACK, "task": "reply", "agent": agent})
+    assert status == 200 and data["agent"] == agent
+    run = data["run"]
+    assert run["config"] == config and run["outcome"]["attack"] is attack
+    assert run["outcome"]["user"] is True  # the user's real task still completes
+
+
+def test_custom_endpoint_aegis_uses_the_fooled_ai_and_refuses_it(server):
+    """Aegis runs the same fooled assistant: it tries the attack and is refused.
+    The not-fooled assistant never tries it at all."""
+    _, aegis = _post(server, {"raw": ATTACK, "task": "reply", "agent": "aegis"})
+    injected = [s for s in aegis["run"]["steps"] if s["injected"]]
+    assert injected and all(s["status"] == "denied" for s in injected)
+    _, careful = _post(server, {"raw": ATTACK, "task": "reply", "agent": "careful"})
+    assert not any(s["injected"] for s in careful["run"]["steps"])
 
 
 @pytest.mark.parametrize("body", [
     {"raw": "", "task": "reply"},
     {"raw": ATTACK, "task": "nope"},
     {"raw": ATTACK, "agent": "skynet"},
+    {"raw": ATTACK, "agent": "llm"},  # the real-AI option was removed from this page
     {"raw": 123},
 ])
 def test_custom_endpoint_rejects_bad_input(server, body):
     status, data = _post(server, body)
     assert status == 400 and "error" in data
-
-
-def test_custom_endpoint_llm_requires_configuration(server, monkeypatch):
-    import aegis.agent.llm_client as lc
-
-    monkeypatch.setattr(lc, "client_from_env", lambda env=None: None)
-    status, data = _post(server, {"raw": ATTACK, "agent": "llm"})
-    assert status == 400 and "no real AI" in data["error"]
 
 
 def test_custom_endpoint_size_limit(server):

@@ -97,8 +97,9 @@
     <section id="view-custom" class="view">
       <div class="page-intro">
         <h2>Test your own email</h2>
-        <p>Upload an email file or paste any email text. Aegis runs it twice, without protection and with Aegis,
-          and shows exactly what happens. Nothing is ever sent: every action runs in a simulation.</p>
+        <p>Upload an email file or paste any email text, then choose who reads it: a normal AI that gets fooled,
+          an AI that is not fooled, or a fooled AI protected by Aegis. You see exactly what happens.
+          Nothing is ever sent: every action runs in a simulation.</p>
       </div>
       <div class="upload">
         <div id="drop" class="drop">
@@ -125,7 +126,11 @@
             </select>
           </label>
           <label>Which AI reads it
-            <select id="custom-agent"><option value="simulated">Simulated fooled assistant (does whatever the email asks)</option></select>
+            <select id="custom-agent">
+              <option value="normal">Normal AI (gets fooled, no protection)</option>
+              <option value="careful">Not-fooled AI (ignores the email's instructions, no protection)</option>
+              <option value="aegis">Aegis (fooled AI, protected by Aegis)</option>
+            </select>
           </label>
           <button id="custom-run" class="btn primary big">Run it</button>
           <span id="custom-note" class="muted"></span>
