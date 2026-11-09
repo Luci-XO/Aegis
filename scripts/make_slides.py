@@ -74,7 +74,7 @@ SLIDES: list[tuple[str, int, list[str]]] = [
         "- Attacks stopped 98%   ·   hard phishing 90%   ·   false alarms 9%   ·   accuracy 96%",
         "",
         "# Why trust it",
-        "- 322 tests  ·  26/26 planted bugs caught  ·  rules frozen before the test attacks  ·  stdlib only",
+        "- 316 tests  ·  26/26 planted bugs caught  ·  rules frozen before the test attacks  ·  stdlib only",
     ]),
     ("Why it matters, limits, next", 3000, [
         "# Model-agnostic  ·  runs offline  ·  every decision explainable.",

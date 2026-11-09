@@ -70,6 +70,16 @@ def main() -> int:
             results[f"{label} / {split}"] = s
             lines.append(row(label, split, s))
 
+    # Hybrid: classifier OR >=2 independent text red flags. Honest number is the
+    # grouped split; text-only so the lift does not lean on the header artifact.
+    for headers in (False, True):
+        label = "hybrid (text+headers+rules)" if headers else "hybrid (text+rules)"
+        split = "5-fold grouped by template"
+        _, s = ev.cross_validate(
+            emails, lambda h=headers: EmailClassifier(backend, use_headers=h, use_rules=True), grouped=True)
+        results[f"{label} / {split}"] = s
+        lines.append(row(label, split, s))
+
     print("\n".join(lines))
     best = results["classifier (text) / 5-fold grouped by template"]
     print(f"\nGrouped-CV text classifier misclassified (binary): {best['binary_errors'] or 'none'}")

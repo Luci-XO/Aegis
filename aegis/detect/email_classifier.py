@@ -36,6 +36,13 @@ LABELS = ("LEGIT", "PHISHING", "SPAM")
 MALICIOUS = frozenset({"PHISHING", "SPAM"})
 RISKY_EXTENSIONS = frozenset({".xlsm", ".docm", ".iso", ".html", ".htm", ".exe", ".js", ".vbs", ".scr", ".lnk"})
 
+# How many independent *text* red flags must fire before the hybrid overrides a
+# "looks legit" model call. Two keeps precision at 1.00 on the corpus (single
+# flags appear on genuine urgent/billing mail); it only fires on the clear ones.
+RULE_ESCALATION_MIN_FLAGS = 2
+# Digits that commonly stand in for letters in lookalike domains (paypa1, g00gle).
+_HOMOGLYPH_DIGITS = {"0": "o", "1": "l", "3": "e", "4": "a", "5": "s", "7": "t"}
+
 _TOKEN = re.compile(r"[a-z0-9]+(?:['.\-][a-z0-9]+)*")
 _HEX = re.compile(r"^[0-9a-f]{10,}$")
 _NUM = re.compile(r"^\d[\d,.]*$")
@@ -98,6 +105,40 @@ _RED_FLAG_RULES: tuple[tuple[str, re.Pattern[str]], ...] = (
 )
 
 
+def lookalike_domain(addr: str) -> str | None:
+    """Return the domain if its first label looks like a brand faked with
+    digit-for-letter homoglyphs (paypa1, g00gle, amaz0n), else None.
+
+    Conservative on purpose: the label must be mostly letters with at most two
+    homoglyph digits, each sitting next to a letter, so legitimate domains that
+    contain numbers (office365, 3m, s3) are not flagged."""
+    dom = _domain(addr)
+    if not dom:
+        return None
+    label = dom.split(".", 1)[0]
+    letters = sum(c.isalpha() for c in label)
+    digits = [c for c in label if c.isdigit()]
+    if letters < 4 or not digits or len(digits) > 2:
+        return None
+    if any(c.isdigit() and c not in _HOMOGLYPH_DIGITS for c in label):
+        return None  # a non-homoglyph digit (e.g. a year) -> probably real
+    for i, c in enumerate(label):
+        if c in _HOMOGLYPH_DIGITS:
+            left = i > 0 and label[i - 1].isalpha()
+            right = i < len(label) - 1 and label[i + 1].isalpha()
+            if left or right:
+                return dom
+    return None
+
+
+def text_red_flags(email: Mapping[str, Any]) -> list[str]:
+    """Only the red flags that come from the email *text* (subject + body), with
+    no header/authentication signal. These are what the hybrid classifier uses,
+    so its lift does not depend on the corpus's authentication-header artifact."""
+    text = email.get("subject", "") + "\n" + email.get("body", "")
+    return [name for name, rx in _RED_FLAG_RULES if rx.search(text)]
+
+
 def red_flags(email: Mapping[str, Any]) -> list[str]:
     """Human-readable red flags. Heuristic and written while viewing the corpus,
     so treat counts on that corpus as development measurements."""
@@ -108,12 +149,14 @@ def red_flags(email: Mapping[str, Any]) -> list[str]:
         flags.append(f"authentication failed (SPF={auth.get('spf')}, DMARC={auth.get('dmarc')})")
     if _domain(email.get("reply_to", "")) != _domain(email.get("from", "")):
         flags.append("Reply-To domain differs from sender")
+    look = lookalike_domain(email.get("from", ""))
+    if look:
+        flags.append(f"sender domain looks faked ({look})")
     for name in email.get("attachments", []):
         ext = "." + name.rsplit(".", 1)[-1].lower() if "." in name else ""
         if ext in RISKY_EXTENSIONS:
             flags.append(f"risky attachment type ({ext})")
-    text = email.get("subject", "") + "\n" + email.get("body", "")
-    flags += [name for name, rx in _RED_FLAG_RULES if rx.search(text)]
+    flags += text_red_flags(email)
     return flags
 
 
@@ -245,7 +288,7 @@ class Verdict:
 
 
 class EmailClassifier:
-    def __init__(self, backend: str = "auto", use_headers: bool = False) -> None:
+    def __init__(self, backend: str = "auto", use_headers: bool = False, use_rules: bool = False) -> None:
         if backend not in ("auto", "stdlib", "sklearn"):
             raise ValueError("backend must be auto, stdlib or sklearn")
         if backend == "sklearn" and not sklearn_available():
@@ -253,11 +296,13 @@ class EmailClassifier:
         self.backend = "sklearn" if backend == "sklearn" or (backend == "auto" and sklearn_available()) \
             else "stdlib"
         self.use_headers = use_headers
+        self.use_rules = use_rules
         self._model: _StdlibTfidfLogReg | _SklearnTfidfLogReg | None = None
 
     @property
     def name(self) -> str:
-        return f"email-tfidf-logreg-{self.backend}{'+headers' if self.use_headers else ''}"
+        return (f"email-tfidf-logreg-{self.backend}"
+                f"{'+headers' if self.use_headers else ''}{'+rules' if self.use_rules else ''}")
 
     def fit(self, emails: Sequence[Mapping[str, Any]], labels: Sequence[str]) -> EmailClassifier:
         if len(emails) != len(labels) or not emails:
@@ -279,8 +324,15 @@ class EmailClassifier:
         for e, toks, probs in zip(emails, docs, model.predict_proba(docs), strict=True):
             label = max(probs, key=lambda c: probs[c])
             p_mal = sum(v for c, v in probs.items() if c in MALICIOUS)
+            flags = red_flags(e)
+            # Hybrid: if the model says "legit" but several independent text red
+            # flags fire, trust the rules. Catches template families the model
+            # never trained on without touching its false-positive rate.
+            if self.use_rules and label == "LEGIT" and len(text_red_flags(e)) >= RULE_ESCALATION_MIN_FLAGS:
+                label = "PHISHING"
+                p_mal = max(p_mal, 0.75)
             out.append(Verdict(label, {c: round(v, 4) for c, v in probs.items()}, round(p_mal, 4),
-                               model.top_features(toks, label), red_flags(e)))
+                               model.top_features(toks, label), flags))
         return out
 
 

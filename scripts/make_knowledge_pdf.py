@@ -167,7 +167,7 @@ def B() -> list[tuple[str, str]]:
     p("Headline results (all from real runs): on held-out attacks, attack success drops from 100% "
       "unprotected to 10% with Aegis; unauthorised tool executions drop from 18 to 0; legitimate tasks "
       "still complete 100% of the time; and 0 forbidden actions occurred across 13,865 randomised attack "
-      "attempts. The project has 322 automated tests, kills 26/26 planted security bugs (mutation testing), "
+      "attempts. The project has 316 automated tests, kills 26/26 planted security bugs (mutation testing), "
       "and uses a frozen, hash-checked evaluation so the rules cannot be quietly tuned to the test.")
 
     h1("2. The problem")
@@ -286,7 +286,7 @@ def B() -> list[tuple[str, str]]:
        "aegis/eval/freeze.json before the held-out split existed; a test fails if they change.")
     li("Mutation testing: 26 planted security bugs, 26/26 caught by the tests.")
     li("Invariant/fuzz testing: 13,865 randomised attack attempts executed 0 forbidden actions.")
-    li("322 automated tests, across Python 3.10 to 3.14.")
+    li("316 automated tests, across Python 3.10 to 3.14.")
 
     h1("12. Results (all from real runs)")
     h2("12.1 Enforcement (held-out attacks)")
@@ -296,8 +296,9 @@ def B() -> list[tuple[str, str]]:
     li("0 forbidden actions across 13,865 randomised attack attempts. The detector alone caught only 3/10 "
        "held-out attacks, which is why the gateway, not the detector, is the boundary.")
     h2("12.2 Email detector")
-    li("100-email corpus (grouped CV): text F1 0.91, text+headers F1 0.97; via the scoreboard, 94% of "
-       "attacks stopped, 0 false alarms, 97% accuracy.")
+    li("100-email corpus (grouped CV): text F1 0.91, text+headers F1 0.97, hybrid (classifier OR two text "
+       "red flags) F1 0.98 with zero false alarms; via the scoreboard, 96% of "
+       "attacks stopped, 0 false alarms, 98% accuracy.")
     li("500-email corpus (grouped CV, real run on the owner's machine): attacks stopped 351/360 = 98%; "
        "missed 9/360 = 2%; hard phishing caught 82/91 = 90%; legit kept 127/140 = 91%; false alarms "
        "13/140 = 9%; overall accuracy 96%.")
