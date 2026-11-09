@@ -166,13 +166,28 @@ class Handler(BaseHTTPRequestHandler):
 
     # -- helpers -----------------------------------------------------------
 
+    def _security_headers(self) -> None:
+        """Defence-in-depth headers sent on every response. The CSP forbids inline
+        and third-party scripts, so even if untrusted content somehow reached the
+        DOM it could not execute - which matches the frontend's own rule of only
+        ever writing text through textContent."""
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Referrer-Policy", "no-referrer")
+        self.send_header("Cross-Origin-Opener-Policy", "same-origin")
+        self.send_header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+        self.send_header("Content-Security-Policy",
+                         "default-src 'none'; script-src 'self'; style-src 'self'; "
+                         "img-src 'self' data:; connect-src 'self'; font-src 'self'; "
+                         "base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
+
     def _send_json(self, obj: Any, status: int = 200) -> None:
         body = json.dumps(obj).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Cache-Control", "no-store")
+        self._security_headers()
         self.end_headers()
         if self.command != "HEAD":
             self.wfile.write(body)
@@ -324,7 +339,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(HTTPStatus.OK)
         self.send_header("Content-Type", _STATIC_TYPES[target.suffix])
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("X-Content-Type-Options", "nosniff")
+        self._security_headers()
         self.end_headers()
         if self.command != "HEAD":
             self.wfile.write(body)
