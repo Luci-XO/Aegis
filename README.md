@@ -2,6 +2,9 @@
 
 Security and policy enforcement for AI agents.
 
+[![CI](https://github.com/Luci-XO/Aegis/actions/workflows/ci.yml/badge.svg)](https://github.com/Luci-XO/Aegis/actions/workflows/ci.yml)
+&nbsp;Security posture: [SECURITY.md](SECURITY.md) &middot; Full reference: [docs/explainer.md](docs/explainer.md)
+
 Aegis puts a deterministic policy gateway between an AI agent and its tools.
 The agent may propose any action, but each one is checked against explicit
 rules (which tools, which resources, which recipients, which data may flow

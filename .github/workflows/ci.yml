@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    name: lint, type-check, test (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install dev tools (the core has no third-party runtime deps)
+        run: python -m pip install --upgrade pip ruff mypy pytest
+      - name: Ruff (lint, whole repo)
+        run: ruff check .
+      - name: Mypy (type-check the product package)
+        run: mypy aegis
+      - name: Pytest (full suite)
+        run: python -m pytest -q
