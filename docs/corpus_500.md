@@ -105,21 +105,6 @@ number). Gemini is zero-shot. With `--llm`, Gemini classifies the corpus in
 500 — fast and under free-tier limits. An answer the model fails to return is
 counted as *flagged*, never as safe.
 
-## Judge a real AI on it (full agent arena)
-
-The corpus JSON is also a valid real-AI arena suite, so the same 500 emails can
-be sent to a real model (Gemini) with and without Aegis in front:
-
-```bash
-python scripts/run_real_ai_benchmark.py --suite aegis/data/email_corpus_500.json --limit 200 --delay 4
-python -m aegis.web     # open http://127.0.0.1:8000 -> "Real AI arena"
-```
-
-You can also point `--suite` at the CSV directly
-(`--suite aegis/data/email_corpus_500.csv`); the arena reads CSV sender/subject
-but **not** body, so prefer the built JSON when you want the model to see full
-message text.
-
 Gemini calls and `pip install` only work on your own machine — this build
-sandbox has no outbound network — so run the `--llm` and arena steps locally
-and send back the result table or a screenshot.
+sandbox has no outbound network — so run the `--llm` step locally and send back
+the result table or a screenshot.

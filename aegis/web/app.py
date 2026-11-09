@@ -112,20 +112,6 @@ def _llm_factory(agent: Any, mode: Any) -> Any:
     return lambda: LLMAgent(client, mode=mode)
 
 
-def _real_ai_results() -> dict[str, Any]:
-    """Latest real-AI arena results written by scripts/run_real_ai_benchmark.py."""
-    import os
-
-    path = Path(os.environ.get("AEGIS_REAL_AI_RESULTS", "results/real_ai/latest.json"))
-    if not path.is_file():
-        return {"available": False}
-    try:
-        data: dict[str, Any] = json.loads(path.read_text("utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {"available": False, "error": "results file could not be read"}
-    return {"available": True, **data}
-
-
 def _scoreboard_results() -> dict[str, Any]:
     """Head-to-head written by scripts/scoreboard.py --json results/scoreboard.json."""
     import os
@@ -228,8 +214,6 @@ class Handler(BaseHTTPRequestHandler):
                 return self._serve_static(path[len("/static/"):])
             if method == "GET" and path == "/api/meta":
                 return self._send_json(self._meta())
-            if method == "GET" and path == "/api/real-ai":
-                return self._send_json(_real_ai_results())
             if method == "GET" and path == "/api/scoreboard":
                 return self._send_json(_scoreboard_results())
             if method == "GET" and path == "/api/benchmark":

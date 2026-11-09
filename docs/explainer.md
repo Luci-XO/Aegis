@@ -132,8 +132,8 @@ and you can't forge one without the secret.
 | `aegis/tools` | Simulated tools (mail, filesystem, payments) in a sandbox environment, so attacks can be demonstrated safely. |
 | `aegis/detect` | The advisory detectors: `rules.py` (prompt-injection text rules, "rules-v1") and `email_classifier.py` (TF-IDF + logistic-regression phishing/spam classifier with explanations). |
 | `aegis/agent` | The agents: a *scripted* agent that is deliberately fully fooled (worst case), and an `llm_agent` that drives a real model (Gemini/OpenAI/Ollama) in naive or careful mode. Plus tasks, scenarios, and the runner. |
-| `aegis/eval` | The benchmark, baselines, oracle, metrics, the methodological freeze, the email-classifier evaluation, and the real-AI arena. |
-| `aegis/web` | The stdlib dashboard (http.server + vanilla JS): Overview, Guided demo, Real AI arena, Scoreboard, Test your own email, Try it yourself, Results, How it's built. |
+| `aegis/eval` | The benchmark, baselines, oracle, metrics, the methodological freeze, and the email-classifier evaluation. |
+| `aegis/web` | The stdlib dashboard (http.server + vanilla JS): Overview, Guided demo, Scoreboard, Test your own email, Try it yourself, Results, How it's built. |
 | `aegis/data` | Synthetic data: the dev/held-out attack scenarios and the email corpora. |
 
 ---
@@ -212,17 +212,16 @@ pure standard-library core.
 
 ---
 
-## 9. The Real AI arena and the Scoreboard
+## 9. The Scoreboard (your AI vs a real model)
 
-Beyond the scripted agent, Aegis can put a **real model (Gemini)** in the loop:
-- The **Real AI arena** sends poisoned emails to the model with and without
-  Aegis. Unprotected, the model gets driven into the forbidden action; behind
-  Aegis the forbidden action is blocked while the legitimate task still
-  completes.
-- The **Scoreboard** runs a whole email corpus in one batched pass and shows a
-  head-to-head: your AI vs Gemini — attacks stopped, got through, hard phishing
-  caught, false alarms, accuracy. Honest caveats (e.g. answers a rate-limited
-  model never returned) are surfaced, not hidden.
+Aegis can put a **real model (Gemini, OpenAI or a local model)** in the loop via
+the `llm_agent` adapter — that is also how you run Aegis in front of your own
+AI (see section 11). The **Scoreboard** uses this to compare detectors: it runs
+a whole email corpus in one batched pass and shows a head-to-head — your AI vs
+Gemini — on attacks stopped, got through, hard phishing caught, false alarms and
+accuracy, broken down by difficulty. Honest caveats (e.g. answers a rate-limited
+model never returned) are surfaced, not hidden. The classifier is a bonus
+signal; the gateway, not any model, is the security boundary.
 
 Both run on your machine (they need network + an API key); the dashboard reads
 the saved results so the demo itself needs no live API.
@@ -261,9 +260,6 @@ python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.jso
 
 # head-to-head: your AI vs Gemini (needs .env + network)
 python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --llm --batch 25 --delay 4 --json results/scoreboard.json
-
-# real-AI arena
-python scripts/run_real_ai_benchmark.py --suite aegis/data/email_corpus_500.json --limit 200
 ```
 
 `.env` (for the real-model parts): `AEGIS_LLM_PROVIDER=gemini`,

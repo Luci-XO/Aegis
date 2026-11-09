@@ -309,7 +309,7 @@ textarea:focus, select:focus { outline: 2px solid #c7d2fe; border-color: var(--b
 .an-list { margin: .6rem 0 0; padding-left: 1.1rem; color: var(--ink-2); font-size: .88rem; }
 .an-list li { margin-bottom: .2rem; }
 
-/* ---------- real AI arena ---------- */
+/* ---------- shared hero / cards (used by the Scoreboard) ---------- */
 #nav button.nav-hot { background: linear-gradient(90deg, #7c3aed, #2f5bff); color: #fff; }
 #nav button.nav-hot.active { box-shadow: 0 0 0 3px #c4b5fd; }
 .arena-hero {

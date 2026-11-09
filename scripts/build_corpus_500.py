@@ -7,7 +7,7 @@ CSV. Save that CSV as `aegis/data/email_corpus_500.csv` and run:
     python scripts/build_corpus_500.py
 
 to produce `aegis/data/email_corpus_500.json` in the same schema the
-classifier evaluation and the real-AI arena already use.
+classifier evaluation and the Scoreboard already use.
 
 The CSV carries every structured field (id, label, difficulty, category,
 from, reply_to, subject, SPF/DKIM/DMARC, attachments, notes) but not the body

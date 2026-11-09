@@ -62,8 +62,6 @@ SLIDES: list[tuple[str, int, list[str]]] = [
         "- Without Aegis  ->  the agent obeys the hidden instruction  ->  breach.",
         "- With Aegis  ->  BLOCKED, with the reason shown. Same attack, model still fooled,",
         "  action never happened.",
-        "- Real AI arena: a real model (Gemini) is tricked unprotected; behind Aegis it is",
-        "  blocked, and the legitimate task still completes.",
         "",
         "(Switch to the dashboard: python -m aegis.web)",
     ]),

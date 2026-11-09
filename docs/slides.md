@@ -84,15 +84,12 @@ open a hole."
 - Without Aegis → the agent obeys the hidden instruction → **breach.**
 - With Aegis → **BLOCKED**, with the reason shown. Same attack, model still
   fooled — action never happened.
-- Real AI arena: a real model (Gemini) gets tricked unprotected; behind Aegis
-  it's blocked, and the legitimate task still completes.
 
-**Speaker notes (45s — SWITCH TO THE DASHBOARD):** "Let me show you. Here's an
+**Speaker notes (40s — SWITCH TO THE DASHBOARD):** "Let me show you. Here's an
 email assistant. This email hides an instruction. Without Aegis — watch — it
 performs the forbidden action. Same email, now through Aegis: blocked, and it
-tells you exactly which rule stopped it. And this isn't just our scripted agent —
-in the arena we put a real model, Gemini, behind it: tricked on its own, blocked
-with Aegis, while the real work still gets done."
+tells you exactly which rule stopped it. The model still fell for it; the action
+just never happened."
 
 ---
 
@@ -141,8 +138,8 @@ questions?"
 - "Isn't this just a phishing classifier?" → No; that's one optional signal. The
   gateway is the security, and it works with the classifier off.
 - "Synthetic data — is it real?" → The threat is real (OWASP #1); data is
-  synthetic by design (safe, reproducible, labelled); the arena uses a real model.
+  synthetic by design (safe, reproducible, labelled); the Scoreboard uses a real model.
 - "How is it different from CaMeL/Progent?" → Those are research designs; this
   runs live, is model-agnostic, and ships an honest benchmark.
-- "Can't you just prompt the model to refuse?" → We tried (the arena); it helps
-  but doesn't reach zero. Only the deterministic policy does.
+- "Can't you just prompt the model to refuse?" → We tried it; it helps but
+  doesn't reach zero. Only the deterministic policy does.

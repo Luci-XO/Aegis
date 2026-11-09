@@ -36,30 +36,9 @@ with and without protection. Sample files are in [examples/emails](examples/emai
 
 ![Upload your own email](docs/images/upload-your-own-email.png)
 
-**Real AI arena.** Attack a real model (Gemini, OpenAI or local) with poisoned
-emails: `python scripts/run_real_ai_benchmark.py`. The dashboard shows how often
-the AI was fooled and what Aegis prevented, one tile per email, plus a live
-attack button. See [docs/real_ai.md](docs/real_ai.md).
-
 **Results on attacks written after the rules were frozen:**
 
 ![Results](docs/images/results.png)
-
-## Deploy a public link
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Luci-XO/Aegis)
-
-Click the button, sign in with GitHub, and press **Apply**. Render reads
-[`render.yaml`](render.yaml) and gives you a public URL such as
-`https://aegis-xxxx.onrender.com` that anyone can open. The free plan sleeps
-after about 15 minutes without visitors, so the first visit after that takes
-up to a minute.
-
-The public dashboard runs the guided demo, "Test your own email" and the
-results pages. The Real AI arena shows nothing there, because its saved results
-live in `results/`, which is not committed. Do not add `AEGIS_LLM_API_KEY` to
-the deployed service: the dashboard has no login, so any visitor could spend
-your quota. All data and tools are simulated, so nothing real is exposed.
 
 ## Quick start
 
@@ -211,7 +190,6 @@ OWASP LLM01 (Prompt Injection) and LLM06 (Excessive Agency) in the
 - [docs/benchmark.md](docs/benchmark.md) - benchmark methodology
 - [docs/benchmark_results.md](docs/benchmark_results.md) - generated results snapshot
 - [docs/dashboard.md](docs/dashboard.md) - dashboard and HTTP API
-- [docs/real_ai.md](docs/real_ai.md) - attacking a real AI (Gemini) and the Real AI arena page
 - [docs/email_classifier.md](docs/email_classifier.md) - phishing/spam classifier (optional scikit-learn), Gemini judge, VS Code setup
 - [docs/demo_script.md](docs/demo_script.md) - three-minute live demo script
 

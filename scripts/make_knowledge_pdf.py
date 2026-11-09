@@ -2,7 +2,7 @@
 Aegis project, using only the Python standard library (hand-written PDF).
 
 Covers everything: the problem, the core idea, how it works, architecture and
-file map, policy rules, datasets, detectors, the real-AI arena and scoreboard,
+file map, policy rules, datasets, detectors, the scoreboard,
 evaluation and rigor, all real results, how to run it, limits, prior work, the
 build history, a glossary, and the demo script.
 
@@ -226,9 +226,9 @@ def B() -> list[tuple[str, str]]:
        "email_classifier.py (TF-IDF + logistic regression phishing/spam, with explanations).")
     li("aegis/agent - a scripted agent that is deliberately fully fooled (worst case), plus llm_agent that "
        "drives a real model (Gemini/OpenAI/Ollama) in naive or careful mode; tasks, scenarios, runner.")
-    li("aegis/eval - benchmark, baselines, oracle, metrics, the methodological freeze, email-classifier "
-       "evaluation, and the real-AI arena.")
-    li("aegis/web - the stdlib dashboard (http.server + vanilla JS): Overview, Guided demo, Real AI arena, "
+    li("aegis/eval - benchmark, baselines, oracle, metrics, the methodological freeze, and the "
+       "email-classifier evaluation.")
+    li("aegis/web - the stdlib dashboard (http.server + vanilla JS): Overview, Guided demo, "
        "Scoreboard, Test your own email, Try it yourself, Results, How it's built.")
     li("aegis/data - synthetic data: dev/held-out attack scenarios and the email corpora.")
 
@@ -270,14 +270,14 @@ def B() -> list[tuple[str, str]]:
       "auth-header rule (SPF/DMARC not pass) scores ~1.00 on the corpus partly because of a corpus artifact "
       "(all phishing has failing auth) - this is called out, not hidden.")
 
-    h1("10. Real-AI arena and Scoreboard")
-    p("Beyond the scripted agent, Aegis puts a real model (Gemini) in the loop. The Real AI arena sends "
-      "poisoned emails to the model with and without Aegis: unprotected, the model is driven into the "
-      "forbidden action; behind Aegis the forbidden action is blocked while the legitimate task still "
-      "completes. The Scoreboard runs a whole corpus in one batched pass (many emails per API call, not one) "
-      "and shows a head-to-head - your AI vs Gemini - for attacks stopped, got through, hard phishing caught, "
-      "false alarms, and accuracy, with difficulty breakdown. Answers a rate-limited model never returned are "
-      "counted as flagged and surfaced as a caveat, never hidden.")
+    h1("10. The Scoreboard (your AI vs a real model)")
+    p("Aegis can put a real model (Gemini, OpenAI or a local model) in the loop via the llm_agent adapter - "
+      "which is also how you run Aegis in front of your own AI. The Scoreboard uses this to compare "
+      "detectors: it runs a whole corpus in one batched pass (many emails per API call, not one) and shows a "
+      "head-to-head - your AI vs Gemini - for attacks stopped, got through, hard phishing caught, false "
+      "alarms, and accuracy, with a difficulty breakdown. Answers a rate-limited model never returned are "
+      "counted as flagged and surfaced as a caveat, never hidden. The classifier is a bonus signal; the "
+      "gateway, not any model, is the security boundary.")
 
     h1("11. Evaluation and rigor")
     li("Benchmark (python -m aegis.eval): runs attack and benign scenarios through A/B/C/D and measures "
@@ -315,7 +315,6 @@ def B() -> list[tuple[str, str]]:
     code("python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json")
     code("python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json \\")
     code("        --llm --batch 25 --delay 4 --json results/scoreboard.json")
-    code("python scripts/run_real_ai_benchmark.py --suite aegis/data/email_corpus_500.json --limit 200")
     p(".env for the real-model parts: AEGIS_LLM_PROVIDER=gemini, AEGIS_LLM_MODEL=gemini-2.5-flash, "
       "AEGIS_LLM_API_KEY=AIza... (an AI Studio key). Gemini and pip need network, so run those on your "
       "own machine.")
@@ -345,7 +344,7 @@ def B() -> list[tuple[str, str]]:
        "provider.")
     li("PR #8 Windows CRLF freeze-hash fix. PR #9 model listing. PR #10 retry/backoff. PR #11 unparsed-"
        "answer reporting and larger max_tokens.")
-    li("PR #12 judge-friendly dashboard. PR #13 'Test your own email' upload. PR #14 real-AI arena.")
+    li("PR #12 judge-friendly dashboard. PR #13 'Test your own email' upload.")
     li("PR #15 500-email corpus builder + eval. PR #16 one-shot scoreboard (your AI vs Gemini). "
        "PR #17 honest reporting when Gemini batches are rate-limited.")
     li("PR #18 Tech Eximus pitch pack. PR #19 scoreboard difficulty breakdown + --json. PR #20 live "
@@ -377,9 +376,7 @@ def B() -> list[tuple[str, str]]:
        "action. 'It just got socially engineered by plain text.'")
     li("3. Same email with Aegis (45s): BLOCKED, with the rule shown. 'Same attack, model still fooled, "
        "action never happened.'")
-    li("4. Real AI arena (45s): unprotected Gemini is tricked; behind Aegis it is blocked and the real task "
-       "still completes.")
-    li("5. Numbers (30s): open the Scoreboard page or the held-out results. 'Measured honestly - held-out "
+    li("4. Numbers (30s): open the Scoreboard page or the held-out results. 'Measured honestly - held-out "
        "data, nothing cherry-picked.' Close: 'The AI can be fooled. The wall still holds.'")
 
     return b

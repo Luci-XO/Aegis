@@ -93,7 +93,7 @@ function renderScoreboard() {
       + "Rerun with gemini-2.5-flash and a smaller --batch for a clean full comparison." }));
   }
   host.append(el("p", { class: "muted small", text:
-    "The classifier is a bonus signal \u2014 not the security boundary. Even a perfect detector doesn't stop an agent from acting; Aegis's policy gateway does (see the Real AI arena)." }));
+    "The classifier is a bonus signal \u2014 not the security boundary. Even a perfect detector doesn't stop an agent from acting; Aegis's policy gateway does (see the Guided demo)." }));
 }
 
 function pctCell(sys, acc) {
