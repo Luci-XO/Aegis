@@ -103,7 +103,7 @@ just never happened."
 - Attacks stopped **98%** · hard phishing **90%** · false alarms **9%** ·
   accuracy **96%**.
 
-**Why trust it:** 322 tests · 26/26 planted bugs caught · rules frozen before
+**Why trust it:** 316 tests · 26/26 planted bugs caught · rules frozen before
 the test attacks were written · standard-library only.
 
 **Speaker notes (30s):** "And we measured it properly. Unprotected, attacks

@@ -104,8 +104,11 @@ def main() -> int:
           f"{sum(e['label'] == 'LEGIT' for e in emails)} legit) | your AI backend: {backend}")
 
     # Your AI: honest grouped cross-validation (never tested on a template it trained on).
+    # Hybrid = classifier OR >=2 independent text red flags, which catches template
+    # families the model never trained on without adding false alarms.
     print("scoring your AI (grouped cross-validation)...")
-    my_preds, _ = ev.cross_validate(emails, lambda: EmailClassifier(backend, use_headers=True), grouped=True)
+    my_preds, _ = ev.cross_validate(
+        emails, lambda: EmailClassifier(backend, use_headers=True, use_rules=True), grouped=True)
     my = tally(emails, my_preds)
 
     print_board(f"Your AI ({backend})", my)

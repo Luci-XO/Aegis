@@ -11,7 +11,14 @@ import pytest
 
 from aegis.agent.llm_client import LLMError, OpenAICompatibleClient, client_from_env, load_env_file
 from aegis.detect.base import SafeDetector
-from aegis.detect.email_classifier import ClassifierDetector, EmailClassifier, featurize, red_flags
+from aegis.detect.email_classifier import (
+    ClassifierDetector,
+    EmailClassifier,
+    featurize,
+    lookalike_domain,
+    red_flags,
+    text_red_flags,
+)
 from aegis.eval import email_eval as ev
 
 EMAILS = ev.load_corpus()
@@ -94,6 +101,54 @@ def test_detector_adapter_feeds_aegis_and_fails_safe(trained):
     assert hi is not None and lo is not None and hi.score > lo.score
     with pytest.raises(ValueError):
         ClassifierDetector(EmailClassifier("stdlib", use_headers=True))
+
+
+# --- smarter detector: lookalike domains + hybrid rules ----------------------
+
+@pytest.mark.parametrize("addr", ["x@paypa1.example", "a@g00gle.example", "b@amaz0n.com"])
+def test_lookalike_domain_flags_digit_for_letter_fakes(addr):
+    assert lookalike_domain(addr) is not None
+
+
+@pytest.mark.parametrize("addr", ["x@paypal.example", "a@office365.com", "b@s3.example",
+                                  "c@govt-notice-india.example", "", "no-at-sign"])
+def test_lookalike_domain_leaves_real_domains_alone(addr):
+    assert lookalike_domain(addr) is None
+
+
+def test_lookalike_domain_shows_up_as_a_red_flag():
+    faked = {"from": "security@paypa1.example", "subject": "Verify", "body": "hello", "attachments": []}
+    assert any("looks faked" in f for f in red_flags(faked))
+
+
+def test_text_red_flags_ignore_headers():
+    # text_red_flags must not depend on auth/reply-to, so the hybrid lift is honest.
+    e = BY_ID["E003"]
+    flags = text_red_flags(e)
+    assert flags and all("authentication" not in f and "Reply-To" not in f for f in flags)
+
+
+def test_hybrid_rules_escalate_a_missed_family_without_new_false_alarms():
+    """Grouped CV: hybrid (classifier OR >=2 text red flags) must raise recall
+    over the plain classifier and keep zero false positives on legit email."""
+    def base():
+        return EmailClassifier("stdlib", use_headers=True)
+
+    def hybrid():
+        return EmailClassifier("stdlib", use_headers=True, use_rules=True)
+
+    _, plain = ev.cross_validate(EMAILS, base, grouped=True)
+    _, smart = ev.cross_validate(EMAILS, hybrid, grouped=True)
+    assert smart["malicious"]["recall"] > plain["malicious"]["recall"]
+    assert smart["malicious"]["precision"] == 1.0
+    assert smart["fpr_legit"] == 0.0
+
+
+def test_hybrid_only_overrides_a_legit_call_never_the_reverse():
+    # A plain-legit email with no text red flags stays LEGIT even with rules on.
+    plain = EmailClassifier("stdlib", use_rules=True).fit(EMAILS, [e["label"] for e in EMAILS])
+    assert plain.predict([BY_ID["E004"]])[0].label == "LEGIT"
+    assert "+rules" in plain.name
 
 
 # --- evaluation --------------------------------------------------------------
