@@ -49,13 +49,10 @@ Have the dashboard already running: `python -m aegis.web` → http://127.0.0.1:8
    with the reason shown ("action `send_external` denied by policy; not in the
    task's allowed scope"). "Same attack. The model still fell for it — but the
    action never happened."
-4. **Real AI arena (45s).** "We didn't just test our own agent. We put a real
-   model, Gemini, behind Aegis." Show the arena: unprotected Gemini gets
-   driven into the forbidden action; behind Aegis the forbidden action is
-   blocked while the legitimate task still completes.
-5. **Numbers (30s).** "And we measured it honestly." Open the **Scoreboard**
-   page (your AI vs Gemini, animated bars) or flash the held-out results slide.
-   "Held-out data, nothing cherry-picked."
+4. **Numbers (30s).** "And we measured it honestly — and compared our detector
+   against a real model." Open the **Scoreboard** page (your AI vs Gemini,
+   animated bars) or flash the held-out results slide. "Held-out data, nothing
+   cherry-picked."
 
 Close: "The agent can be as gullible as it likes. Aegis is the wall."
 
@@ -111,8 +108,8 @@ the classifier off entirely and the gateway still blocks the attack.
 **"The data is synthetic — is this real?"**
 The *threat model* is real and current (OWASP's top LLM risk). Data is
 synthetic by design: it's safe to demo, reproducible, and lets us label every
-case. The gateway logic is identical on real traffic; the arena already runs a
-real model (Gemini), not a toy.
+case. The gateway logic is identical on real traffic; the Scoreboard already
+runs a real model (Gemini), not a toy.
 
 **"How is this different from existing research (CaMeL, Progent)?"**
 Those are research designs. Aegis is a working, testable, explainable gateway
@@ -120,9 +117,9 @@ you can run live in 30 seconds, model-agnostic, with an honest benchmark
 attached. We're demonstrating the idea end-to-end, not claiming new theory.
 
 **"Can't you just prompt GPT/Gemini to refuse?"**
-We tried — that's the arena. A careful prompt helps but still gets bypassed
-(attack success drops but isn't zero). Deterministic policy is the only part
-that goes to zero, because it doesn't depend on the model's judgement.
+We tried it. A careful prompt helps but still gets bypassed (attack success
+drops but isn't zero). Deterministic policy is the only part that goes to zero,
+because it doesn't depend on the model's judgement.
 
 **"Does the safety break normal use?"**
 No — utility stayed at 100% on legitimate tasks. Aegis blocks the forbidden
