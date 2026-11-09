@@ -225,7 +225,8 @@ def B() -> list[tuple[str, str]]:
     li("aegis/detect - advisory detectors: rules.py (prompt-injection text rules, 'rules-v1') and "
        "email_classifier.py (TF-IDF + logistic regression phishing/spam, with explanations).")
     li("aegis/agent - a scripted agent that is deliberately fully fooled (worst case), plus llm_agent that "
-       "drives a real model (Gemini/OpenAI/Ollama) in naive or careful mode; tasks, scenarios, runner.")
+       "drives a real model (any OpenAI-compatible API or local Ollama) in naive or careful mode; tasks, "
+       "scenarios, runner.")
     li("aegis/eval - benchmark, baselines, oracle, metrics, the methodological freeze, and the "
        "email-classifier evaluation.")
     li("aegis/web - the stdlib dashboard (http.server + vanilla JS): Overview, Guided demo, "
@@ -270,14 +271,12 @@ def B() -> list[tuple[str, str]]:
       "auth-header rule (SPF/DMARC not pass) scores ~1.00 on the corpus partly because of a corpus artifact "
       "(all phishing has failing auth) - this is called out, not hidden.")
 
-    h1("10. The Scoreboard (your AI vs a real model)")
-    p("Aegis can put a real model (Gemini, OpenAI or a local model) in the loop via the llm_agent adapter - "
-      "which is also how you run Aegis in front of your own AI. The Scoreboard uses this to compare "
-      "detectors: it runs a whole corpus in one batched pass (many emails per API call, not one) and shows a "
-      "head-to-head - your AI vs Gemini - for attacks stopped, got through, hard phishing caught, false "
-      "alarms, and accuracy, with a difficulty breakdown. Answers a rate-limited model never returned are "
-      "counted as flagged and surfaced as a caveat, never hidden. The classifier is a bonus signal; the "
-      "gateway, not any model, is the security boundary.")
+    h1("10. The Scoreboard (how your AI scores)")
+    p("Aegis can put a real model (any OpenAI-compatible API or a local model) in the loop via the llm_agent "
+      "adapter - which is also how you run Aegis in front of your own AI. The Scoreboard scores the email "
+      "classifier on a whole corpus in one pass and shows attacks stopped, got through, hard phishing "
+      "caught, false alarms, and accuracy, with a difficulty breakdown. It runs offline with no API keys. "
+      "The classifier is a bonus signal; the gateway, not any model, is the security boundary.")
 
     h1("11. Evaluation and rigor")
     li("Benchmark (python -m aegis.eval): runs attack and benign scenarios through A/B/C/D and measures "
@@ -302,10 +301,6 @@ def B() -> list[tuple[str, str]]:
     li("500-email corpus (grouped CV, real run on the owner's machine): attacks stopped 351/360 = 98%; "
        "missed 9/360 = 2%; hard phishing caught 82/91 = 90%; legit kept 127/140 = 91%; false alarms "
        "13/140 = 9%; overall accuracy 96%.")
-    li("Gemini head-to-head: the first full run hit HTTP 429 (free-tier rate limit) on 6 of 20 batches, so "
-       "150/500 answers were missing and counted as flagged - that run is not a clean comparison. Re-run "
-       "with gemini-2.5-flash and a smaller batch for a fair number. Typically a frontier LLM matches on "
-       "recall but false-alarms far more on hard-negative legit email, where the local classifier wins.")
 
     h1("13. How to run")
     code("python -m pytest                 # full test suite")
@@ -314,10 +309,10 @@ def B() -> list[tuple[str, str]]:
     code("python scripts/build_corpus_500.py")
     code("python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json")
     code("python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json \\")
-    code("        --llm --batch 25 --delay 4 --json results/scoreboard.json")
-    p(".env for the real-model parts: AEGIS_LLM_PROVIDER=gemini, AEGIS_LLM_MODEL=gemini-2.5-flash, "
-      "AEGIS_LLM_API_KEY=AIza... (an AI Studio key). Gemini and pip need network, so run those on your "
-      "own machine.")
+    code("        --json results/scoreboard.json")
+    p(".env for the optional real-model parts: AEGIS_LLM_PROVIDER=openai (or ollama for local), "
+      "AEGIS_LLM_MODEL=gpt-4o-mini, AEGIS_LLM_API_KEY=... for hosted APIs. Hosted models and pip need "
+      "network, so run those on your own machine.")
 
     h1("14. Threat model and honest limits")
     p("We assume the LLM can be fully compromised by injected instructions and that content it reads is "
@@ -340,13 +335,13 @@ def B() -> list[tuple[str, str]]:
     li("PR #1 security core (gateway, policy, approvals, audit); 111 tests, 18/18 mutants.")
     li("PR #2 detector, tasks, agents, runner. PR #3 benchmark, freeze, held-out split.")
     li("PR #4 stdlib dashboard. PR #5 report, demo script, clean-clone validation.")
-    li("PR #6 merged core, Python 3.10 support, troubleshooting. PR #7 email corpus, classifier, Gemini "
-       "provider.")
+    li("PR #6 merged core, Python 3.10 support, troubleshooting. PR #7 email corpus, classifier, LLM "
+       "provider adapter.")
     li("PR #8 Windows CRLF freeze-hash fix. PR #9 model listing. PR #10 retry/backoff. PR #11 unparsed-"
        "answer reporting and larger max_tokens.")
     li("PR #12 judge-friendly dashboard. PR #13 'Test your own email' upload.")
-    li("PR #15 500-email corpus builder + eval. PR #16 one-shot scoreboard (your AI vs Gemini). "
-       "PR #17 honest reporting when Gemini batches are rate-limited.")
+    li("PR #15 500-email corpus builder + eval. PR #16 one-shot scoreboard. "
+       "PR #17 honest reporting for unreadable model answers.")
     li("PR #18 Tech Eximus pitch pack. PR #19 scoreboard difficulty breakdown + --json. PR #20 live "
        "Scoreboard dashboard page. PR #21 explainer doc + 7-slide deck + .pptx.")
 

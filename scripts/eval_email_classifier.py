@@ -4,7 +4,6 @@ Usage:
   python scripts/eval_email_classifier.py                  # built-in 100-email corpus
   python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json
   python scripts/eval_email_classifier.py --backend sklearn
-  python scripts/eval_email_classifier.py --llm --delay 4  # also Gemini/OpenAI judge (needs .env)
   python scripts/eval_email_classifier.py --json results/email_eval.json
 
 Build the 500-email corpus first with: python scripts/build_corpus_500.py
@@ -41,8 +40,6 @@ def main() -> int:
     ap.add_argument("--corpus", default=None,
                     help="path to a corpus JSON (default: built-in 100-email corpus). "
                          "Build the 500-email corpus with scripts/build_corpus_500.py")
-    ap.add_argument("--llm", action="store_true", help="also run an LLM judge (AEGIS_LLM_* in env or .env)")
-    ap.add_argument("--delay", type=float, default=0.0, help="seconds between LLM calls (free-tier rate limits)")
     ap.add_argument("--json", help="write full results to this path")
     a = ap.parse_args()
 
@@ -72,34 +69,6 @@ def main() -> int:
                                      grouped=grouped)
             results[f"{label} / {split}"] = s
             lines.append(row(label, split, s))
-
-    if a.llm:
-        from aegis.agent.llm_client import client_from_env
-
-        client = client_from_env()
-        if client is None:
-            print("--llm needs AEGIS_LLM_PROVIDER, AEGIS_LLM_MODEL and AEGIS_LLM_API_KEY (env or .env)")
-            return 2
-        print(f"LLM judge: {client.model} via {client.base_url}")
-        from aegis.agent.llm_client import LLMError
-
-        try:
-            _, s, details = ev.llm_judge(emails, client, delay_s=a.delay)
-        except LLMError as exc:
-            print(f"\nLLM judge stopped: {exc}")
-            print("The non-LLM results above are still valid.")
-            return 1
-        results["llm judge"] = {**s, "model": client.model, "details": details}
-        bad = s["errors_unparsed"]
-        lines.append(row(f"LLM judge ({client.model})", f"all {n} (zero-shot, {bad} unparsed = flagged)", s))
-        if s.get("parsed_only") and bad:
-            po = s["parsed_only"]
-            lines.append(row(f"LLM judge ({client.model})", f"parsed answers only (n={po['n']})", po))
-        if bad:
-            samples = [d for d in details if d["pred"] == "ERROR"][:3]
-            print(f"\n{bad} of 100 Gemini answers could not be parsed. First examples:")
-            for d in samples:
-                print(f"  {d['id']}: {d['red_flags'][0] if d['red_flags'] else ''} | reply: {d['raw_reply']!r}")
 
     print("\n".join(lines))
     best = results["classifier (text) / 5-fold grouped by template"]

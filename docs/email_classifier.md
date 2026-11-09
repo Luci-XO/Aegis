@@ -1,4 +1,4 @@
-# Email threat classifier (scikit-learn optional) and Gemini judge
+# Email threat classifier (scikit-learn optional)
 
 This adds an ML detector for **phishing and spam emails**, trained and
 evaluated on the 100-email "Gmail Security Agent - Test Corpus" (E001 to E100,
@@ -10,7 +10,7 @@ this one looks for emails that try to scam a person.
 |---|---|
 | `aegis/data/email_corpus.json` | The corpus as structured data (built by `scripts/build_email_corpus.py`) |
 | `aegis/detect/email_classifier.py` | TF-IDF + logistic regression, `stdlib` or `sklearn` backend, red-flag explanations, Aegis detector adapter |
-| `aegis/eval/email_eval.py` | Metrics, grouped cross-validation, rule baselines, LLM judge |
+| `aegis/eval/email_eval.py` | Metrics, grouped cross-validation, rule baselines |
 | `scripts/eval_email_classifier.py` | One command that prints the comparison table |
 
 ## Run it in VS Code (your machine)
@@ -38,31 +38,14 @@ this one looks for emails that try to scam a person.
 Without scikit-learn installed, `--backend auto` (the default) falls back to
 the built-in pure-Python model, so everything still runs.
 
-## Gemini as an LLM judge (optional)
+## Plugging in a real model (optional)
 
-1. Get a **new** key at <https://aistudio.google.com/apikey>. Gemini API keys
-   normally begin with `AIza`.
-2. Copy `.env.example` to `.env` (already git-ignored) and set:
-
-   ```
-   AEGIS_LLM_PROVIDER=gemini
-   AEGIS_LLM_MODEL=<id from scripts/list_llm_models.py>
-   AEGIS_LLM_API_KEY=your-new-key
-   ```
-
-3. Run `python scripts/eval_email_classifier.py --llm --delay 4`. The delay
-   keeps you under free-tier rate limits. A bad key shows as `HTTP 401` or
-   `HTTP 403`, a wrong model name as `HTTP 404` or `400`.
-
-The same `.env` also drives the agent benchmark with a real model:
+The same `.env` drives the agent benchmark with a real model:
 `python -m aegis.eval --agent llm` and `python scripts/run_scenarios.py --agent llm`.
-
-Aegis talks to Gemini through Google's
-[OpenAI-compatible endpoint](https://ai.google.dev/gemini-api/docs/openai)
-(`https://generativelanguage.googleapis.com/v1beta/openai`), using only the
-standard library. Email text is sent between `<email>` tags with an
-instruction to ignore anything inside them; an unparseable reply is counted as
-flagged, never as safe.
+Set `AEGIS_LLM_PROVIDER` to `openai` (hosted) or `ollama` (local), plus
+`AEGIS_LLM_MODEL` and, for hosted APIs, `AEGIS_LLM_API_KEY`. Any
+OpenAI-compatible API works by setting `AEGIS_LLM_BASE_URL` explicitly. Aegis
+talks to it using only the standard library.
 
 ## Results (built-in backend, measured in the build sandbox)
 
@@ -107,10 +90,9 @@ moves recall by about 2 points.
 - 100 emails and 36 templates is small; confidence intervals are wide.
 - The red-flag rules were written while reading this corpus, so their score
   is a development measurement, not a held-out result.
-- The scikit-learn backend and the live Gemini judge have **not** been run in
-  the build sandbox (no package downloads or outbound network there). They
-  are covered by tests that skip without scikit-learn and by a fake LLM
-  client. Run them on your machine to get those numbers.
+- The scikit-learn backend has **not** been run in the build sandbox (no
+  package downloads there). It is covered by tests that skip without
+  scikit-learn. Run it on your machine to get those numbers.
 - The classifier is not part of the frozen agent benchmark, so the published
   Aegis benchmark numbers are unchanged. `ClassifierDetector` lets you plug it
   into the gateway as a risk signal, which (like any detector) can only
@@ -123,5 +105,5 @@ A second evaluation set of **500 synthetic emails** (325 phishing / 140 legit /
 `python scripts/build_corpus_500.py` and evaluate with
 `python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json`.
 Its Hard split (lookalike domains, conversation hijacking, low-urgency BEC,
-hard-negative legitimate mail) is where a classifier and a real model such as
-Gemini diverge most. See [docs/corpus_500.md](corpus_500.md).
+hard-negative legitimate mail) is where a classifier and a real model diverge
+most. See [docs/corpus_500.md](corpus_500.md).

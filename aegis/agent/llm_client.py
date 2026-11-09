@@ -43,7 +43,7 @@ class OpenAICompatibleClient:
     api_key: str | None = None
     temperature: float = 0.0
     timeout_s: float = 60.0
-    # Generous default: "thinking" models (e.g. Gemini 3.x) spend tokens reasoning before
+    # Generous default: "thinking" models spend tokens reasoning before
     # answering, and a low limit cuts the visible answer off.
     max_tokens: int = 4096
     retries: int = 4  # extra attempts for temporary failures (429, 500, 502, 503, 504, network)
@@ -109,8 +109,6 @@ class OpenAICompatibleClient:
 PROVIDER_BASE_URLS = {
     "openai": "https://api.openai.com/v1",
     "ollama": "http://localhost:11434/v1",
-    # Gemini's OpenAI-compatible endpoint: https://ai.google.dev/gemini-api/docs/openai
-    "gemini": "https://generativelanguage.googleapis.com/v1beta/openai",
 }
 
 
