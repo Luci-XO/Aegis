@@ -91,6 +91,14 @@ class _BenchmarkCache:
             return self._data
 
 
+# "Test your own email" choices: agent -> (protection config, is the assistant fooled?)
+CUSTOM_AGENTS: dict[str, tuple[str, bool]] = {
+    "normal": ("A_unprotected", True),   # fooled assistant, no protection
+    "careful": ("A_unprotected", False),  # assistant that ignores the email's instructions
+    "aegis": ("D_aegis", True),          # fooled assistant behind Aegis
+}
+
+
 def _llm_factory(agent: Any, mode: Any) -> Any:
     """None for the simulated assistant; otherwise a factory for a real-model agent."""
     if agent in (None, "simulated"):
@@ -287,22 +295,24 @@ class Handler(BaseHTTPRequestHandler):
         self._send_json(out)
 
     def _custom(self) -> None:
-        """Run a user-supplied email without and with Aegis."""
+        """Run a user-supplied email through the chosen assistant."""
+        from aegis.agent.scripted import ScriptedAgent
         from aegis.web.custom import CustomEmailError, analyze, build_custom_scenario, parse_email
 
         data = self._read_json(limit=MAX_UPLOAD)
-        raw, task, agent = data.get("raw"), data.get("task", "reply"), data.get("agent", "simulated")
-        if agent not in ("simulated", "llm"):
-            raise SessionError("agent must be 'simulated' or 'llm'")
+        raw, task, agent = data.get("raw"), data.get("task", "reply"), data.get("agent", "normal")
+        if agent not in CUSTOM_AGENTS:
+            raise SessionError("agent must be one of: " + ", ".join(CUSTOM_AGENTS))
         try:
             email = parse_email(raw if isinstance(raw, str) else "")
             scenario, plan = build_custom_scenario(email, str(task))
         except CustomEmailError as exc:
             raise SessionError(str(exc)) from None
-        factory = _llm_factory(agent, data.get("mode"))
-        out = {side: InteractiveSession(secrets.token_hex(16), scenario, cfg, "intent", agent_factory=factory).snapshot()
-               for side, cfg in (("left", "A_unprotected"), ("right", "D_aegis"))}
-        self._send_json({"email": email, "plan": plan, "analysis": analyze(email), "agent": agent, **out})
+        config, fooled = CUSTOM_AGENTS[agent]
+        # The not-fooled assistant does only the user's task: no injected actions.
+        factory = None if fooled else ScriptedAgent
+        run = InteractiveSession(secrets.token_hex(16), scenario, config, "intent", agent_factory=factory).snapshot()
+        self._send_json({"email": email, "plan": plan, "analysis": analyze(email), "agent": agent, "run": run})
 
     def _find_scenario(self, scenario_id: Any):
         if not isinstance(scenario_id, str):
