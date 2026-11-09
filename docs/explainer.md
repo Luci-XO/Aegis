@@ -131,7 +131,7 @@ and you can't forge one without the secret.
 | `aegis/core` | The gateway, the policy engine, approval tokens, the audit log, and the base rule types. This is the security-critical core — pure standard library, no AI. |
 | `aegis/tools` | Simulated tools (mail, filesystem, payments) in a sandbox environment, so attacks can be demonstrated safely. |
 | `aegis/detect` | The advisory detectors: `rules.py` (prompt-injection text rules, "rules-v1") and `email_classifier.py` (TF-IDF + logistic-regression phishing/spam classifier with explanations). |
-| `aegis/agent` | The agents: a *scripted* agent that is deliberately fully fooled (worst case), and an `llm_agent` that drives a real model (Gemini/OpenAI/Ollama) in naive or careful mode. Plus tasks, scenarios, and the runner. |
+| `aegis/agent` | The agents: a *scripted* agent that is deliberately fully fooled (worst case), and an `llm_agent` that drives a real model (any OpenAI-compatible API or local Ollama) in naive or careful mode. Plus tasks, scenarios, and the runner. |
 | `aegis/eval` | The benchmark, baselines, oracle, metrics, the methodological freeze, and the email-classifier evaluation. |
 | `aegis/web` | The stdlib dashboard (http.server + vanilla JS): Overview, Guided demo, Scoreboard, Test your own email, Try it yourself, Results, How it's built. |
 | `aegis/data` | Synthetic data: the dev/held-out attack scenarios and the email corpora. |
@@ -212,19 +212,18 @@ pure standard-library core.
 
 ---
 
-## 9. The Scoreboard (your AI vs a real model)
+## 9. The Scoreboard (how your AI scores)
 
-Aegis can put a **real model (Gemini, OpenAI or a local model)** in the loop via
-the `llm_agent` adapter — that is also how you run Aegis in front of your own
-AI (see section 11). The **Scoreboard** uses this to compare detectors: it runs
-a whole email corpus in one batched pass and shows a head-to-head — your AI vs
-Gemini — on attacks stopped, got through, hard phishing caught, false alarms and
-accuracy, broken down by difficulty. Honest caveats (e.g. answers a rate-limited
-model never returned) are surfaced, not hidden. The classifier is a bonus
-signal; the gateway, not any model, is the security boundary.
+Aegis can put a **real model (any OpenAI-compatible API or a local model)** in
+the loop via the `llm_agent` adapter — that is also how you run Aegis in front
+of your own AI (see section 11). The **Scoreboard** scores the email classifier
+on a whole corpus in one pass and shows attacks stopped, got through, hard
+phishing caught, false alarms and accuracy, broken down by difficulty. It runs
+offline with no API keys. The classifier is a bonus signal; the gateway, not
+any model, is the security boundary.
 
-Both run on your machine (they need network + an API key); the dashboard reads
-the saved results so the demo itself needs no live API.
+The scoreboard runs on your machine; the dashboard reads the saved results so
+the demo itself needs no setup.
 
 ---
 
@@ -258,12 +257,13 @@ python -m aegis.web                   # http://127.0.0.1:8000
 python scripts/build_corpus_500.py    # build the 500-email corpus from the labels CSV
 python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json
 
-# head-to-head: your AI vs Gemini (needs .env + network)
-python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --llm --batch 25 --delay 4 --json results/scoreboard.json
+# scoreboard: score your AI on the corpus (offline)
+python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --json results/scoreboard.json
 ```
 
-`.env` (for the real-model parts): `AEGIS_LLM_PROVIDER=gemini`,
-`AEGIS_LLM_MODEL=gemini-2.5-flash`, `AEGIS_LLM_API_KEY=AIza...` (an AI Studio key).
+`.env` (for the optional real-model parts): `AEGIS_LLM_PROVIDER=openai` (or
+`ollama` for local), `AEGIS_LLM_MODEL=gpt-4o-mini`, and `AEGIS_LLM_API_KEY=...`
+for hosted APIs.
 
 ---
 

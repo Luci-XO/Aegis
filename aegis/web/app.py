@@ -113,7 +113,7 @@ def _llm_factory(agent: Any, mode: Any) -> Any:
 
 
 def _scoreboard_results() -> dict[str, Any]:
-    """Head-to-head written by scripts/scoreboard.py --json results/scoreboard.json."""
+    """Scoreboard written by scripts/scoreboard.py --json results/scoreboard.json."""
     import os
 
     path = Path(os.environ.get("AEGIS_SCOREBOARD_RESULTS", "results/scoreboard.json"))

@@ -1,21 +1,16 @@
-"""Head-to-head scoreboard: your AI vs a real AI (Gemini) on one email corpus.
+"""Scoreboard: how your AI does on one email corpus, scored honestly.
 
 Runs the whole corpus in one go and prints a single table: how many attacks
-each system STOPPED, how many GOT THROUGH, and how many legit emails each one
+the filter STOPPED, how many GOT THROUGH, and how many legit emails it
 false-alarmed on. No per-email streaming.
 
-  python scripts/scoreboard.py                                   # your AI only, built-in 100-email corpus
+  python scripts/scoreboard.py                                   # built-in 100-email corpus
   python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json
-  python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --llm --batch 25 --delay 4
+  python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --json results/scoreboard.json
 
 "Your AI" is the Aegis email classifier scored with 5-fold grouped-by-template
 cross-validation: it is tested only on templates it never trained on, so this
-is its honest number. Gemini is zero-shot. With --llm, Gemini classifies the
-corpus in batches of --batch emails per call (so 500 emails is ~20 calls, not
-500), which is fast and stays under free-tier rate limits.
-
-Gemini needs AEGIS_LLM_* in .env and outbound network, so run --llm on your own
-machine. Without --llm it prints your AI's column only and works offline.
+is its honest number. Everything here runs offline with no API keys.
 """
 
 from __future__ import annotations
@@ -32,8 +27,8 @@ from aegis.eval import email_eval as ev
 
 
 def tally(emails: list[dict[str, Any]], preds: list[str]) -> dict[str, Any]:
-    """Count stopped / got-through / false-alarms. A prediction of ERROR (e.g. an
-    answer the model never returned) counts as 'flagged', never as safe."""
+    """Count stopped / got-through / false-alarms. A prediction that is not a
+    usable label counts as 'flagged', never as safe."""
     flagged = [p in MALICIOUS or p == "ERROR" for p in preds]
     mal = [e["label"] in MALICIOUS for e in emails]
     legit = [not m for m in mal]
@@ -59,7 +54,6 @@ def tally(emails: list[dict[str, Any]], preds: list[str]) -> dict[str, Any]:
         "legit": n_legit, "kept": n_legit - false_alarms, "false_alarms": false_alarms,
         "hard_total": hard_total, "hard_stopped": hard_stopped,
         "accuracy": correct / len(emails) if emails else 0.0,
-        "unparsed": preds.count("ERROR"),
         "by_difficulty": by_diff,
     }
 
@@ -68,49 +62,36 @@ def pct(num: int, den: int) -> str:
     return f"{num}/{den} ({(100 * num / den):.0f}%)" if den else "n/a"
 
 
-def print_board(a_name: str, a: dict[str, Any], b_name: str | None, b: dict[str, Any] | None) -> None:
-    cols = [a] if b is None else [a, b]
-    names = [a_name] if b is None else [a_name, b_name]
+def print_board(a_name: str, a: dict[str, Any]) -> None:
     w = 22
-    head = "  ".join(f"{n:>{w}}" for n in names)
+    head = f"{a_name:>{w}}"
     print(f"\n{'':30}{head}")
     print("-" * (30 + len(head) + 2))
 
     def line(label: str, key: str, den_key: str) -> None:
-        cells = "  ".join(f"{pct(c[key], c[den_key]):>{w}}" for c in cols)
-        print(f"{label:30}{cells}")
+        print(f"{label:30}{pct(a[key], a[den_key]):>{w}}")
 
     print(f"{'ATTACKS (phishing + spam)':30}")
     line("  stopped by the filter", "stopped", "malicious")
     line("  GOT THROUGH (missed)", "got_through", "malicious")
-    if cols[0]["hard_total"]:
+    if a["hard_total"]:
         line("  of those, Hard phishing caught", "hard_stopped", "hard_total")
     print(f"{'LEGITIMATE email':30}")
     line("  kept (correct)", "kept", "legit")
     line("  false alarms", "false_alarms", "legit")
-    diffs = [d for d in ("Easy", "Medium", "Hard") if any(d in c["by_difficulty"] for c in cols)]
+    diffs = [d for d in ("Easy", "Medium", "Hard") if d in a["by_difficulty"]]
     if diffs:
         print(f"{'ATTACKS stopped by difficulty':30}")
         for d in diffs:
-            cells = "  ".join(
-                f"{pct(c['by_difficulty'].get(d, {}).get('stopped', 0), c['by_difficulty'].get(d, {}).get('malicious', 0)):>{w}}"
-                for c in cols)
-            print(f"{'  ' + d:30}{cells}")
-    accs = "  ".join(f"{(100 * c['accuracy']):>{w - 1}.0f}%" for c in cols)
-    print(f"{'OVERALL accuracy':30}{accs}")
-    if any(c["unparsed"] for c in cols):
-        uns = "  ".join(f"{c['unparsed']:>{w}}" for c in cols)
-        print(f"{'  (unreadable answers*)':30}{uns}")
-        print("\n* answers the model did not return in a usable form; counted as flagged, never as safe.")
+            slot = a["by_difficulty"].get(d, {})
+            print(f"{'  ' + d:30}{pct(slot.get('stopped', 0), slot.get('malicious', 0)):>{w}}")
+    print(f"{'OVERALL accuracy':30}{(100 * a['accuracy']):>{w - 1}.0f}%")
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--corpus", default=None, help="corpus JSON (default: built-in 100-email corpus)")
     ap.add_argument("--backend", choices=["auto", "stdlib", "sklearn"], default="auto")
-    ap.add_argument("--llm", action="store_true", help="also run Gemini/OpenAI (needs AEGIS_LLM_* in .env)")
-    ap.add_argument("--batch", type=int, default=25, help="emails per model call when --llm (default 25)")
-    ap.add_argument("--delay", type=float, default=4.0, help="seconds between model calls")
     ap.add_argument("--json", dest="json_out", default=None,
                     help="also write the scoreboard to this JSON path (e.g. results/scoreboard.json, "
                          "which the dashboard's Scoreboard page reads)")
@@ -127,40 +108,7 @@ def main() -> int:
     my_preds, _ = ev.cross_validate(emails, lambda: EmailClassifier(backend, use_headers=True), grouped=True)
     my = tally(emails, my_preds)
 
-    gem_name: str | None = None
-    gem: dict[str, Any] | None = None
-    gem_preds: list[str] | None = None
-    if a.llm:
-        from aegis.agent.llm_client import LLMError, client_from_env
-
-        client = client_from_env()
-        if client is None:
-            print("--llm needs AEGIS_LLM_PROVIDER, AEGIS_LLM_MODEL and AEGIS_LLM_API_KEY in .env")
-            return 2
-        runs = -(-len(emails) // a.batch)
-        print(f"scoring Gemini ({client.model}): {len(emails)} emails in {runs} batches of {a.batch}...")
-        try:
-            gem_preds, _, _ = ev.llm_judge_batch(emails, client, batch_size=a.batch, delay_s=a.delay)
-        except LLMError as exc:
-            print(f"\nGemini run stopped: {exc}\nYour AI's column above is still valid.")
-            gem_preds = None
-        if gem_preds is not None:
-            gem_name = f"Gemini ({client.model})"
-            gem = tally(emails, gem_preds)
-
-    print_board(f"Your AI ({backend})", my, gem_name, gem)
-    if gem is not None and gem["unparsed"] and gem_preds is not None:
-        answered = [(e, p) for e, p in zip(emails, gem_preds, strict=True) if p != "ERROR"]
-        po = tally([e for e, _ in answered], [p for _, p in answered])
-        print(f"\nNote: Gemini returned a usable answer for only {len(answered)}/{len(emails)} emails; the "
-              f"{gem['unparsed']} missing ones (likely rate-limited batches) are counted as flagged above, "
-              f"which inflates both its 'stopped' and its 'false alarms'.")
-        print(f"On just the {len(answered)} it answered ({po['malicious']} malicious, {po['legit']} legit): "
-              f"attacks stopped {pct(po['stopped'], po['malicious'])}, "
-              f"false alarms {pct(po['false_alarms'], po['legit'])}, accuracy {po['accuracy'] * 100:.0f}%.")
-        print("Rerun with gemini-2.5-flash and a smaller --batch (e.g. 10) to get all 500 for a fair comparison.")
-    if not a.llm:
-        print("\nAdd --llm (with .env set, on a networked machine) to put Gemini in the right-hand column.")
+    print_board(f"Your AI ({backend})", my)
 
     if a.json_out:
         import json
@@ -171,7 +119,6 @@ def main() -> int:
             "malicious": sum(e["label"] in MALICIOUS for e in emails),
             "legit": sum(e["label"] == "LEGIT" for e in emails),
             "your_ai": {"name": f"Your AI ({backend})", **my},
-            "gemini": ({"name": gem_name, **gem} if gem else None),
         }
         Path(a.json_out).parent.mkdir(parents=True, exist_ok=True)
         Path(a.json_out).write_text(json.dumps(out, indent=2), encoding="utf-8")

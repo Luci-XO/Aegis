@@ -563,7 +563,7 @@ function initCustom() {
 function setLlmOption(llm) {
   const sel = $("custom-agent");
   const opt = el("option", { value: "llm", text: llm && llm.available
-    ? "Real AI: " + llm.model + " (reads the email itself)" : "Real AI (add a Gemini key to .env to enable)" });
+    ? "Real AI: " + llm.model + " (reads the email itself)" : "Real AI (add a model to .env to enable)" });
   if (!(llm && llm.available)) opt.disabled = true;
   sel.append(opt);
 }

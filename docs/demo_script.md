@@ -60,7 +60,7 @@ fooled assistant would try, and the side-by-side result. Good one to use:
 `2-polite-customer-data-request.eml`, which the scanner misses and Aegis still blocks.
 
 Say: "The simulated assistant is deliberately fully fooled; it does whatever the
-email asks. With a Gemini key in `.env` you can switch to a real AI."
+email asks. With a model configured in `.env` you can switch to a real AI."
 
 ## If the judges want to try it
 

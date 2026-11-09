@@ -100,7 +100,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 8 0 R >>
 endobj
 10 0 obj
-<< /Length 4446 >>
+<< /Length 4467 >>
 stream
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 705.5 Tm (Security-critical core; pure standard library, no AI.) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 689.0 Tm (- aegis/tools - simulated tools \(mail, filesystem, payments\) in a sandbox, so attacks are) Tj ET
@@ -108,8 +108,8 @@ stream
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 658.0 Tm (- aegis/detect - advisory detectors: rules.py \(prompt-injection text rules, 'rules-v1'\) and) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 643.5 Tm (email_classifier.py \(TF-IDF + logistic regression phishing/spam, with explanations\).) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 627.0 Tm (- aegis/agent - a scripted agent that is deliberately fully fooled \(worst case\), plus) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 612.5 Tm (llm_agent that drives a real model \(Gemini/OpenAI/Ollama\) in naive or careful mode; tasks,) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 598.0 Tm (scenarios, runner.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 612.5 Tm (llm_agent that drives a real model \(any OpenAI-compatible API or local Ollama\) in naive or) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 598.0 Tm (careful mode; tasks, scenarios, runner.) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 581.5 Tm (- aegis/eval - benchmark, baselines, oracle, metrics, the methodological freeze, and the) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 567.0 Tm (email-classifier evaluation.) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 550.5 Tm (- aegis/web - the stdlib dashboard \(http.server + vanilla JS\): Overview, Guided demo,) Tj ET
@@ -143,7 +143,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 10 0 R >>
 endobj
 12 0 obj
-<< /Length 4782 >>
+<< /Length 4654 >>
 stream
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 705.5 Tm (204 Medium, 135 Easy. Hard items use lookalike/homoglyph domains, conversation hijacking off a) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 691.0 Tm (fabricated thread, low-urgency business-email-compromise, quiet CFO impersonation, OAuth-consent) Tj ET
@@ -161,24 +161,24 @@ stream
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 478.5 Tm (held out\), which is the fair number; random folds leak near-duplicate templates and inflate it.) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 464.0 Tm (An auth-header rule \(SPF/DMARC not pass\) scores ~1.00 on the corpus partly because of a corpus) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 449.5 Tm (artifact \(all phishing has failing auth\) - this is called out, not hidden.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 406.5 Tm (10. The Scoreboard \(your AI vs a real model\)) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 386.0 Tm (Aegis can put a real model \(Gemini, OpenAI or a local model\) in the loop via the llm_agent) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 371.5 Tm (adapter - which is also how you run Aegis in front of your own AI. The Scoreboard uses this to) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 357.0 Tm (compare detectors: it runs a whole corpus in one batched pass \(many emails per API call, not) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 342.5 Tm (one\) and shows a head-to-head - your AI vs Gemini - for attacks stopped, got through, hard) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 328.0 Tm (phishing caught, false alarms, and accuracy, with a difficulty breakdown. Answers a rate-limited) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 313.5 Tm (model never returned are counted as flagged and surfaced as a caveat, never hidden. The) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 299.0 Tm (classifier is a bonus signal; the gateway, not any model, is the security boundary.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 256.0 Tm (11. Evaluation and rigor) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 235.5 Tm (- Benchmark \(python -m aegis.eval\): runs attack and benign scenarios through A/B/C/D and) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 221.0 Tm (measures attack success, unauthorised tool executions, and utility.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 204.5 Tm (- Held-out split: 15 held-out attack scenarios written after the rules were frozen.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 188.0 Tm (- Methodological freeze: hashes of the policy, policy engine and detector recorded in) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 173.5 Tm (aegis/eval/freeze.json before the held-out split existed; a test fails if they change.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 157.0 Tm (- Mutation testing: 26 planted security bugs, 26/26 caught by the tests.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 140.5 Tm (- Invariant/fuzz testing: 13,865 randomised attack attempts executed 0 forbidden actions.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 124.0 Tm (- 322 automated tests, across Python 3.10 to 3.14.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 84.0 Tm (12. Results \(all from real runs\)) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 406.5 Tm (10. The Scoreboard \(how your AI scores\)) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 386.0 Tm (Aegis can put a real model \(any OpenAI-compatible API or a local model\) in the loop via the) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 371.5 Tm (llm_agent adapter - which is also how you run Aegis in front of your own AI. The Scoreboard) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 357.0 Tm (scores the email classifier on a whole corpus in one pass and shows attacks stopped, got) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 342.5 Tm (through, hard phishing caught, false alarms, and accuracy, with a difficulty breakdown. It runs) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 328.0 Tm (offline with no API keys. The classifier is a bonus signal; the gateway, not any model, is the) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 313.5 Tm (security boundary.) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 270.5 Tm (11. Evaluation and rigor) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 250.0 Tm (- Benchmark \(python -m aegis.eval\): runs attack and benign scenarios through A/B/C/D and) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 235.5 Tm (measures attack success, unauthorised tool executions, and utility.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 219.0 Tm (- Held-out split: 15 held-out attack scenarios written after the rules were frozen.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 202.5 Tm (- Methodological freeze: hashes of the policy, policy engine and detector recorded in) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 188.0 Tm (aegis/eval/freeze.json before the held-out split existed; a test fails if they change.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 171.5 Tm (- Mutation testing: 26 planted security bugs, 26/26 caught by the tests.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 155.0 Tm (- Invariant/fuzz testing: 13,865 randomised attack attempts executed 0 forbidden actions.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 138.5 Tm (- 322 automated tests, across Python 3.10 to 3.14.) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 98.5 Tm (12. Results \(all from real runs\)) Tj ET
+0.12 0.23 0.37 rg BT /F2 13 Tf 1 0 0 1 54.0 64.5 Tm (12.1 Enforcement \(held-out attacks\)) Tj ET
 
 endstream
 endobj
@@ -186,42 +186,41 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 12 0 R >>
 endobj
 14 0 obj
-<< /Length 4417 >>
+<< /Length 4215 >>
 stream
-0.12 0.23 0.37 rg BT /F2 13 Tf 1 0 0 1 54.0 703.0 Tm (12.1 Enforcement \(held-out attacks\)) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 684.5 Tm (- Attack success: A unprotected 100%, B detector-only 70%, C/D with Aegis 10%.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 668.0 Tm (- Unauthorised tool executions: 18 unprotected -> 0 with Aegis.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 651.5 Tm (- Utility \(legitimate tasks completed\): 100% - safety did not break normal work.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 635.0 Tm (- 0 forbidden actions across 13,865 randomised attack attempts. The detector alone caught) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 620.5 Tm (only 3/10 held-out attacks, which is why the gateway, not the detector, is the boundary.) Tj ET
-0.12 0.23 0.37 rg BT /F2 13 Tf 1 0 0 1 54.0 590.5 Tm (12.2 Email detector) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 572.0 Tm (- 100-email corpus \(grouped CV\): text F1 0.91, text+headers F1 0.97; via the scoreboard, 94%) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 557.5 Tm (of attacks stopped, 0 false alarms, 97% accuracy.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 541.0 Tm (- 500-email corpus \(grouped CV, real run on the owner's machine\): attacks stopped 351/360 =) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 526.5 Tm (98%; missed 9/360 = 2%; hard phishing caught 82/91 = 90%; legit kept 127/140 = 91%; false) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 512.0 Tm (alarms 13/140 = 9%; overall accuracy 96%.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 495.5 Tm (- Gemini head-to-head: the first full run hit HTTP 429 \(free-tier rate limit\) on 6 of 20) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 481.0 Tm (batches, so 150/500 answers were missing and counted as flagged - that run is not a clean) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 466.5 Tm (comparison. Re-run with gemini-2.5-flash and a smaller batch for a fair number. Typically a) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 452.0 Tm (frontier LLM matches on recall but false-alarms far more on hard-negative legit email, where) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 437.5 Tm (the local classifier wins.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 397.5 Tm (13. How to run) Tj ET
-0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 377.0 Tm (python -m pytest                 # full test suite) Tj ET
-0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 356.5 Tm (python -m aegis.eval             # enforcement benchmark \(A/B/C/D\)) Tj ET
-0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 336.0 Tm (python -m aegis.web              # dashboard at http://127.0.0.1:8000) Tj ET
-0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 315.5 Tm (python scripts/build_corpus_500.py) Tj ET
-0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 295.0 Tm (python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json) Tj ET
-0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 274.5 Tm (python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json \\) Tj ET
-0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 254.0 Tm (        --llm --batch 25 --delay 4 --json results/scoreboard.json) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 233.5 Tm (.env for the real-model parts: AEGIS_LLM_PROVIDER=gemini, AEGIS_LLM_MODEL=gemini-2.5-flash,) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 219.0 Tm (AEGIS_LLM_API_KEY=AIza... \(an AI Studio key\). Gemini and pip need network, so run those on your) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 204.5 Tm (own machine.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 161.5 Tm (14. Threat model and honest limits) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 141.0 Tm (We assume the LLM can be fully compromised by injected instructions and that content it reads is) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 126.5 Tm (untrusted. We defend the actions: no action outside the user's task, no exfiltration of) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 112.0 Tm (confidential data, no high-impact action without a valid matching human approval.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 92.5 Tm (- Aegis controls which actions run and where data goes, not the wording of a reply the user) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 78.0 Tm (already authorised.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 705.5 Tm (- Attack success: A unprotected 100%, B detector-only 70%, C/D with Aegis 10%.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 689.0 Tm (- Unauthorised tool executions: 18 unprotected -> 0 with Aegis.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 672.5 Tm (- Utility \(legitimate tasks completed\): 100% - safety did not break normal work.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 656.0 Tm (- 0 forbidden actions across 13,865 randomised attack attempts. The detector alone caught) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 641.5 Tm (only 3/10 held-out attacks, which is why the gateway, not the detector, is the boundary.) Tj ET
+0.12 0.23 0.37 rg BT /F2 13 Tf 1 0 0 1 54.0 611.5 Tm (12.2 Email detector) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 593.0 Tm (- 100-email corpus \(grouped CV\): text F1 0.91, text+headers F1 0.97; via the scoreboard, 94%) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 578.5 Tm (of attacks stopped, 0 false alarms, 97% accuracy.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 562.0 Tm (- 500-email corpus \(grouped CV, real run on the owner's machine\): attacks stopped 351/360 =) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 547.5 Tm (98%; missed 9/360 = 2%; hard phishing caught 82/91 = 90%; legit kept 127/140 = 91%; false) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 533.0 Tm (alarms 13/140 = 9%; overall accuracy 96%.) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 493.0 Tm (13. How to run) Tj ET
+0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 472.5 Tm (python -m pytest                 # full test suite) Tj ET
+0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 452.0 Tm (python -m aegis.eval             # enforcement benchmark \(A/B/C/D\)) Tj ET
+0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 431.5 Tm (python -m aegis.web              # dashboard at http://127.0.0.1:8000) Tj ET
+0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 411.0 Tm (python scripts/build_corpus_500.py) Tj ET
+0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 390.5 Tm (python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json) Tj ET
+0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 370.0 Tm (python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json \\) Tj ET
+0.10 0.30 0.20 rg BT /F3 9 Tf 1 0 0 1 64.0 349.5 Tm (        --json results/scoreboard.json) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 329.0 Tm (.env for the optional real-model parts: AEGIS_LLM_PROVIDER=openai \(or ollama for local\),) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 314.5 Tm (AEGIS_LLM_MODEL=gpt-4o-mini, AEGIS_LLM_API_KEY=... for hosted APIs. Hosted models and pip need) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 300.0 Tm (network, so run those on your own machine.) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 257.0 Tm (14. Threat model and honest limits) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 236.5 Tm (We assume the LLM can be fully compromised by injected instructions and that content it reads is) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 222.0 Tm (untrusted. We defend the actions: no action outside the user's task, no exfiltration of) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 207.5 Tm (confidential data, no high-impact action without a valid matching human approval.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 188.0 Tm (- Aegis controls which actions run and where data goes, not the wording of a reply the user) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 173.5 Tm (already authorised.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 157.0 Tm (- A human who approves a clearly-shown harmful message can still cause harm.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 140.5 Tm (- Results are on a synthetic test set: they demonstrate the design, not a guarantee against) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 126.0 Tm (every attack. Policies are hand-written today; learning/scaling them is the honest next) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 111.5 Tm (step.) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 71.5 Tm (15. Prior work and our delta) Tj ET
 
 endstream
 endobj
@@ -229,42 +228,44 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 14 0 R >>
 endobj
 16 0 obj
-<< /Length 4502 >>
+<< /Length 4968 >>
 stream
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 705.5 Tm (- A human who approves a clearly-shown harmful message can still cause harm.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 689.0 Tm (- Results are on a synthetic test set: they demonstrate the design, not a guarantee against) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 674.5 Tm (every attack. Policies are hand-written today; learning/scaling them is the honest next) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 660.0 Tm (step.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 620.0 Tm (15. Prior work and our delta) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 599.5 Tm (Aegis is an engineering implementation of current ideas, not a new theory: Progent \(2025, tool-) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 585.0 Tm (level permission policies\), CaMeL \(2025, separating instructions from data\), design patterns for) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 570.5 Tm (securing LLM agents \(2025\), and the evaluation style of AgentDojo \(NeurIPS 2024\). Our delta: a) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 556.0 Tm (working, testable, explainable gateway you can run live in 30 seconds, model-agnostic, with an) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 541.5 Tm (honest benchmark, a freeze, mutation testing, and a dashboard attached.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 498.5 Tm (16. Build history) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 478.0 Tm (- PR #1 security core \(gateway, policy, approvals, audit\); 111 tests, 18/18 mutants.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 461.5 Tm (- PR #2 detector, tasks, agents, runner. PR #3 benchmark, freeze, held-out split.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 445.0 Tm (- PR #4 stdlib dashboard. PR #5 report, demo script, clean-clone validation.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 428.5 Tm (- PR #6 merged core, Python 3.10 support, troubleshooting. PR #7 email corpus, classifier,) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 414.0 Tm (Gemini provider.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 397.5 Tm (- PR #8 Windows CRLF freeze-hash fix. PR #9 model listing. PR #10 retry/backoff. PR #11) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 383.0 Tm (unparsed-answer reporting and larger max_tokens.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 366.5 Tm (- PR #12 judge-friendly dashboard. PR #13 'Test your own email' upload.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 350.0 Tm (- PR #15 500-email corpus builder + eval. PR #16 one-shot scoreboard \(your AI vs Gemini\). PR) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 335.5 Tm (#17 honest reporting when Gemini batches are rate-limited.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 319.0 Tm (- PR #18 Tech Eximus pitch pack. PR #19 scoreboard difficulty breakdown + --json. PR #20) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 304.5 Tm (live Scoreboard dashboard page. PR #21 explainer doc + 7-slide deck + .pptx.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 264.5 Tm (17. Glossary) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 244.0 Tm (- Agent: an LLM that can call tools and take actions.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 227.5 Tm (- Prompt injection: hiding instructions in content the agent reads.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 211.0 Tm (- Policy gateway: the deterministic checkpoint every action passes through.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 194.5 Tm (- Egress control: the rule that confidential data cannot leave the org.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 178.0 Tm (- Approval token: a signed, single-use, expiring permission bound to one exact action.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 161.5 Tm (- Grouped cross-validation: testing the classifier only on templates it never trained on.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 145.0 Tm (- Mutation testing: planting bugs to check the tests actually catch them.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 128.5 Tm (- Held-out split: attacks written after the rules were frozen.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 88.5 Tm (18. One-paragraph summary) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 68.0 Tm (AI agents can now read your email and act on it. The danger is that anything they read can) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 705.5 Tm (Aegis is an engineering implementation of current ideas, not a new theory: Progent \(2025, tool-) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 691.0 Tm (level permission policies\), CaMeL \(2025, separating instructions from data\), design patterns for) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 676.5 Tm (securing LLM agents \(2025\), and the evaluation style of AgentDojo \(NeurIPS 2024\). Our delta: a) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 662.0 Tm (working, testable, explainable gateway you can run live in 30 seconds, model-agnostic, with an) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 647.5 Tm (honest benchmark, a freeze, mutation testing, and a dashboard attached.) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 604.5 Tm (16. Build history) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 584.0 Tm (- PR #1 security core \(gateway, policy, approvals, audit\); 111 tests, 18/18 mutants.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 567.5 Tm (- PR #2 detector, tasks, agents, runner. PR #3 benchmark, freeze, held-out split.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 551.0 Tm (- PR #4 stdlib dashboard. PR #5 report, demo script, clean-clone validation.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 534.5 Tm (- PR #6 merged core, Python 3.10 support, troubleshooting. PR #7 email corpus, classifier,) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 520.0 Tm (LLM provider adapter.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 503.5 Tm (- PR #8 Windows CRLF freeze-hash fix. PR #9 model listing. PR #10 retry/backoff. PR #11) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 489.0 Tm (unparsed-answer reporting and larger max_tokens.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 472.5 Tm (- PR #12 judge-friendly dashboard. PR #13 'Test your own email' upload.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 456.0 Tm (- PR #15 500-email corpus builder + eval. PR #16 one-shot scoreboard. PR #17 honest) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 441.5 Tm (reporting for unreadable model answers.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 425.0 Tm (- PR #18 Tech Eximus pitch pack. PR #19 scoreboard difficulty breakdown + --json. PR #20) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 410.5 Tm (live Scoreboard dashboard page. PR #21 explainer doc + 7-slide deck + .pptx.) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 370.5 Tm (17. Glossary) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 350.0 Tm (- Agent: an LLM that can call tools and take actions.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 333.5 Tm (- Prompt injection: hiding instructions in content the agent reads.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 317.0 Tm (- Policy gateway: the deterministic checkpoint every action passes through.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 300.5 Tm (- Egress control: the rule that confidential data cannot leave the org.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 284.0 Tm (- Approval token: a signed, single-use, expiring permission bound to one exact action.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 267.5 Tm (- Grouped cross-validation: testing the classifier only on templates it never trained on.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 251.0 Tm (- Mutation testing: planting bugs to check the tests actually catch them.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 234.5 Tm (- Held-out split: attacks written after the rules were frozen.) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 194.5 Tm (18. One-paragraph summary) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 174.0 Tm (AI agents can now read your email and act on it. The danger is that anything they read can) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 159.5 Tm (secretly instruct them, and telling the model to be careful does not hold, because noticing an) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 145.0 Tm (attack and refusing to act are different things. Aegis is a deterministic policy gateway between) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 130.5 Tm (the agent and its tools: every action is checked against the user's real task before it runs,) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 116.0 Tm (and dangerous actions need a signed, single-use human approval bound to that exact action. So) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 101.5 Tm (the AI can be completely fooled and the attack still fails. Tested against a real model,) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 87.0 Tm (unprotected it was tricked 100% of the time; behind Aegis, blocked, with normal tasks still) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 72.5 Tm (working - and measured honestly, with held-out data, a frozen rule-set, and mutation testing.) Tj ET
 
 endstream
 endobj
@@ -272,23 +273,16 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 16 0 R >>
 endobj
 18 0 obj
-<< /Length 2158 >>
+<< /Length 1062 >>
 stream
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 705.5 Tm (secretly instruct them, and telling the model to be careful does not hold, because noticing an) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 691.0 Tm (attack and refusing to act are different things. Aegis is a deterministic policy gateway between) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 676.5 Tm (the agent and its tools: every action is checked against the user's real task before it runs,) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 662.0 Tm (and dangerous actions need a signed, single-use human approval bound to that exact action. So) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 647.5 Tm (the AI can be completely fooled and the attack still fails. Tested against a real model,) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 633.0 Tm (unprotected it was tricked 100% of the time; behind Aegis, blocked, with normal tasks still) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 618.5 Tm (working - and measured honestly, with held-out data, a frozen rule-set, and mutation testing.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 575.5 Tm (19. Three-minute demo script) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 555.0 Tm (- 1. Overview \(15s\): an AI email assistant with real tools.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 538.5 Tm (- 2. Guided demo without Aegis \(45s\): a hidden-instruction email drives the agent into the) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 524.0 Tm (forbidden action. 'It just got socially engineered by plain text.') Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 507.5 Tm (- 3. Same email with Aegis \(45s\): BLOCKED, with the rule shown. 'Same attack, model still) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 493.0 Tm (fooled, action never happened.') Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 476.5 Tm (- 4. Numbers \(30s\): open the Scoreboard page or the held-out results. 'Measured honestly -) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 462.0 Tm (held-out data, nothing cherry-picked.' Close: 'The AI can be fooled. The wall still holds.') Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 698.0 Tm (19. Three-minute demo script) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 677.5 Tm (- 1. Overview \(15s\): an AI email assistant with real tools.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 661.0 Tm (- 2. Guided demo without Aegis \(45s\): a hidden-instruction email drives the agent into the) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 646.5 Tm (forbidden action. 'It just got socially engineered by plain text.') Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 630.0 Tm (- 3. Same email with Aegis \(45s\): BLOCKED, with the rule shown. 'Same attack, model still) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 615.5 Tm (fooled, action never happened.') Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 599.0 Tm (- 4. Numbers \(30s\): open the Scoreboard page or the held-out results. 'Measured honestly -) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 584.5 Tm (held-out data, nothing cherry-picked.' Close: 'The AI can be fooled. The wall still holds.') Tj ET
 
 endstream
 endobj
@@ -308,17 +302,17 @@ xref
 0000004922 00000 n
 0000009449 00000 n
 0000009595 00000 n
-0000014094 00000 n
-0000014242 00000 n
-0000019077 00000 n
-0000019225 00000 n
-0000023695 00000 n
-0000023843 00000 n
-0000028398 00000 n
-0000028546 00000 n
-0000030757 00000 n
+0000014115 00000 n
+0000014263 00000 n
+0000018970 00000 n
+0000019118 00000 n
+0000023386 00000 n
+0000023534 00000 n
+0000028555 00000 n
+0000028703 00000 n
+0000029818 00000 n
 trailer
 << /Size 20 /Root 1 0 R >>
 startxref
-30905
+29966
 %%EOF

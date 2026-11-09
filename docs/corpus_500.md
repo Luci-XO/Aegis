@@ -16,7 +16,7 @@ This complements the built-in 100-email corpus. Its value for a demo is the
 **Hard** split: hard-negative legitimate email (marketing, internal notices,
 security alerts that are genuinely benign) and hard adversarial phishing that
 reads clean. That gap — false positives on hard negatives, recall on hard
-phishing — is where a classifier and a real model such as Gemini differ most.
+phishing — is where a classifier and a real model differ most.
 
 ## Why this isn't committed in full
 
@@ -59,7 +59,7 @@ is noted in the corpus JSON's `source` field so the provenance is never hidden.
 
 ```bash
 python scripts/eval_email_classifier.py --corpus aegis/data/email_corpus_500.json
-# add --backend sklearn to use scikit-learn, --llm --delay 4 to add a Gemini judge
+# add --backend sklearn to use scikit-learn
 ```
 
 Read the **5-fold grouped-by-template** row as the honest number for the
@@ -69,42 +69,34 @@ templates across folds and reads higher; it is shown only as a contrast. Watch
 `FPR tricky` (false positives on the Hard-negative legitimate set) — the
 single most informative column on this corpus.
 
-## Head-to-head scoreboard: your AI vs Gemini
+## Scoreboard: how your AI scores
 
-One command, the whole corpus, one table — how many attacks each system
-**stopped**, how many **got through**, and how many legit emails each one
+One command, the whole corpus, one table — how many attacks the filter
+**stopped**, how many **got through**, and how many legit emails it
 false-alarmed on:
 
 ```bash
-python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json            # your AI only (offline)
-python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --llm --batch 25 --delay 4 --json results/scoreboard.json
+python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --json results/scoreboard.json
 ```
 
 Add `--json results/scoreboard.json` and the dashboard shows it live: start
 `python -m aegis.web`, open http://127.0.0.1:8000, and click **Scoreboard** for
-an animated your-AI-vs-Gemini view (stopped / got through / hard phishing /
-false alarms / accuracy). The CLI also prints an Easy/Medium/Hard breakdown of
-attacks stopped.
+an animated view (stopped / got through / hard phishing / false alarms /
+accuracy). The CLI also prints an Easy/Medium/Hard breakdown of attacks
+stopped.
 
 ```
-                                   Your AI (sklearn)  Gemini (gemini-3.6-flash)
+                                   Your AI (sklearn)
 ATTACKS (phishing + spam)
-  stopped by the filter                 ... / 360          ... / 360
-  GOT THROUGH (missed)                  ... / 360          ... / 360
-  of those, Hard phishing caught        ... / 161          ... / 161
+  stopped by the filter                 ... / 360
+  GOT THROUGH (missed)                  ... / 360
+  of those, Hard phishing caught        ... / 161
 LEGITIMATE email
-  kept (correct)                        ... / 140          ... / 140
-  false alarms                          ... / 140          ... / 140
-OVERALL accuracy                            ...%               ...%
+  kept (correct)                        ... / 140
+  false alarms                          ... / 140
+OVERALL accuracy                            ...%
 ```
 
 "Your AI" is the Aegis classifier scored with 5-fold grouped-by-template
 cross-validation (tested only on templates it never trained on — its honest
-number). Gemini is zero-shot. With `--llm`, Gemini classifies the corpus in
-**batches of `--batch` emails per call**, so 500 emails is about 20 calls, not
-500 — fast and under free-tier limits. An answer the model fails to return is
-counted as *flagged*, never as safe.
-
-Gemini calls and `pip install` only work on your own machine — this build
-sandbox has no outbound network — so run the `--llm` step locally and send back
-the result table or a screenshot.
+number). Everything runs offline with no API keys.

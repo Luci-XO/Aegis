@@ -49,10 +49,9 @@ Have the dashboard already running: `python -m aegis.web` → http://127.0.0.1:8
    with the reason shown ("action `send_external` denied by policy; not in the
    task's allowed scope"). "Same attack. The model still fell for it — but the
    action never happened."
-4. **Numbers (30s).** "And we measured it honestly — and compared our detector
-   against a real model." Open the **Scoreboard** page (your AI vs Gemini,
-   animated bars) or flash the held-out results slide. "Held-out data, nothing
-   cherry-picked."
+4. **Numbers (30s).** "And we measured it honestly." Open the **Scoreboard**
+   page (animated bars) or flash the held-out results slide. "Held-out data,
+   nothing cherry-picked."
 
 Close: "The agent can be as gullible as it likes. Aegis is the wall."
 
@@ -108,15 +107,15 @@ the classifier off entirely and the gateway still blocks the attack.
 **"The data is synthetic — is this real?"**
 The *threat model* is real and current (OWASP's top LLM risk). Data is
 synthetic by design: it's safe to demo, reproducible, and lets us label every
-case. The gateway logic is identical on real traffic; the Scoreboard already
-runs a real model (Gemini), not a toy.
+case. The gateway logic is identical on real traffic, and it's model-agnostic —
+you can plug in any real model, not a toy.
 
 **"How is this different from existing research (CaMeL, Progent)?"**
 Those are research designs. Aegis is a working, testable, explainable gateway
 you can run live in 30 seconds, model-agnostic, with an honest benchmark
 attached. We're demonstrating the idea end-to-end, not claiming new theory.
 
-**"Can't you just prompt GPT/Gemini to refuse?"**
+**"Can't you just prompt the model to refuse?"**
 We tried it. A careful prompt helps but still gets bypassed (attack success
 drops but isn't zero). Deterministic policy is the only part that goes to zero,
 because it doesn't depend on the model's judgement.

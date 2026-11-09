@@ -57,11 +57,11 @@ python -m aegis.web                # dashboard at http://127.0.0.1:8000
 python scripts/mutation_check.py   # inject 26 security bugs, confirm tests catch them
 python scripts/eval_email_classifier.py   # phishing/spam classifier on the 100-email corpus
 python scripts/build_corpus_500.py        # build the 500-email adversarial corpus (see docs/corpus_500.md)
-python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json  # your AI vs Gemini, one table
+python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json  # score your AI, one table
 ```
 
 Optional extras: `pip install scikit-learn` for the scikit-learn classifier
-backend, and a Gemini key in `.env` for real-model runs. See
+backend, and an OpenAI-compatible model in `.env` for real-model runs. See
 [docs/email_classifier.md](docs/email_classifier.md).
 
 To try a real model later, set `AEGIS_LLM_PROVIDER`, `AEGIS_LLM_MODEL` and
@@ -190,7 +190,7 @@ OWASP LLM01 (Prompt Injection) and LLM06 (Excessive Agency) in the
 - [docs/benchmark.md](docs/benchmark.md) - benchmark methodology
 - [docs/benchmark_results.md](docs/benchmark_results.md) - generated results snapshot
 - [docs/dashboard.md](docs/dashboard.md) - dashboard and HTTP API
-- [docs/email_classifier.md](docs/email_classifier.md) - phishing/spam classifier (optional scikit-learn), Gemini judge, VS Code setup
+- [docs/email_classifier.md](docs/email_classifier.md) - phishing/spam classifier (optional scikit-learn), VS Code setup
 - [docs/demo_script.md](docs/demo_script.md) - three-minute live demo script
 
 ## Contribution, in one paragraph
