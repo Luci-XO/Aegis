@@ -231,11 +231,13 @@ class _StdlibTfidfLogReg:
 # ---------------------------------------------------------------- sklearn model
 
 class _SklearnTfidfLogReg:
-    def __init__(self, C: float = 10.0) -> None:
+    def __init__(self, C: float = 10.0, min_df: int = 1) -> None:
+        import numpy as np
         from sklearn.feature_extraction.text import TfidfVectorizer
         from sklearn.linear_model import LogisticRegression
 
-        self.vec = TfidfVectorizer(analyzer=lambda toks: toks, lowercase=False, sublinear_tf=False)
+        self.vec = TfidfVectorizer(analyzer=lambda toks: toks, lowercase=False, sublinear_tf=False,
+                                   min_df=min_df, dtype=np.float32)
         self.clf = LogisticRegression(C=C, max_iter=2000)
         self.classes: list[str] = []
         self._names: Any = None  # feature names, built once after fit (it is slow on a big vocabulary)
@@ -292,9 +294,16 @@ class Verdict:
 
 
 class EmailClassifier:
-    def __init__(self, backend: str = "auto", use_headers: bool = False, use_rules: bool = False) -> None:
+    def __init__(self, backend: str = "auto", use_headers: bool = False, use_rules: bool = False,
+                 min_df: int = 1) -> None:
+        """min_df: ignore features seen in fewer than this many training emails.
+        1 (the default) keeps everything; 2 shrinks the vocabulary a lot on large
+        corpora and speeds training without hurting accuracy much."""
         if backend not in ("auto", "stdlib", "sklearn"):
             raise ValueError("backend must be auto, stdlib or sklearn")
+        if min_df < 1:
+            raise ValueError("min_df must be at least 1")
+        self.min_df = min_df
         if backend == "sklearn" and not sklearn_available():
             raise ImportError("scikit-learn is not installed: pip install scikit-learn")
         self.backend = "sklearn" if backend == "sklearn" or (backend == "auto" and sklearn_available()) \
@@ -312,7 +321,8 @@ class EmailClassifier:
         if len(emails) != len(labels) or not emails:
             raise ValueError("emails and labels must be non-empty and the same length")
         docs = [featurize(e, self.use_headers) for e in emails]
-        self._model = _SklearnTfidfLogReg() if self.backend == "sklearn" else _StdlibTfidfLogReg()
+        self._model = (_SklearnTfidfLogReg(min_df=self.min_df) if self.backend == "sklearn"
+                       else _StdlibTfidfLogReg(min_df=self.min_df))
         self._model.fit(docs, labels)
         return self
 
@@ -338,6 +348,19 @@ class EmailClassifier:
             out.append(Verdict(label, {c: round(v, 4) for c, v in probs.items()}, round(p_mal, 4),
                                model.top_features(toks, label), flags))
         return out
+
+    def predict_labels(self, emails: Sequence[Mapping[str, Any]]) -> list[str]:
+        """Labels only, scored in one batch: the same decisions as predict(), without
+        building per-email explanations. Use this for large evaluations."""
+        model = self._require()
+        docs = [featurize(e, self.use_headers) for e in emails]
+        labels = []
+        for e, probs in zip(emails, model.predict_proba(docs), strict=True):
+            label = max(probs, key=lambda c: probs[c])
+            if self.use_rules and label == "LEGIT" and len(text_red_flags(e)) >= RULE_ESCALATION_MIN_FLAGS:
+                label = "PHISHING"
+            labels.append(label)
+        return labels
 
 
 class ClassifierDetector:
