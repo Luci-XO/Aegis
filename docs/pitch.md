@@ -84,13 +84,14 @@ Close: "The agent can be as gullible as it likes. Aegis is the wall."
   normal work.
 - 13,865 randomised attack attempts: **0 forbidden actions executed.**
 
-**Email detector (a bonus signal, 500-email adversarial corpus):**
-- Attacks stopped **98%** (351/360); hard phishing caught **90%** (82/91).
-- False alarms **9%** (13/140) — far below what an LLM-only filter does.
-- Overall accuracy **96%**, free, offline, and explainable.
+**Email classifier on real email (a bonus signal, 56k real emails, held-out):**
+- Real phishing stopped **97.7%** (461/472), false alarms **4.9%** on real business email.
+- Real spam stopped **99.7%** (8,995/9,026), false alarms **1.0%**.
+- The same model trained only on synthetic data stopped 26% of real spam, which is why we
+  train on real email. Full method: [real_email_results.md](real_email_results.md).
 
 **Engineering credibility (for a technical audience):**
-- 322 automated tests; 26/26 mutation-testing kills on the security core.
+- 320+ automated tests; 26/26 mutation-testing kills on the security core.
 - Frozen evaluation (hashed policy + detector recorded before the held-out
   split was written), so results can't be quietly tuned.
 - Pure standard library core — no hidden dependencies, runs anywhere.

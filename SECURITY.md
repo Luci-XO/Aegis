@@ -62,7 +62,7 @@ Secrets & data:
 
 ## How we look for bugs (repeatable)
 
-- **322 automated tests**, across Python 3.10–3.14.
+- **320+ automated tests**, across Python 3.10–3.14.
 - **Mutation testing**: 26 planted security bugs, 26/26 caught by the tests
   (`python scripts/mutation_check.py`).
 - **Invariant / fuzz testing**: 13,865 randomised attack attempts executed
