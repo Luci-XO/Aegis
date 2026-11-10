@@ -4,13 +4,34 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aegis"
-version = "0.1.0"
+version = "0.2.0"
 description = "Deterministic policy enforcement for AI-agent tool calls"
 readme = "README.md"
 license = { text = "MIT" }
+authors = [{ name = "Ayan (Luci-XO)" }]
 requires-python = ">=3.10"
+keywords = ["ai-agents", "llm-security", "prompt-injection", "policy-enforcement", "guardrails"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Security",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
 # The security core intentionally has no third-party runtime dependencies.
 dependencies = []
+
+[project.urls]
+Repository = "https://github.com/Luci-XO/Aegis"
+Security = "https://github.com/Luci-XO/Aegis/blob/main/SECURITY.md"
+
+[project.scripts]
+aegis-dashboard = "aegis.web.__main__:main"
+aegis-benchmark = "aegis.eval.benchmark:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]

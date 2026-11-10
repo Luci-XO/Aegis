@@ -562,9 +562,9 @@ function initCustom() {
 
 // Who reads the email on the "Test your own email" page.
 const CUSTOM_AGENT_INFO = {
-  normal: { name: "Normal AI", sub: "A typical assistant with no protection. It gets fooled and does whatever the email asks, with the user's full permissions.", cls: "bad" },
-  careful: { name: "Not-fooled AI", sub: "An assistant that ignores instructions hidden in the email and only does what the user asked. No protection around it.", cls: "mid" },
-  aegis: { name: "Aegis", sub: "The same fooled assistant, but every action it tries is checked by Aegis's fixed rules and threat scanner first.", cls: "good" },
+  normal: { name: "Normal AI", phrase: "a normal AI", sub: "A typical assistant with no protection. It gets fooled and does whatever the email asks, with the user's full permissions.", cls: "bad" },
+  careful: { name: "Not-fooled AI", phrase: "an AI that is not fooled", sub: "An assistant that ignores instructions hidden in the email and only does what the user asked. No protection around it.", cls: "mid" },
+  aegis: { name: "Aegis", phrase: "a fooled AI protected by Aegis", sub: "The same fooled assistant, but every action it tries is checked by Aegis's fixed rules and threat scanner first.", cls: "good" },
 };
 
 async function runCustom() {
@@ -643,7 +643,7 @@ function renderCustom(data) {
   body.append(analysisCards(data));
   body.append(customEmailCard(data.email));
   const run = data.run, info = CUSTOM_AGENT_INFO[data.agent];
-  body.append(el("h2", { class: "section-title", text: "2. What happened when the " + info.name + " acted on it" }));
+  body.append(el("h2", { class: "section-title", text: "2. What happened when " + info.phrase + " acted on it" }));
   body.append(el("div", { class: "ask" }, [el("span", { class: "lbl", text: "The user asked the assistant: " }), el("b", { text: "\u201c" + run.task.description.replace("email e-900", "this email") + "\u201d" })]));
   body.append(sidePanel(run, { consequence: consequenceFrom(run), info }));
   const o = run.outcome || {};
