@@ -238,11 +238,13 @@ class _SklearnTfidfLogReg:
         self.vec = TfidfVectorizer(analyzer=lambda toks: toks, lowercase=False, sublinear_tf=False)
         self.clf = LogisticRegression(C=C, max_iter=2000)
         self.classes: list[str] = []
+        self._names: Any = None  # feature names, built once after fit (it is slow on a big vocabulary)
 
     def fit(self, docs: Sequence[Sequence[str]], y: Sequence[str]) -> _SklearnTfidfLogReg:
         X = self.vec.fit_transform(list(docs))
         self.clf.fit(X, list(y))
         self.classes = [str(c) for c in self.clf.classes_]
+        self._names = None
         return self
 
     def predict_proba(self, docs: Sequence[Sequence[str]]) -> list[dict[str, float]]:
@@ -251,7 +253,9 @@ class _SklearnTfidfLogReg:
 
     def top_features(self, toks: Sequence[str], label: str, k: int = 5) -> list[tuple[str, float]]:
         x = self.vec.transform([list(toks)]).tocoo()
-        names = self.vec.get_feature_names_out()
+        if self._names is None:
+            self._names = self.vec.get_feature_names_out()
+        names = self._names
         coef = self.clf.coef_
         if len(self.classes) == 2:  # binary sklearn stores one row for classes_[1]
             row = coef[0] if label == self.classes[1] else -coef[0]
