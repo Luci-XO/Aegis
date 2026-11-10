@@ -26,6 +26,7 @@ import hashlib
 import random
 import re
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -91,7 +92,7 @@ def split(emails: list[dict], frac: float = 0.7) -> tuple[list[dict], list[dict]
 
 def report(name: str, clf: EmailClassifier, test: list[dict]) -> None:
     yt = [e["label"] in MALICIOUS for e in test]
-    yp = [v.label in MALICIOUS for v in clf.predict(test)]
+    yp = [label in MALICIOUS for label in clf.predict_labels(test)]
     tp = sum(a and b for a, b in zip(yt, yp))
     fp = sum(b and not a for a, b in zip(yt, yp))
     fn = sum(a and not b for a, b in zip(yt, yp))
@@ -104,8 +105,12 @@ def report(name: str, clf: EmailClassifier, test: list[dict]) -> None:
           f"false alarms {fp}/{fp + tn} ({100 * far:4.1f}%)   F1 {f1:.3f}")
 
 
-def fit(backend: str, data: list[dict]) -> EmailClassifier:
-    return EmailClassifier(backend).fit(data, [e["label"] for e in data])
+def fit(backend: str, data: list[dict], min_df: int = 1) -> EmailClassifier:
+    t = time.time()
+    print(f"    training on {len(data)} emails...", end="", flush=True)
+    clf = EmailClassifier(backend, min_df=min_df).fit(data, [e["label"] for e in data])
+    print(f" done in {time.time() - t:.0f}s", flush=True)
+    return clf
 
 
 def main() -> int:
@@ -113,7 +118,13 @@ def main() -> int:
     ap.add_argument("--data-dir", default=None, help="folder with Nazario_5.csv and email_text.csv")
     ap.add_argument("--trec-sample", type=int, default=0,
                     help="use only N TREC emails (0 = all; try 4000 on the slow pure-Python backend)")
+    ap.add_argument("--min-df", type=int, default=2,
+                    help="drop words/word-pairs seen in fewer than N training emails (default 2: much "
+                         "smaller vocabulary, much faster; use 1 to keep everything)")
+    ap.add_argument("--skip-cross", action="store_true",
+                    help="skip the two cross-source runs (saves two of the three big trainings)")
     args = ap.parse_args()
+    start = time.time()
 
     d = Path(args.data_dir) if args.data_dir else _default_dir()
     if not (d / "Nazario_5.csv").is_file():
@@ -140,16 +151,18 @@ def main() -> int:
     report("-> real phishing (Nazario)", before, nz_te)
     report("-> real spam (TREC)", before, tr_te)
 
-    print("\nAFTER  (trained on synthetic + Nazario + TREC)")
-    after = fit(backend, builtin + nz_tr + tr_tr)
+    print(f"\nAFTER  (trained on synthetic + Nazario + TREC, min_df={args.min_df})")
+    after = fit(backend, builtin + nz_tr + tr_tr, args.min_df)
     report("-> real phishing (Nazario)", after, nz_te)
     report("-> real spam (TREC)", after, tr_te)
 
-    print("\nCROSS-SOURCE  (how well one source transfers to the other)")
-    report("train TREC only  -> test Nazario", fit(backend, tr_tr), nz_te)
-    report("train Nazario only -> test TREC", fit(backend, nz_tr), tr_te)
+    if not args.skip_cross:
+        print("\nCROSS-SOURCE  (how well one source transfers to the other)")
+        report("train TREC only  -> test Nazario", fit(backend, tr_tr, args.min_df), nz_te)
+        report("train Nazario only -> test TREC", fit(backend, nz_tr, args.min_df), tr_te)
 
-    print("\nAll numbers are on held-out emails the model never trained on.")
+    print(f"\nAll numbers are on held-out emails the model never trained on. "
+          f"Total time: {time.time() - start:.0f}s")
     return 0
 
 

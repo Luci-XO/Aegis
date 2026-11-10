@@ -144,6 +144,21 @@ def test_hybrid_rules_escalate_a_missed_family_without_new_false_alarms():
     assert smart["fpr_legit"] == 0.0
 
 
+@pytest.mark.parametrize("use_rules", [False, True])
+def test_predict_labels_matches_predict(trained, use_rules):
+    """The fast batch path must make exactly the same decisions as predict()."""
+    clf = EmailClassifier("stdlib", use_rules=use_rules).fit(EMAILS, [e["label"] for e in EMAILS])
+    assert clf.predict_labels(EMAILS) == [v.label for v in clf.predict(EMAILS)]
+
+
+def test_min_df_shrinks_vocabulary_and_is_validated():
+    full = EmailClassifier("stdlib").fit(EMAILS, [e["label"] for e in EMAILS])
+    small = EmailClassifier("stdlib", min_df=2).fit(EMAILS, [e["label"] for e in EMAILS])
+    assert 0 < len(small._model.vocab) < len(full._model.vocab)
+    with pytest.raises(ValueError):
+        EmailClassifier("stdlib", min_df=0)
+
+
 def test_hybrid_only_overrides_a_legit_call_never_the_reverse():
     # A plain-legit email with no text red flags stays LEGIT even with rules on.
     plain = EmailClassifier("stdlib", use_rules=True).fit(EMAILS, [e["label"] for e in EMAILS])
