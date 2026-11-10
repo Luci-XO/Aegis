@@ -99,6 +99,31 @@ CUSTOM_AGENTS: dict[str, tuple[str, bool]] = {
 }
 
 
+class Challenge:
+    """'Break Aegis' tally: attack emails people tried against Aegis, and how many got through.
+    In memory only; it resets when the dashboard restarts (or via /api/challenge/reset)."""
+
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self.attempts = 0
+        self.got_through = 0
+
+    def record(self, attack_succeeded: bool) -> None:
+        with self._lock:
+            self.attempts += 1
+            self.got_through += int(attack_succeeded)
+
+    def reset(self) -> None:
+        with self._lock:
+            self.attempts = self.got_through = 0
+
+    def snapshot(self) -> dict[str, Any]:
+        from aegis.web.custom import target_files
+
+        with self._lock:
+            return {"attempts": self.attempts, "got_through": self.got_through, "targets": target_files()}
+
+
 def _scoreboard_results() -> dict[str, Any]:
     """Scoreboard written by scripts/scoreboard.py --json results/scoreboard.json."""
     import os
@@ -123,6 +148,7 @@ class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
     store: SessionStore
     benchmark: _BenchmarkCache
+    challenge: Challenge
     scenarios_by_split: dict[str, dict[str, Any]]
 
     def log_message(self, fmt: str, *args: Any) -> None:
@@ -160,6 +186,11 @@ class Handler(BaseHTTPRequestHandler):
         self._send_json({"error": message}, status)
 
     def _read_json(self, limit: int = MAX_BODY) -> dict[str, Any]:
+        # Requiring application/json blocks cross-site form posts: a browser can't send
+        # this content type to another origin without a CORS preflight, which we never grant.
+        ctype = (self.headers.get("Content-Type") or "").split(";", 1)[0].strip().lower()
+        if ctype != "application/json":
+            raise SessionError("requests must be sent as application/json")
         length = int(self.headers.get("Content-Length") or 0)
         if length <= 0 or length > limit:
             raise SessionError("missing or oversized request body")
@@ -204,6 +235,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self._compare()
             if method == "POST" and path == "/api/custom":
                 return self._custom()
+            if method == "GET" and path == "/api/challenge":
+                return self._send_json(self.challenge.snapshot())
+            if method == "POST" and path == "/api/challenge/reset":
+                self._read_json()  # requires a JSON body, so a plain cross-site form can't reset it
+                self.challenge.reset()
+                return self._send_json(self.challenge.snapshot())
             self._error(HTTPStatus.NOT_FOUND, "not found")
         except SessionError as exc:
             self._error(HTTPStatus.BAD_REQUEST, str(exc))
@@ -280,7 +317,11 @@ class Handler(BaseHTTPRequestHandler):
         # The not-fooled assistant does only the user's task: no injected actions.
         factory = None if fooled else ScriptedAgent
         run = InteractiveSession(secrets.token_hex(16), scenario, config, "intent", agent_factory=factory).snapshot()
-        self._send_json({"email": email, "plan": plan, "analysis": analyze(email), "agent": agent, "run": run})
+        # Only a real attack run against Aegis counts toward the Break Aegis tally.
+        if agent == "aegis" and scenario.label == "attack":
+            self.challenge.record(bool(run["outcome"].get("attack")))
+        self._send_json({"email": email, "plan": plan, "analysis": analyze(email), "agent": agent, "run": run,
+                         "challenge": self.challenge.snapshot()})
 
     def _find_scenario(self, scenario_id: Any):
         if not isinstance(scenario_id, str):
@@ -322,6 +363,7 @@ def build_handler_class() -> type[Handler]:
 
     BoundHandler.store = SessionStore()
     BoundHandler.benchmark = _BenchmarkCache()
+    BoundHandler.challenge = Challenge()
     BoundHandler.scenarios_by_split = scenarios_by_split
     return BoundHandler
 

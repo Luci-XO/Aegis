@@ -103,7 +103,7 @@ just never happened."
 - Real phishing stopped **97.7%** · real spam stopped **99.7%** · false alarms
   **4.9%** / **1.0%**.
 
-**Why trust it:** 320+ tests · 26/26 planted bugs caught · rules frozen before
+**Why trust it:** 320+ tests · ~0.08 ms per decision · 26/26 planted bugs caught · rules frozen before
 the test attacks were written · standard-library only.
 
 **Speaker notes (30s):** "And we measured it properly. Unprotected, attacks

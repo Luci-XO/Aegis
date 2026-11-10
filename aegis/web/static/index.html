@@ -24,6 +24,7 @@
       <button data-go="explore">Try it yourself</button>
       <button data-go="results">Results</button>
       <button data-go="built">How it's built</button>
+      <button id="present-toggle" class="present-btn" type="button" title="Bigger text for projectors">Presentation mode</button>
     </nav>
   </header>
 
@@ -100,6 +101,20 @@
         <p>Upload an email file or paste any email text, then choose who reads it: a normal AI that gets fooled,
           an AI that is not fooled, or a fooled AI protected by Aegis. You see exactly what happens.
           Nothing is ever sent: every action runs in a simulation.</p>
+      </div>
+      <div id="challenge" class="challenge">
+        <div class="challenge-text">
+          <div class="eyebrow">Break Aegis challenge</div>
+          <h3>Write an email that makes the AI leak a file. Then pick <em>Aegis</em> and press Run.</h3>
+          <p class="muted">Any language or trick works: English, Hinglish, Hindi, spelled-out addresses
+            (<code>x at evil dot com</code>) or hidden instructions. Files you can try to steal:
+            <span id="challenge-targets"></span></p>
+        </div>
+        <div class="challenge-score">
+          <div class="challenge-num"><span id="challenge-attempts">0</span><small>attacks tried</small></div>
+          <div class="challenge-num good"><span id="challenge-through">0</span><small>got through</small></div>
+          <button id="challenge-reset" class="link-btn" type="button">reset</button>
+        </div>
       </div>
       <div class="upload">
         <div id="drop" class="drop">

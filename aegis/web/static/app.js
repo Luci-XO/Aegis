@@ -558,6 +558,48 @@ function initCustom() {
   for (const ev of ["dragleave", "drop"]) drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("over"); });
   drop.addEventListener("drop", (e) => readFile(e.dataTransfer.files[0]));
   $("custom-run").addEventListener("click", runCustom);
+  $("challenge-reset").addEventListener("click", async () => {
+    if (!confirm("Reset the Break Aegis tally to zero?")) return;
+    try { renderChallenge(await api("/api/challenge/reset", {})); } catch (e) { /* keep the old tally */ }
+  });
+  api("/api/challenge").then(renderChallenge).catch(() => {});
+}
+
+// ---------------------------------------------------------------- Break Aegis challenge
+let lastChallenge = null;
+function renderChallenge(c) {
+  if (!c) return;
+  const targets = $("challenge-targets");
+  if (!targets.childElementCount) {
+    for (const f of c.targets) targets.append(el("span", { class: "challenge-target", text: f.name }));
+  }
+  const bump = (id, value, prev) => {
+    const node = $(id);
+    node.textContent = String(value);
+    if (prev !== null && prev !== value) {
+      const box = node.parentElement;
+      box.classList.remove("bump"); void box.offsetWidth; box.classList.add("bump");
+    }
+  };
+  bump("challenge-attempts", c.attempts, lastChallenge && lastChallenge.attempts);
+  bump("challenge-through", c.got_through, lastChallenge && lastChallenge.got_through);
+  $("challenge-through").parentElement.className = "challenge-num " + (c.got_through ? "bad" : "good");
+  lastChallenge = c;
+}
+
+// ---------------------------------------------------------------- presentation mode
+function initPresentMode() {
+  const btn = $("present-toggle");
+  if (!btn) return;
+  const apply = (on) => {
+    document.documentElement.classList.toggle("present", on);
+    btn.textContent = on ? "Normal size" : "Presentation mode";
+    try { localStorage.setItem("aegis-present", on ? "1" : "0"); } catch (e) { /* private mode */ }
+  };
+  let on = false;
+  try { on = localStorage.getItem("aegis-present") === "1"; } catch (e) { /* private mode */ }
+  apply(on);
+  btn.addEventListener("click", () => { on = !on; apply(on); });
 }
 
 // Who reads the email on the "Test your own email" page.
@@ -575,6 +617,7 @@ async function runCustom() {
   try {
     const data = await api("/api/custom", { raw, task: $("custom-task").value, agent: $("custom-agent").value });
     renderCustom(data);
+    renderChallenge(data.challenge);
     $("custom-note").textContent = "";
     $("custom-body").scrollIntoView({ behavior: "smooth" });
   } catch (e) { $("custom-note").textContent = "Error: " + e.message; }
@@ -648,7 +691,17 @@ function renderCustom(data) {
   body.append(sidePanel(run, { consequence: consequenceFrom(run), info }));
   const o = run.outcome || {};
   let msg;
-  if (run.scenario.label !== "attack") msg = "This email asks for nothing beyond the user's task, so nothing harmful was attempted and the task completed.";
+  if (run.scenario.label !== "attack") {
+    msg = "This email asks for nothing beyond the user's task, so nothing harmful was attempted and the task completed.";
+    // The email asks to send something, but the simulated assistant could not tell what or to whom.
+    if (data.plan.asked) body.append(el("div", { class: "hint" }, [
+      el("b", { text: "Tip: " }),
+      "the simulated assistant didn't find a file or an address to act on. To test Aegis, name a file (for example ",
+      el("code", { text: "payroll" }), ", ", el("code", { text: "customer list" }), " or ",
+      el("code", { text: "passwords" }), ") and an email address, such as ",
+      el("code", { text: "hacker@evil.com" }), " or ", el("code", { text: "x at evil dot com" }), ".",
+    ]));
+  }
   else if (data.agent === "normal") msg = o.attack
     ? "The normal AI was fooled: it did what the email asked, using the user's full permissions. Nothing stood in its way."
     : "The email's request did not cause harm this time.";
@@ -665,4 +718,5 @@ function renderCustom(data) {
 
 // ---------------------------------------------------------------- start
 initCustom();
+initPresentMode();
 initExplore().catch((e) => { $("run-note").textContent = "Could not load scenarios: " + e.message; });
