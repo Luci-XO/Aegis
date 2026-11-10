@@ -107,6 +107,8 @@ driven through `aegis/agent/llm_agent.py`; configure it in `.env` (see
 
 - **320+ automated tests**, run in CI on Python 3.10–3.13 (also tested on 3.14).
 - **Mutation testing:** 26 deliberately planted security bugs, all 26 caught.
+- **Fast:** a decision takes about 0.08 ms (median, audit log included), so Aegis
+  adds no noticeable delay to an agent (`python scripts/measure_latency.py`).
 - **Randomised invariants:** a compromised agent sends random, malformed and
   hostile calls, replays and swaps approval tokens, with a human who approves
   everything. No forbidden action executes.

@@ -6,6 +6,16 @@ All notable changes to Aegis are recorded here. Versions follow
 ## [0.2.0] — 2026-11
 
 ### Added
+- **Break Aegis challenge** on the "Test your own email" page: a live tally of
+  attack emails tried against Aegis and how many got through.
+- The simulated assistant understands attacks written in Hinglish and Hindi,
+  spelled-out addresses (`x at evil dot com`, `[at]`/`[dot]`), letter-spaced
+  and look-alike words (`s-a-l-a-r-y`, `p4yr0ll`). When it can't tell what an
+  email asks for, the page explains what to try.
+- Presentation mode (larger text for projectors) and
+  `scripts/measure_latency.py` (about 0.08 ms per decision).
+- The dashboard API only accepts `application/json` request bodies, which
+  blocks cross-site form posts.
 - Evaluation on **56,711 real emails** (Nazario phishing with Enron business
   mail, and TREC 2007 spam): 97.7% of real phishing and 99.7% of real spam
   stopped on held-out email. See `docs/real_email_results.md` and

@@ -91,6 +91,7 @@ Close: "The agent can be as gullible as it likes. Aegis is the wall."
   train on real email. Full method: [real_email_results.md](real_email_results.md).
 
 **Engineering credibility (for a technical audience):**
+- About 0.08 ms per decision, so Aegis adds no noticeable delay.
 - 320+ automated tests; 26/26 mutation-testing kills on the security core.
 - Frozen evaluation (hashed policy + detector recorded before the held-out
   split was written), so results can't be quietly tuned.
