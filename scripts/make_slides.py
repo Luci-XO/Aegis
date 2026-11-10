@@ -24,7 +24,7 @@ SLIDES: list[tuple[str, int, list[str]]] = [
         "# A security gateway that makes it safe to give an AI agent real tools.",
         "",
         "Prompt-injection defence for AI agents",
-        "Your name  ·  IGDTUW Tech Eximus  ·  Track: AI-Driven Automation / Cybersecurity",
+        "Ayan  ·  Luci-XO  ·  Track: AI-Driven Automation / Cybersecurity",
     ]),
     ("The problem", 3600, [
         "# When an AI can act, everything it reads can control it.",

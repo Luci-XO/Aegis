@@ -332,21 +332,7 @@ def B() -> list[tuple[str, str]]:
       "testable, explainable gateway you can run live in 30 seconds, model-agnostic, with an honest "
       "benchmark, a freeze, mutation testing, and a dashboard attached.")
 
-    h1("16. Build history")
-    li("PR #1 security core (gateway, policy, approvals, audit); 111 tests, 18/18 mutants.")
-    li("PR #2 detector, tasks, agents, runner. PR #3 benchmark, freeze, held-out split.")
-    li("PR #4 stdlib dashboard. PR #5 report, demo script, clean-clone validation.")
-    li("PR #6 merged core, Python 3.10 support, troubleshooting. PR #7 email corpus, classifier, LLM "
-       "provider adapter.")
-    li("PR #8 Windows CRLF freeze-hash fix. PR #9 model listing. PR #10 retry/backoff. PR #11 unparsed-"
-       "answer reporting and larger max_tokens.")
-    li("PR #12 judge-friendly dashboard. PR #13 'Test your own email' upload.")
-    li("PR #15 500-email corpus builder + eval. PR #16 one-shot scoreboard. "
-       "PR #17 honest reporting for unreadable model answers.")
-    li("PR #18 Tech Eximus pitch pack. PR #19 scoreboard difficulty breakdown + --json. PR #20 live "
-       "Scoreboard dashboard page. PR #21 explainer doc + 7-slide deck + .pptx.")
-
-    h1("17. Glossary")
+    h1("16. Glossary")
     li("Agent: an LLM that can call tools and take actions.")
     li("Prompt injection: hiding instructions in content the agent reads.")
     li("Policy gateway: the deterministic checkpoint every action passes through.")

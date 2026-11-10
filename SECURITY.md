@@ -86,6 +86,8 @@ Secrets & data:
 
 ## Reporting
 
-This is a student/hackathon project. To report a security issue, open a GitHub
-issue describing the steps to reproduce, or contact the maintainer. Please do
-not include real personal data in any report — use synthetic examples.
+Please report security issues privately to the maintainer rather than in a
+public issue. Include the steps to reproduce, the affected version or commit,
+and the impact you observed. You can expect an acknowledgement within 3
+working days. Please do not include real personal data in any report; use
+synthetic examples.

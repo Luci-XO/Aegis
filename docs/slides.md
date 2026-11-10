@@ -12,9 +12,9 @@ this content into PowerPoint / Google Slides. Speaker notes = what to say.
 A security gateway that makes it safe to give an AI agent real tools.
 
 - Prompt-injection defence for AI agents
-- <Your name> · IGDTUW Tech Eximus · Track: AI-Driven Automation / Cybersecurity
+- Ayan · Luci-XO · Track: AI-Driven Automation / Cybersecurity
 
-**Speaker notes (20s):** "Hi, I'm <name>. Aegis is a firewall for an AI
+**Speaker notes (20s):** "Hi, I'm Ayan. Aegis is a firewall for an AI
 agent's actions — it makes it safe to let an AI read your email and actually act
 on it. Let me show you why that's hard."
 

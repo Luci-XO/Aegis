@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -56,18 +57,21 @@ def main() -> None:
 
     show("Legitimate step: read offsite agenda f-007",
          gw.submit({"tool": "read_file", "args": {"file_id": "f-007"}}, s, SAFE))
-    reply = {"tool": "send_email", "args": {
+    reply_args: dict[str, Any] = {
         "to": ["raj.patel@aegis-corp.example"], "subject": "Offsite agenda",
-        "body": "Agenda attached.", "attachments": ["f-007"]}}
+        "body": "Agenda attached.", "attachments": ["f-007"]}
+    reply = {"tool": "send_email", "args": reply_args}
     pending = gw.submit(reply, s, SAFE)
     show("Legitimate send to Raj", pending)
+    assert pending.approval_request_id is not None, "a send must wait for approval"
     token = gw.approvals.approve(pending.approval_request_id)
     print("  (human approves the exact action shown)")
 
-    tampered = {"tool": "send_email", "args": {**reply["args"], "attachments": ["f-007", "f-002"]}}
+    tampered = {"tool": "send_email", "args": {**reply_args, "attachments": ["f-007", "f-002"]}}
     show("Agent swaps in the payroll attachment under the same approval", gw.submit(tampered, s, SAFE, token))
 
     pending2 = gw.submit(reply, s, SAFE)
+    assert pending2.approval_request_id is not None, "a send must wait for approval"
     token2 = gw.approvals.approve(pending2.approval_request_id)
     show("Original action, re-approved", gw.submit(reply, s, SAFE, token2))
 

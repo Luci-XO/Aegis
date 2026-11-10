@@ -14,11 +14,12 @@ from __future__ import annotations
 import argparse
 import secrets
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from aegis.agent.approvers import IntentApprover, RejectAllApprover, RubberStampApprover
+from aegis.agent.approvers import Approver, IntentApprover, RejectAllApprover, RubberStampApprover
 from aegis.agent.llm_agent import LLMAgent
 from aegis.agent.llm_client import client_from_env
 from aegis.agent.scenarios import build_stack, load_scenarios
@@ -26,7 +27,8 @@ from aegis.agent.scripted import ScriptedAgent
 from aegis.detect.base import SafeDetector
 from aegis.detect.rules import RuleDetector
 
-APPROVERS = {"intent": IntentApprover, "rubber_stamp": RubberStampApprover, "reject_all": RejectAllApprover}
+APPROVERS: dict[str, Callable[[], Approver]] = {
+    "intent": IntentApprover, "rubber_stamp": RubberStampApprover, "reject_all": RejectAllApprover}
 
 
 def main() -> int:
@@ -58,7 +60,8 @@ def main() -> int:
         scores = [f"{d['tool']}@{d['step']}={d['score']}" for d in res.detections]
         print(f"Detector scores: {', '.join(scores) or 'n/a'}")
         print(f"Outbox: {[(m.to, m.attachments) for m in stack.env.outbox]}")
-        print(f"Audit chain ok: {stack.gateway.audit.verify().ok}\n")
+        if stack.gateway is not None:
+            print(f"Audit chain ok: {stack.gateway.audit.verify().ok}\n")
     return 0
 
 

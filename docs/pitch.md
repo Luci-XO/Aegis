@@ -1,6 +1,6 @@
-# Aegis — pitch pack (Tech Eximus, IGDTUW)
+# Aegis — pitch and Q&A guide
 
-A ready-to-use pitch for a Delhi-NCR college tech-fest panel. Target track:
+A ready-to-use pitch for a judging panel or an investor meeting. Category:
 **AI-Driven Automation** or **Cybersecurity** (either fits; lead with safety).
 
 ---
@@ -89,7 +89,7 @@ Close: "The agent can be as gullible as it likes. Aegis is the wall."
 - False alarms **9%** (13/140) — far below what an LLM-only filter does.
 - Overall accuracy **96%**, free, offline, and explainable.
 
-**Engineering credibility (for technical judges):**
+**Engineering credibility (for a technical audience):**
 - 322 automated tests; 26/26 mutation-testing kills on the security core.
 - Frozen evaluation (hashed policy + detector recorded before the held-out
   split was written), so results can't be quietly tuned.
