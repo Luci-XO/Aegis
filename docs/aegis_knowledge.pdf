@@ -4,7 +4,7 @@
 << /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R] /Count 7 >>
+<< /Type /Pages /Kids [7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R] /Count 6 >>
 endobj
 3 0 obj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
@@ -228,7 +228,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 14 0 R >>
 endobj
 16 0 obj
-<< /Length 4746 >>
+<< /Length 4429 >>
 stream
 0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 698.0 Tm (15. Prior work and our delta) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 677.5 Tm (Aegis is an engineering implementation of current ideas, not a new theory: Progent \(2025, tool-) Tj ET
@@ -236,84 +236,60 @@ stream
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 648.5 Tm (securing LLM agents \(2025\), and the evaluation style of AgentDojo \(NeurIPS 2024\). Our delta: a) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 634.0 Tm (working, testable, explainable gateway you can run live in 30 seconds, model-agnostic, with an) Tj ET
 0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 619.5 Tm (honest benchmark, a freeze, mutation testing, and a dashboard attached.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 576.5 Tm (16. Build history) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 556.0 Tm (- PR #1 security core \(gateway, policy, approvals, audit\); 111 tests, 18/18 mutants.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 539.5 Tm (- PR #2 detector, tasks, agents, runner. PR #3 benchmark, freeze, held-out split.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 523.0 Tm (- PR #4 stdlib dashboard. PR #5 report, demo script, clean-clone validation.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 506.5 Tm (- PR #6 merged core, Python 3.10 support, troubleshooting. PR #7 email corpus, classifier,) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 492.0 Tm (LLM provider adapter.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 475.5 Tm (- PR #8 Windows CRLF freeze-hash fix. PR #9 model listing. PR #10 retry/backoff. PR #11) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 461.0 Tm (unparsed-answer reporting and larger max_tokens.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 444.5 Tm (- PR #12 judge-friendly dashboard. PR #13 'Test your own email' upload.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 428.0 Tm (- PR #15 500-email corpus builder + eval. PR #16 one-shot scoreboard. PR #17 honest) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 413.5 Tm (reporting for unreadable model answers.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 397.0 Tm (- PR #18 Tech Eximus pitch pack. PR #19 scoreboard difficulty breakdown + --json. PR #20) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 382.5 Tm (live Scoreboard dashboard page. PR #21 explainer doc + 7-slide deck + .pptx.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 342.5 Tm (17. Glossary) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 322.0 Tm (- Agent: an LLM that can call tools and take actions.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 305.5 Tm (- Prompt injection: hiding instructions in content the agent reads.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 289.0 Tm (- Policy gateway: the deterministic checkpoint every action passes through.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 272.5 Tm (- Egress control: the rule that confidential data cannot leave the org.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 256.0 Tm (- Approval token: a signed, single-use, expiring permission bound to one exact action.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 239.5 Tm (- Grouped cross-validation: testing the classifier only on templates it never trained on.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 223.0 Tm (- Mutation testing: planting bugs to check the tests actually catch them.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 206.5 Tm (- Held-out split: attacks written after the rules were frozen.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 166.5 Tm (18. One-paragraph summary) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 146.0 Tm (AI agents can now read your email and act on it. The danger is that anything they read can) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 131.5 Tm (secretly instruct them, and telling the model to be careful does not hold, because noticing an) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 117.0 Tm (attack and refusing to act are different things. Aegis is a deterministic policy gateway between) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 102.5 Tm (the agent and its tools: every action is checked against the user's real task before it runs,) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 88.0 Tm (and dangerous actions need a signed, single-use human approval bound to that exact action. So) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 73.5 Tm (the AI can be completely fooled and the attack still fails. Tested against a real model,) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 576.5 Tm (16. Glossary) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 556.0 Tm (- Agent: an LLM that can call tools and take actions.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 539.5 Tm (- Prompt injection: hiding instructions in content the agent reads.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 523.0 Tm (- Policy gateway: the deterministic checkpoint every action passes through.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 506.5 Tm (- Egress control: the rule that confidential data cannot leave the org.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 490.0 Tm (- Approval token: a signed, single-use, expiring permission bound to one exact action.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 473.5 Tm (- Grouped cross-validation: testing the classifier only on templates it never trained on.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 457.0 Tm (- Mutation testing: planting bugs to check the tests actually catch them.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 440.5 Tm (- Held-out split: attacks written after the rules were frozen.) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 400.5 Tm (18. One-paragraph summary) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 380.0 Tm (AI agents can now read your email and act on it. The danger is that anything they read can) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 365.5 Tm (secretly instruct them, and telling the model to be careful does not hold, because noticing an) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 351.0 Tm (attack and refusing to act are different things. Aegis is a deterministic policy gateway between) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 336.5 Tm (the agent and its tools: every action is checked against the user's real task before it runs,) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 322.0 Tm (and dangerous actions need a signed, single-use human approval bound to that exact action. So) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 307.5 Tm (the AI can be completely fooled and the attack still fails. Tested against a real model,) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 293.0 Tm (unprotected it was tricked 100% of the time; behind Aegis, blocked, with normal tasks still) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 278.5 Tm (working - and measured honestly, with held-out data, a frozen rule-set, and mutation testing.) Tj ET
+0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 235.5 Tm (19. Three-minute demo script) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 215.0 Tm (- 1. Overview \(15s\): an AI email assistant with real tools.) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 198.5 Tm (- 2. Guided demo without Aegis \(45s\): a hidden-instruction email drives the agent into the) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 184.0 Tm (forbidden action. 'It just got socially engineered by plain text.') Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 167.5 Tm (- 3. Same email with Aegis \(45s\): BLOCKED, with the rule shown. 'Same attack, model still) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 153.0 Tm (fooled, action never happened.') Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 136.5 Tm (- 4. Numbers \(30s\): open the Scoreboard page or the held-out results. 'Measured honestly -) Tj ET
+0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 122.0 Tm (held-out data, nothing cherry-picked.' Close: 'The AI can be fooled. The wall still holds.') Tj ET
 
 endstream
 endobj
 17 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 16 0 R >>
 endobj
-18 0 obj
-<< /Length 1374 >>
-stream
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 705.5 Tm (unprotected it was tricked 100% of the time; behind Aegis, blocked, with normal tasks still) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 54.0 691.0 Tm (working - and measured honestly, with held-out data, a frozen rule-set, and mutation testing.) Tj ET
-0.12 0.23 0.37 rg BT /F2 17 Tf 1 0 0 1 54.0 648.0 Tm (19. Three-minute demo script) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 627.5 Tm (- 1. Overview \(15s\): an AI email assistant with real tools.) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 611.0 Tm (- 2. Guided demo without Aegis \(45s\): a hidden-instruction email drives the agent into the) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 596.5 Tm (forbidden action. 'It just got socially engineered by plain text.') Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 580.0 Tm (- 3. Same email with Aegis \(45s\): BLOCKED, with the rule shown. 'Same attack, model still) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 565.5 Tm (fooled, action never happened.') Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 549.0 Tm (- 4. Numbers \(30s\): open the Scoreboard page or the held-out results. 'Measured honestly -) Tj ET
-0.13 0.13 0.13 rg BT /F1 10.5 Tf 1 0 0 1 70.0 534.5 Tm (held-out data, nothing cherry-picked.' Close: 'The AI can be fooled. The wall still holds.') Tj ET
-
-endstream
-endobj
-19 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 18 0 R >>
-endobj
 xref
-0 20
+0 18
 0000000000 65535 f
 0000000015 00000 n
 0000000064 00000 n
-0000000162 00000 n
-0000000232 00000 n
-0000000307 00000 n
-0000000375 00000 n
-0000004776 00000 n
-0000004922 00000 n
-0000009449 00000 n
-0000009595 00000 n
-0000014115 00000 n
-0000014263 00000 n
-0000018970 00000 n
-0000019118 00000 n
-0000023435 00000 n
-0000023583 00000 n
-0000028382 00000 n
-0000028530 00000 n
-0000029957 00000 n
+0000000155 00000 n
+0000000225 00000 n
+0000000300 00000 n
+0000000368 00000 n
+0000004769 00000 n
+0000004915 00000 n
+0000009442 00000 n
+0000009588 00000 n
+0000014108 00000 n
+0000014256 00000 n
+0000018963 00000 n
+0000019111 00000 n
+0000023428 00000 n
+0000023576 00000 n
+0000028058 00000 n
 trailer
-<< /Size 20 /Root 1 0 R >>
+<< /Size 18 /Root 1 0 R >>
 startxref
-30105
+28206
 %%EOF

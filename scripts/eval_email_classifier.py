@@ -16,6 +16,7 @@ never saw during training.
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import sys
 from pathlib import Path
@@ -65,7 +66,7 @@ def main() -> int:
         label = "classifier (text+headers)" if headers else "classifier (text)"
         for grouped in (False, True):
             split = "5-fold grouped by template" if grouped else "5-fold random (leaky)"
-            _, s = ev.cross_validate(emails, lambda h=headers: EmailClassifier(backend, use_headers=h),
+            _, s = ev.cross_validate(emails, functools.partial(EmailClassifier, backend, use_headers=headers),
                                      grouped=grouped)
             results[f"{label} / {split}"] = s
             lines.append(row(label, split, s))
@@ -76,7 +77,7 @@ def main() -> int:
         label = "hybrid (text+headers+rules)" if headers else "hybrid (text+rules)"
         split = "5-fold grouped by template"
         _, s = ev.cross_validate(
-            emails, lambda h=headers: EmailClassifier(backend, use_headers=h, use_rules=True), grouped=True)
+            emails, functools.partial(EmailClassifier, backend, use_headers=headers, use_rules=True), grouped=True)
         results[f"{label} / {split}"] = s
         lines.append(row(label, split, s))
 

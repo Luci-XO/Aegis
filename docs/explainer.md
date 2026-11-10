@@ -162,8 +162,7 @@ through a high-impact action without a valid, matching human approval.
 
 ## 7. How we know it works (evaluation)
 
-This is a differentiator — the evaluation is unusually honest for a student
-project.
+The evaluation is designed so the numbers can't be quietly tuned to the test.
 
 - **A benchmark** (`python -m aegis.eval`) runs attack and benign scenarios
   through four configurations: A unprotected, B detector-only, C gateway-only, D

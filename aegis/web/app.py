@@ -99,27 +99,6 @@ CUSTOM_AGENTS: dict[str, tuple[str, bool]] = {
 }
 
 
-def _llm_factory(agent: Any, mode: Any) -> Any:
-    """None for the simulated assistant; otherwise a factory for a real-model agent."""
-    if agent in (None, "simulated"):
-        return None
-    if agent != "llm":
-        raise SessionError("agent must be 'simulated' or 'llm'")
-    mode = mode or "careful"
-    if mode not in ("naive", "careful"):
-        raise SessionError("mode must be 'naive' or 'careful'")
-    from aegis.agent.llm_agent import LLMAgent
-    from aegis.agent.llm_client import LLMError, client_from_env
-
-    try:
-        client = client_from_env()
-    except LLMError:
-        client = None
-    if client is None:
-        raise SessionError("no real AI is configured: add AEGIS_LLM_* settings to .env")
-    return lambda: LLMAgent(client, mode=mode)
-
-
 def _scoreboard_results() -> dict[str, Any]:
     """Scoreboard written by scripts/scoreboard.py --json results/scoreboard.json."""
     import os
@@ -133,15 +112,6 @@ def _scoreboard_results() -> dict[str, Any]:
         return {"available": False, "error": "results file could not be read"}
     return {"available": True, **data}
 
-
-def _llm_status() -> dict[str, Any]:
-    from aegis.agent.llm_client import LLMError, client_from_env
-
-    try:
-        client = client_from_env()
-    except LLMError:
-        client = None
-    return {"available": client is not None, "model": client.model if client else None}
 
 
 def _static_dir() -> Path:
@@ -244,8 +214,7 @@ class Handler(BaseHTTPRequestHandler):
     # -- endpoints ---------------------------------------------------------
 
     def _meta(self) -> dict[str, Any]:
-        out: dict[str, Any] = {"configs": UI_CONFIGS, "approvers": _APPROVERS, "splits": {},
-                               "llm": _llm_status()}
+        out: dict[str, Any] = {"configs": UI_CONFIGS, "approvers": _APPROVERS, "splits": {}}
         for split, by_id in self.scenarios_by_split.items():
             out["splits"][split] = [
                 {"id": s["id"], "label": s["label"], "category": s["category"],
@@ -289,8 +258,7 @@ class Handler(BaseHTTPRequestHandler):
         if not isinstance(left, str) or not isinstance(right, str) or {left, right} - set(UI_CONFIGS):
             raise SessionError("invalid config")
         scenario = self._find_scenario(data.get("scenario_id"))
-        factory = _llm_factory(data.get("agent"), data.get("mode"))
-        out = {side: InteractiveSession(secrets.token_hex(16), scenario, cfg, "intent", agent_factory=factory).snapshot()
+        out = {side: InteractiveSession(secrets.token_hex(16), scenario, cfg, "intent").snapshot()
                for side, cfg in (("left", left), ("right", right))}
         self._send_json(out)
 

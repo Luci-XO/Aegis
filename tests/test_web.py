@@ -164,7 +164,7 @@ def test_benchmark_endpoint(server):
     assert data["summaries"] and "attack_success_rate" in data["summaries"][0]
 
 
-# --- judge-friendly UI support -------------------------------------------------
+# --- dashboard UI support ------------------------------------------------------
 
 def test_snapshot_reports_outcome_and_marks_attacker_steps():
     s = InteractiveSession("1" * 32, BY_ID["dev-03-payroll-reply"], "D_aegis", "intent").snapshot()

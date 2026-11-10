@@ -22,7 +22,7 @@ jobs:
         run: python -m pip install --upgrade pip ruff mypy pytest
       - name: Ruff (lint, whole repo)
         run: ruff check .
-      - name: Mypy (type-check the product package)
-        run: mypy aegis
+      - name: Mypy (type-check the package and scripts)
+        run: mypy aegis scripts
       - name: Pytest (full suite)
         run: python -m pytest -q

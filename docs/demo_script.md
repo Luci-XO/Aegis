@@ -51,7 +51,7 @@ Point at the four cards: **100% to 10%** of attacks succeeding, **18 to 0** forb
 
 Close: "Small, dependency-free, reproducible, and honest about its limits."
 
-## If a judge wants to use their own email
+## If someone wants to use their own email
 
 Open **Test your own email** and drag in a file from `examples/emails/` (or a real
 email downloaded from Gmail with *Download message*), or paste any text. Click
@@ -62,7 +62,7 @@ fooled assistant would try, and the side-by-side result. Good one to use:
 Say: "The simulated assistant is deliberately fully fooled; it does whatever the
 email asks. With a model configured in `.env` you can switch to a real AI."
 
-## If the judges want to try it
+## If the audience wants to try it
 
 Use **Try it yourself**, choose *You decide* as the approver, and let them approve or reject the email themselves.
 
