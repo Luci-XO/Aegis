@@ -167,7 +167,7 @@ def B() -> list[tuple[str, str]]:
     p("Headline results (all from real runs): on held-out attacks, attack success drops from 100% "
       "unprotected to 10% with Aegis; unauthorised tool executions drop from 18 to 0; legitimate tasks "
       "still complete 100% of the time; and 0 forbidden actions occurred across 13,865 randomised attack "
-      "attempts. The project has 316 automated tests, kills 26/26 planted security bugs (mutation testing), "
+      "attempts. The project has 320+ automated tests, kills 26/26 planted security bugs (mutation testing), "
       "and uses a frozen, hash-checked evaluation so the rules cannot be quietly tuned to the test.")
 
     h1("2. The problem")
@@ -286,7 +286,7 @@ def B() -> list[tuple[str, str]]:
        "aegis/eval/freeze.json before the held-out split existed; a test fails if they change.")
     li("Mutation testing: 26 planted security bugs, 26/26 caught by the tests.")
     li("Invariant/fuzz testing: 13,865 randomised attack attempts executed 0 forbidden actions.")
-    li("316 automated tests, across Python 3.10 to 3.14.")
+    li("320+ automated tests, across Python 3.10 to 3.14.")
 
     h1("12. Results (all from real runs)")
     h2("12.1 Enforcement (held-out attacks)")
@@ -296,12 +296,14 @@ def B() -> list[tuple[str, str]]:
     li("0 forbidden actions across 13,865 randomised attack attempts. The detector alone caught only 3/10 "
        "held-out attacks, which is why the gateway, not the detector, is the boundary.")
     h2("12.2 Email detector")
-    li("100-email corpus (grouped CV): text F1 0.91, text+headers F1 0.97, hybrid (classifier OR two text "
-       "red flags) F1 0.98 with zero false alarms; via the scoreboard, 96% of "
-       "attacks stopped, 0 false alarms, 98% accuracy.")
-    li("500-email corpus (grouped CV, real run on the owner's machine): attacks stopped 351/360 = 98%; "
-       "missed 9/360 = 2%; hard phishing caught 82/91 = 90%; legit kept 127/140 = 91%; false alarms "
-       "13/140 = 9%; overall accuracy 96%.")
+    li("Real email (56,711 emails: Nazario phishing + Enron business mail, and TREC 2007 spam/ham; "
+       "held-out 30%): real phishing stopped 97.7% (461/472) with 4.9% false alarms on real business "
+       "email; real spam stopped 99.7% (8,995/9,026) with 1.0% false alarms.")
+    li("The same model trained only on the synthetic corpora stopped 75% of real phishing and 26% of "
+       "real spam, so real training data is what makes it useful. Spam and phishing do not transfer to "
+       "each other, so both are needed.")
+    li("Synthetic corpora (grouped CV, development measurements): 100-email text F1 0.91; 500-email "
+       "attacks stopped 98%, false alarms 9%.")
 
     h1("13. How to run")
     code("python -m pytest                 # full test suite")

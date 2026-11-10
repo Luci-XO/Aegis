@@ -179,7 +179,7 @@ The evaluation is designed so the numbers can't be quietly tuned to the test.
   actually test the security, not just run it.
 - **Invariant/fuzz testing.** 13,865 randomised attack attempts executed **zero**
   forbidden actions.
-- **322 automated tests**, across **Python 3.10–3.14**.
+- **320+ automated tests**, across **Python 3.10–3.14**.
 
 ### 7.1 The email classifier, measured honestly
 The phishing/spam classifier is scored with **grouped cross-validation**: whole
@@ -201,12 +201,13 @@ DMARC) — that is called out rather than hidden.
   normal work.
 - **0** forbidden actions across **13,865** randomised attack attempts.
 
-**Email detector, on the 500-email adversarial corpus (grouped CV):**
-- Attacks stopped **98%**; hard phishing caught **90%**; false alarms **9%**;
-  overall accuracy **96%** — free, offline, and explainable.
-- (On the built-in 100-email corpus: 94% stopped, 0 false alarms, 97% accuracy.)
+**Email classifier, on 56k real emails (held-out 30%):**
+- Real phishing (Nazario): **97.7%** stopped, **4.9%** false alarms on real business email.
+- Real spam (TREC 2007): **99.7%** stopped, **1.0%** false alarms.
+- Trained only on synthetic data, the same model stopped 75% of real phishing and
+  26% of real spam. Method and caveats: [real_email_results.md](real_email_results.md).
 
-**Engineering credibility:** 322 tests; 26/26 mutation kills; frozen evaluation;
+**Engineering credibility:** 320+ tests; 26/26 mutation kills; frozen evaluation;
 pure standard-library core.
 
 ---

@@ -99,11 +99,11 @@ just never happened."
 - Attack success **100% → 10%** · unauthorised actions **18 → 0** · utility
   **100%** · **0** forbidden in **13,865** random attempts.
 
-**Detector (500-email adversarial corpus):**
-- Attacks stopped **98%** · hard phishing **90%** · false alarms **9%** ·
-  accuracy **96%**.
+**Email classifier (56k real emails, held-out):**
+- Real phishing stopped **97.7%** · real spam stopped **99.7%** · false alarms
+  **4.9%** / **1.0%**.
 
-**Why trust it:** 316 tests · 26/26 planted bugs caught · rules frozen before
+**Why trust it:** 320+ tests · 26/26 planted bugs caught · rules frozen before
 the test attacks were written · standard-library only.
 
 **Speaker notes (30s):** "And we measured it properly. Unprotected, attacks

@@ -81,7 +81,11 @@ moves recall by about 2 points.
    threshold of two is deliberate: single flags also appear on genuine urgent
    or billing mail, so requiring two keeps precision at 1.00. Crucially these
    are **text** flags (subject + body), not the authentication-header signal
-   below, so the lift is honest and not a repeat of the corpus artifact.
+   below, so the lift is not a repeat of the corpus artifact. Treat it as a
+   development measurement, though: the red flags were written while reading
+   this corpus, and on real email (see
+   [real_email_results.md](real_email_results.md)) the hybrid gave no gain
+   (F1 0.952 vs 0.956 on real phishing). It stays off by default.
 2. **The corpus is fully separable by email authentication headers.** Every
    legit email passes SPF/DKIM/DMARC and every malicious one fails, so a
    one-line rule scores F1 1.00. That is a property of this synthetic corpus,
@@ -122,3 +126,11 @@ A second evaluation set of **500 synthetic emails** (325 phishing / 140 legit /
 Its Hard split (lookalike domains, conversation hijacking, low-urgency BEC,
 hard-negative legitimate mail) is where a classifier and a real model diverge
 most. See [docs/corpus_500.md](corpus_500.md).
+
+## Results on real email
+
+On 56,711 real emails (Nazario phishing with Enron business mail, and TREC 2007
+spam/ham), a model trained on real email stopped **97.7% of real phishing** and
+**99.7% of real spam** on held-out emails, with 4.9% and 1.0% false alarms.
+Trained only on the synthetic corpora, it stopped 75% and 26%. Method, caveats
+and the reproduction command are in [real_email_results.md](real_email_results.md).
