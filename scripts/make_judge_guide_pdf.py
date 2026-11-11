@@ -44,7 +44,7 @@ def blocks() -> list[tuple[str, str]]:
 
     add(("title", "Aegis - Poori Guide (Hinglish)"))
     add(("sub", "Humne kya banaya, kaise kaam karta hai, kis file mein kya hai, kya badla aur kyun, "
-                "edge cases, kamiyan, future scope, aur judges ke 60 counter-questions ke jawab."))
+                "edge cases, kamiyan, future scope, judges ke 68 counter-questions, aur appendix mein runtime pipeline, CI aur training."))
     p("Is guide ka maksad: team ka har member Aegis ko itna achhe se samjhe ki koi bhi judge kuch bhi "
       "pooche, hum confidently aur sach bolkar jawab de sakein. Har number is repo ke real runs se aaya "
       "hai. Jahan kuch kamzor hai, wahan bhi seedha bataya gaya hai - judges ko honesty pasand aati hai, "
@@ -380,7 +380,7 @@ def blocks() -> list[tuple[str, str]]:
     li("Presentation mode on rakho; backup video ready rakho; internet ki zarurat nahi.")
 
     # ------------------------------------------------------------------ 17
-    h1("17. Judges ke 60 counter-questions (Hinglish jawab)")
+    h1("17. Judges ke counter-questions (Hinglish jawab)")
 
     h2("A. Idea aur problem")
     qa("Yeh project ek line mein kya karta hai?",
@@ -629,6 +629,158 @@ def blocks() -> list[tuple[str, str]]:
       "hain; (2) humne sab kuch honestly measure kiya, limits ke saath; (3) unhone khud try kiya aur "
       "Aegis nahi toota. Agar koi sawaal is guide mein nahi hai, toh sach bolo: 'Yeh humne abhi test "
       "nahi kiya, lekin hum aise check karenge...' - yeh 'pata nahi' se kahin better hai.")
+
+    # ================================================================== appendices
+    h1("Appendix A. Pehle yeh clear karo: humne kya 'train' kiya aur kya nahi")
+    p("Judges aksar poochte hain 'AI ko kaise train kiya?'. Sahi jawab teen hisson mein hai:")
+    li("Gateway (security boundary): train nahi hota. Yeh fixed rules hain (policies/default.json + "
+       "aegis/core/policy.py). Yahi iski taakat hai: koi data ya email isse 'sikha' kar dheela nahi kar "
+       "sakta.")
+    li("AI agent (jo email padhta hai): humne koi LLM train nahi kiya. Demo mein ek scripted 'fooled' "
+       "agent hai (aegis/agent/scripted.py) jo jaan-boojhkar har instruction maanta hai. Asli model "
+       "(OpenAI-compatible ya Ollama) llm_agent.py se jud sakta hai - woh pehle se trained model hai.")
+    li("Email classifier: yahi ek cheez hai jo humne sach mein train ki. Yeh ek chhota ML model hai "
+       "(TF-IDF + logistic regression), deep learning nahi. Training ka poora tareeka Appendix C mein.")
+    li("Prompt-injection scanner (rules-v1): train nahi hota, haath se likhe readable rules (D01-D08) hain.")
+
+    h1("Appendix B. Project run kaise hota hai (runtime pipeline)")
+    h2("B1. Dashboard start hone par")
+    li("Aap 'python -m aegis.web --open' chalate ho (ya start_demo.bat). aegis/web/__main__.py "
+       "arguments padhta hai aur aegis/web/app.py ka serve() chalata hai.")
+    li("build_handler_class() dev aur held-out scenarios load karta hai (aegis/data/scenarios), ek "
+       "SessionStore, benchmark cache aur Break Aegis tally banata hai.")
+    li("Python ka ThreadingHTTPServer 127.0.0.1:8000 par sunta hai. --open ho toh 1 second baad "
+       "browser khulta hai. Koi internet, database server ya API key nahi chahiye.")
+    li("Browser index.html, app.js, app.css, scoreboard.js load karta hai. Har response par security "
+       "headers aur Content-Security-Policy lagte hain.")
+    h2("B2. Page se server tak (API)")
+    li("GET /api/meta - scenarios, configurations, approvers ki list (Try it yourself ke dropdowns).")
+    li("POST /api/compare - ek scenario do settings mein side-by-side (Guided demo).")
+    li("POST /api/session aur /api/session/decide - step-by-step session, jahan aap khud approve/reject "
+       "karte ho (Try it yourself).")
+    li("POST /api/custom - aapka email: parse -> fooled AI ka plan -> chosen setting mein run -> "
+       "scanner + classifier analysis (Test your own email).")
+    li("GET /api/benchmark - pehli baar poora benchmark live chalta hai (dev + held-out), phir cache "
+       "hota hai (Results page).")
+    li("GET /api/scoreboard - results/scoreboard.json padhta hai agar aapne banaya ho.")
+    li("GET /api/challenge, POST /api/challenge/reset - Break Aegis tally.")
+    li("Har POST sirf JSON accept karta hai, size limit ke saath; galat input par 400, crash par 500 "
+       "aur server chalta rehta hai.")
+    h2("B3. Ek email ka poora safar ('Test your own email' par Run dabane par)")
+    li("1. custom.py ka parse_email(): Python ke email package se subject, sender, Reply-To, body, "
+       "attachments, SPF/DKIM/DMARC nikaalta hai. HTML ko plain text banata hai; kuch bhi execute ya "
+       "render nahi hota.")
+    li("2. plan_obedient_actions(): fooled AI ka plan. Bhejne wale shabd dhoondhta hai (English, "
+       "Hinglish, Hindi), addresses (normal aur 'x at evil dot com'), aur file names (payroll, salary, "
+       "s-a-l-a-r-y, p4yr0ll). Plan: kaun si file kholni hai, kisko bhejni hai.")
+    li("3. build_custom_scenario(): is email ko ek normal benchmark Scenario bana deta hai, attacker ke "
+       "goal ke saath (data kisi address par gaya? confidential file bahar gayi?).")
+    li("4. InteractiveSession: chosen setting (Normal AI = bina protection, Aegis = poora gateway) mein "
+       "scripted agent ke saath run. Har tool call gateway.submit() se guzarti hai.")
+    li("5. Outcome asli sandbox state (outbox) se nikalta hai, AI ke dawe se nahi. analyze() scanner aur "
+       "classifier ka verdict deta hai. Aegis run tha aur attack tha, toh tally update.")
+    li("6. app.js result render karta hai: steps (Done / Blocked by Aegis), checkpoint ke checks, kya "
+       "system se bahar gaya, aur Result message.")
+    h2("B4. Ek tool call ke andar (gateway.submit)")
+    li("Raw JSON -> validation.py (schema, path, homoglyph) -> policy.py evaluate (tool, grant, "
+       "resource, sensitivity, recipients, egress, risk) -> verdict: ALLOW / REQUIRE_APPROVAL / DENY.")
+    li("REQUIRE_APPROVAL: approvals.py request banata hai; approver (insaan ya simulated) approve kare "
+       "toh token; dobara submit par redeem() exact action match karta hai.")
+    li("ALLOW: pehle audit record likha jaata hai (fail = G001, action nahi chalega), phir "
+       "registry.py ka tool sandbox par chalta hai, phir 'execute_done' audit record.")
+    li("Koi bhi exception: deny (P000) aur audit mein 'internal_error'.")
+
+    h1("Appendix C. Email classifier ko kaise train kiya")
+    h2("C1. Features (featurize)")
+    li("Subject + body + attachment names ko lowercase karke words mein todte hain.")
+    li("Har number '<num>' ban jaata hai, lambi hex id '<hex>' - taaki model amount ya order number yaad "
+       "na kare, pattern seekhe.")
+    li("Single words aur do-word pairs (bigrams), jaise 'verify your'.")
+    li("Optional header tokens (use_headers=True): __auth_spf_fail, __replyto_mismatch, __att_ext.docm.")
+    h2("C2. Model")
+    li("TF-IDF: har word ko weight - jo word kam emails mein aata hai usko zyada importance.")
+    li("Logistic regression (3 classes: LEGIT, PHISHING, SPAM). Malicious = PHISHING ya SPAM.")
+    li("Do backends: stdlib (khud likha hua, pure Python: softmax, L2 = 0.001, learning rate 2.0, 400 "
+       "epochs full-batch gradient descent, deterministic) aur scikit-learn (TfidfVectorizer + "
+       "LogisticRegression C=10, max_iter=2000, float32). sklearn install ho toh 'auto' use karta hai.")
+    li("Explanation: har verdict ke strongest words (weight x feature) aur red flags (auth fail, Reply-To "
+       "mismatch, lookalike domain, risky attachment, urgency, credential request, macro lure...).")
+    h2("C3. Data aur training ke steps")
+    li("Synthetic: 100-email corpus (48 legit / 52 malicious, 36 template families, "
+       "aegis/data/email_corpus.json) aur 500-email adversarial corpus (build_corpus_500.py se, CSV se).")
+    li("Real: Kaggle Nazario_5 (3,063) + TREC 2007 (53,648), duplicates hata kar. Data repo mein nahi; "
+       "script kagglehub cache se padhti hai.")
+    li("Cleaning: exact duplicates hataye; Nazario mein email addresses aur Enron words (enron, ect, hou, "
+       "corp) mask kiye taaki model source ka shortcut na seekhe.")
+    li("Split: synthetic par 5-fold grouped cross-validation (poori template family test mein alag). "
+       "Real par har source 70% train / 30% test, fixed seed 0.")
+    li("Training: train set ke features -> TF-IDF fit -> logistic regression fit. Real data par "
+       "min_df=2 (sirf ek email mein aaye words hata diye) taaki vocabulary chhoti aur fast ho.")
+    li("Testing: sirf test set par score - stopped (recall), false alarms, F1. Script: "
+       "scripts/eval_real_emails.py, poora run ~69 second laptop par.")
+    h2("C4. Dashboard mein kaun sa model chalta hai")
+    p("Dashboard ka classifier pehli request par built-in 100-email synthetic corpus par train hota hai "
+      "(custom.py ka _get_classifier). Real data repo mein nahi hai, isliye real-data model abhi "
+      "dashboard mein nahi chalta - woh numbers alag script se measured hain. Judge pooche toh yahi "
+      "seedha batao. Classifier sirf advisory hai, block gateway karta hai.")
+
+    h1("Appendix D. CI pipeline (GitHub Actions)")
+    li("File: .github/workflows/ci.yml. Chalta hai: har push to main par, aur har pull request par.")
+    li("Matrix: Ubuntu par Python 3.10, 3.11, 3.12, 3.13 - chaaron alag-alag, ek fail ho toh baaki "
+       "phir bhi chalte hain (fail-fast false).")
+    li("Steps: (1) code checkout, (2) Python setup, (3) pip install ruff mypy pytest - core ko koi "
+       "runtime dependency nahi chahiye, (4) ruff check . - poore repo ka lint, (5) mypy aegis scripts - "
+       "type check, (6) python -m pytest -q - poora test suite.")
+    li("Koi bhi step fail = CI red = merge se pehle fix. README par CI badge dikhata hai ki main green hai.")
+    li("CI ke bahar (manually) jo chalate hain: scripts/mutation_check.py (repo ko temp folder mein copy "
+       "karke 26 bugs ek-ek karke daalta hai, har bug par tests chalata hai; har bug kisi test ko fail "
+       "karna chahiye), benchmark, latency, real-email eval.")
+    h2("Humara development workflow")
+    li("Har change ek nayi branch par (feat/..., fix/..., docs/...).")
+    li("Local par ruff + mypy + pytest pass, aur jahan UI badla wahan headless browser se check.")
+    li("Pull request -> merge -> CI dobara main par chalta hai -> green confirm. 38 PRs isi tarah merge "
+       "hue (#1 se #40; #25-26 merge nahi hue).")
+
+    h1("Appendix E. Humne kaise chalaya - har command aur uska output")
+    li("Setup: python -m venv .venv ; .venv\\Scripts\\Activate.ps1 ; pip install pytest (aur "
+       "optional scikit-learn).")
+    li("python -m pytest -> 337 tests (1 skip agar scikit-learn nahi).")
+    li("python scripts/demo_core.py -> CLI mein payroll attack block hote dikhata hai (P005, P007, A008).")
+    li("python scripts/run_scenarios.py -> hijacked agent + scanner + approver, dev scenarios par.")
+    li("python -m aegis.eval -> chaar-setting benchmark (--split dev/heldout/all, --out results).")
+    li("python scripts/mutation_check.py -> '26/26 mutants killed'.")
+    li("python scripts/eval_email_classifier.py -> synthetic corpus par classifier table (random vs grouped CV).")
+    li("python scripts/scoreboard.py --json results/scoreboard.json -> Scoreboard page ke numbers.")
+    li("python scripts/eval_real_emails.py -> real email before/after/cross-source table.")
+    li("python scripts/measure_latency.py -> ~0.08 ms median per decision.")
+    li("python examples/protect_my_agent.py -> apne agent mein Aegis lagane ka example.")
+    li("python scripts/make_slides.py / make_knowledge_pdf.py / make_judge_guide_pdf.py -> docs dobara "
+       "banana.")
+    li("python -m aegis.web --open -> dashboard.")
+
+    h1("Appendix F. Pipelines/training par extra judge questions")
+    qa("CI kya check karta hai aur kab chalta hai?",
+       "Har PR aur main par push par: lint (ruff), type check (mypy), aur poore tests, Python 3.10-3.13 par.",
+       "GitHub Actions matrix job, ubuntu-latest, fail-fast false. Mutation testing manual script hai "
+       "kyunki 26 baar poora suite chalana CI ke liye slow hai.")
+    qa("Aapne LLM train kiya?",
+       "Nahi. Humne sirf email classifier train kiya. Gateway rules hain, train nahi hote - isliye koi "
+       "data use 'sikha' kar dheela nahi kar sakta. LLM koi bhi pre-trained model plug ho sakta hai.")
+    qa("Deep learning (BERT) kyun nahi use kiya classifier ke liye?",
+       "Classifier sirf advisory signal hai. TF-IDF + logistic regression fast hai, CPU par chalta hai, "
+       "har verdict explain kar sakta hai, aur real email par 97.7% / 99.7% de raha hai. BERT future "
+       "option hai agar false alarms kam karne hon.")
+    qa("Overfitting kaise roki?",
+       "Grouped cross-validation (template family test mein alag), real data par alag 30% test set, "
+       "duplicates hataye, Enron shortcut mask kiya, L2 regularisation, aur min_df.")
+    qa("Dashboard ka classifier real data par trained hai?",
+       "Nahi, dashboard built-in synthetic corpus par train hota hai kyunki real emails repo mein nahi "
+       "rakh sakte (privacy). Real-data numbers alag script se measure hue. Block karne ka kaam gateway "
+       "ka hai, classifier ka nahi.")
+    qa("Agar CI fail ho toh?",
+       "Merge nahi hota jab tak fix na ho. Ek baar local check mein type error dikha par humari command "
+       "ruki nahi; humne main ko saaf cache ke saath dobara check kiya aur woh green tha. Tab se local "
+       "checks real exit code par rukte hain.")
     return b
 
 
