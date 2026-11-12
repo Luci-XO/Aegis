@@ -147,6 +147,7 @@ synthetic. Full details: [docs/threat_model.md](docs/threat_model.md).
 | [docs/dashboard.md](docs/dashboard.md) | Dashboard and HTTP API |
 | [docs/report.md](docs/report.md) | Technical report |
 | [docs/pitch.md](docs/pitch.md) · [docs/demo_script.md](docs/demo_script.md) | Pitch, Q&A and live-demo script |
+| [docs/demo/aegis_demo_walkthrough.webm](docs/demo/aegis_demo_walkthrough.webm) | 3-minute captioned walkthrough (Hinglish) of how to present the demo; re-record with `node scripts/record_demo_video.js` |
 | [docs/aegis_judge_guide_hinglish.pdf](docs/aegis_judge_guide_hinglish.pdf) | Complete team guide in Hinglish: how it works and runs, file map, CI, training, history, edge cases, 68 judge Q&A |
 
 ## Prior work
