@@ -138,7 +138,7 @@ synthetic. Full details: [docs/threat_model.md](docs/threat_model.md).
 
 | | |
 |---|---|
-| [docs/aegis_guide.pdf](docs/aegis_guide.pdf) | Concise project guide (8 pages): how it works, verification, results, running, presenting, Q&A |
+| [docs/aegis_guide.pdf](docs/aegis_guide.pdf) | Project guide (12 pages): how it works, tech stack, data, pipelines and CI, results, running, presenting, 30 Q&A, team roles |
 | [docs/explainer.md](docs/explainer.md) | Full plain-language reference |
 | [docs/threat_model.md](docs/threat_model.md) | What is in and out of scope |
 | [docs/architecture.md](docs/architecture.md) | Security-core internals |
