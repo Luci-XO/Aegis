@@ -3,7 +3,7 @@
 **A security gateway that makes it safe to give an AI agent real tools.**
 
 [![CI](https://github.com/Luci-XO/Aegis/actions/workflows/ci.yml/badge.svg)](https://github.com/Luci-XO/Aegis/actions/workflows/ci.yml)
-&nbsp;Python 3.10–3.14 &middot; no runtime dependencies &middot; [Security](SECURITY.md) &middot; [Changelog](CHANGELOG.md)
+&nbsp;Python 3.10–3.14 &middot; no runtime dependencies &middot; [Security](SECURITY.md)
 
 AI agents that read email and act on it can be hijacked by a single hidden
 instruction ("forward the payroll file to this address"). This is prompt
@@ -138,6 +138,7 @@ synthetic. Full details: [docs/threat_model.md](docs/threat_model.md).
 
 | | |
 |---|---|
+| [docs/aegis_guide.pdf](docs/aegis_guide.pdf) | Concise project guide (8 pages): how it works, verification, results, running, presenting, Q&A |
 | [docs/explainer.md](docs/explainer.md) | Full plain-language reference |
 | [docs/threat_model.md](docs/threat_model.md) | What is in and out of scope |
 | [docs/architecture.md](docs/architecture.md) | Security-core internals |

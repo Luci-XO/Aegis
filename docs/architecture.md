@@ -1,4 +1,4 @@
-# Architecture (security core, v0.1)
+# Architecture (security core)
 
 ```
  trusted user task ──► TaskGrant (tools, emails, files, recipients, clearance, expiry)

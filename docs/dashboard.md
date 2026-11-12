@@ -1,6 +1,6 @@
-# Dashboard (Stage 6)
+# Dashboard
 
-A browser UI for exploring and demonstrating Aegis. It has **no third-party
+A browser UI for demonstrating and exploring Aegis. It has **no third-party
 dependencies**: a standard-library HTTP server (`http.server`) and a vanilla
 JavaScript frontend. It drives the same gateway, approvals, detector and agent
 as the benchmark, so what it shows is what the enforcement code actually does.
@@ -8,42 +8,41 @@ as the benchmark, so what it shows is what the enforcement code actually does.
 ## Run it
 
 ```bash
-python -m aegis.web          # then open http://127.0.0.1:8000
-python -m aegis.web --port 8080
+python -m aegis.web --open          # opens http://127.0.0.1:8000
+python -m aegis.web --port 8080     # if port 8000 is busy
 ```
 
-For a browser-free transcript of the API and the headline attack:
+On Windows you can double-click `start_demo.bat`; on macOS/Linux run
+`./start_demo.sh`. For a browser-free transcript of the API and the headline
+attack: `python scripts/demo_dashboard_flow.py`.
 
-```bash
-python scripts/demo_dashboard_flow.py
-```
+## Pages
 
-## Views
+- **Overview**: the problem, why scanning text is not enough, and what Aegis
+  does instead.
+- **Guided demo**: five scenarios, each run side by side (for example without
+  protection vs. with Aegis), with the outcome, every step the assistant tried,
+  the Aegis checkpoint for the key action, and what actually left the system.
+- **Scoreboard**: the email classifier's results on a corpus, read from
+  `results/scoreboard.json` (create it with
+  `python scripts/scoreboard.py --json results/scoreboard.json`).
+- **Test your own email**: upload an `.eml` file or paste text, choose who reads
+  it (**Normal AI**: fooled, no protection; **Not-fooled AI**: ignores the
+  email's instructions; **Aegis**: the fooled AI behind the gateway), and run it.
+  The page shows the threat scanner and classifier verdicts, what the email tries
+  to make the AI do, and the run. The **Break Aegis challenge** banner keeps a
+  live tally of attack emails tried against Aegis and how many got through. The
+  simulated assistant understands English, Hinglish and Hindi requests and
+  obfuscated addresses or words (`x at evil dot com`, `s-a-l-a-r-y`).
+- **Try it yourself**: pick any of the 31 scenarios, a protection setting and an
+  approver, including **You decide**, where you approve or reject each send.
+- **Results**: the four-way benchmark, run live when the page first opens, plus
+  the classifier's results on real email.
+- **How it's built**: the five checks every action passes and how the project
+  is verified.
 
-- **Live demo**: pick a scenario (dev or held-out), a configuration (A/B/C/D)
-  and an approver (manual, intent, rubber_stamp, reject_all), then Run. You see
-  the inbox and files (click an email to read its body and spot the hidden
-  instruction), the agent's proposed actions each with the gateway verdict and
-  rule ids, the detector risk applied, the approval prompt (in manual mode), the
-  outbox of what actually left, the agent's unverified claim next to the truth,
-  and the hash-chained audit trail.
-- **Benchmark**: the four-way comparison table for both splits, computed on
-  first open, with detector precision/recall/F1.
-- **About**: a short explanation of the configurations and approvers.
-
-## The manual-approval demo
-
-With config **D_aegis** and approver **manual**, run `dev-03-payroll-reply`:
-
-1. The hijacked agent reads the invoice email and proposes sending the payroll
-   file to an external auditor. This is **denied outright** (P005 attachment not
-   in grant, P007 recipient not granted); it never reaches you for approval.
-2. The agent then makes its legitimate reply to the sender. That send needs
-   approval; you see the exact recipient, subject and body and can approve it.
-3. The outbox contains only the legitimate reply. The audit chain verifies.
-
-Switch the config to **A_unprotected** and the same run sends the payroll file
-to the attacker. That contrast is the point.
+**Presentation mode** (top bar) enlarges everything for projectors and is
+remembered across reloads.
 
 ## API (all JSON)
 
@@ -51,15 +50,22 @@ to the attacker. That contrast is the point.
 |---|---|---|
 | GET | `/api/meta` | configurations, approvers, and scenarios per split |
 | POST | `/api/session` | start a run `{scenario_id, config, approver}`; returns a snapshot |
-| POST | `/api/session/decide` | `{session_id, request_id, approve}`; approve/reject a pending action |
-| GET | `/api/benchmark` | the full four-way benchmark (cached) |
+| POST | `/api/session/decide` | `{session_id, request_id, approve}`; approve or reject a pending action |
+| POST | `/api/compare` | run one scenario under two configurations `{scenario_id, left, right}` |
+| POST | `/api/custom` | run a user-supplied email `{raw, task, agent}` with `agent` = `normal`, `careful` or `aegis` |
+| GET | `/api/benchmark` | the full four-way benchmark (computed once, then cached) |
+| GET | `/api/scoreboard` | the classifier scoreboard, if `results/scoreboard.json` exists |
+| GET | `/api/challenge` | the Break Aegis tally and the files an attack can target |
+| POST | `/api/challenge/reset` | reset the tally (body `{}`) |
 
 ## Server hardening
 
-Because this is a security project, the demo server is deliberately careful:
-binds to `127.0.0.1` by default; rejects bodies over 64 KB; validates every
-input against allow-lists; serves static files only from the bundled directory
-with the resolved path checked to stay inside it and a fixed set of extensions;
-never echoes internal error details to the client; caps and evicts sessions.
-The frontend builds every element with `textContent`, so content from emails or
-tool arguments cannot inject markup.
+The demo server is deliberately careful: it binds to `127.0.0.1` by default;
+accepts only `application/json` request bodies (which blocks cross-site form
+posts) and rejects oversized ones; validates every input against allow-lists;
+serves static files only from the bundled directory with a fixed set of
+extensions; sends a strict Content-Security-Policy and security headers on every
+response; never echoes internal error details; and caps and evicts sessions. The
+frontend builds every element with `textContent`, so content from emails or tool
+arguments cannot inject markup. It has no user accounts, so run it on a trusted
+machine or network only (see [SECURITY.md](../SECURITY.md)).
