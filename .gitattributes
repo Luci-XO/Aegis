@@ -12,3 +12,5 @@
 # Windows batch files must keep CRLF line endings to run reliably.
 *.bat text eol=crlf
 *.sh text eol=lf
+*.webm binary
+*.mp4 binary
