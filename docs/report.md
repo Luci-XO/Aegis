@@ -140,7 +140,7 @@ and audit writes, median ~0.14 ms, p95 ~0.27 ms per step.
 
 ## 7. What was tested
 
-- 250 automated tests; a randomised compromised-agent invariant (12 seeds ×
+- 330+ automated tests; a randomised compromised-agent invariant (12 seeds ×
   150 sessions with parameter swaps, replays and cross-session token reuse)
   whose postconditions are checked independently of the policy code.
 - A reference-policy oracle asserting **0** unauthorized executions across both
@@ -169,7 +169,7 @@ and audit writes, median ~0.14 ms, p95 ~0.27 ms per step.
 
 ```bash
 git clone https://github.com/Luci-XO/Aegis.git && cd Aegis
-python -m pytest                      # 250 tests
+python -m pytest                      # 330+ tests
 python -m aegis.eval --report docs/benchmark_results.md   # dev + held-out
 python scripts/mutation_check.py      # 26/26 mutants killed
 python scripts/demo_core.py           # CLI attack-blocked walkthrough

@@ -1,4 +1,4 @@
-# Threat model (v0.1)
+# Threat model
 
 ## System
 An AI assistant reads emails and files and may draft or send email. Every tool

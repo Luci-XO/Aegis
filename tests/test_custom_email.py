@@ -188,7 +188,7 @@ def test_custom_endpoint_aegis_uses_the_fooled_ai_and_refuses_it(server):
     {"raw": "", "task": "reply"},
     {"raw": ATTACK, "task": "nope"},
     {"raw": ATTACK, "agent": "skynet"},
-    {"raw": ATTACK, "agent": "llm"},  # the real-AI option was removed from this page
+    {"raw": ATTACK, "agent": "llm"},  # not one of the three page options
     {"raw": 123},
 ])
 def test_custom_endpoint_rejects_bad_input(server, body):

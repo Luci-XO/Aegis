@@ -209,7 +209,7 @@ def test_openai_provider_default_base_url():
     assert c.base_url == "https://api.openai.com/v1" and c.api_key == "test-key"
 
 
-def test_removed_providers_need_an_explicit_base_url():
+def test_unknown_providers_need_an_explicit_base_url():
     with pytest.raises(LLMError):
         client_from_env({"AEGIS_LLM_PROVIDER": "unknown-provider", "AEGIS_LLM_MODEL": "m"})
 

@@ -14,16 +14,16 @@ async function loadScoreboard() {
 }
 
 function scoreEmpty() {
-  return el("div", { class: "arena-hero" }, [
+  return el("div", { class: "sb-empty" }, [
     el("div", { class: "eyebrow light", text: "Scoreboard" }),
     el("h1", { text: "Your AI, on the same emails every time." }),
-    el("p", { class: "arena-lead", text: "No scoreboard yet. Run it once on your machine and the whole corpus is scored in one go \u2014 how many attacks the filter stopped, how many got through, and how often it false-alarms on real email." }),
-    el("ol", { class: "arena-steps" }, [
+    el("p", { class: "sb-empty-lead", text: "No scoreboard yet. Run it once on your machine and the whole corpus is scored in one go \u2014 how many attacks the filter stopped, how many got through, and how often it false-alarms on real email." }),
+    el("ol", { class: "sb-empty-steps" }, [
       el("li", {}, ["Build the corpus: ", el("code", { text: "python scripts/build_corpus_500.py" }), "."]),
       el("li", {}, ["Run ", el("code", { text: "python scripts/scoreboard.py --corpus aegis/data/email_corpus_500.json --json results/scoreboard.json" }), "."]),
       el("li", { text: "Reload this page." }),
     ]),
-    el("p", { class: "arena-lead small", text: "Everything runs offline, no API keys needed." }),
+    el("p", { class: "sb-empty-lead small", text: "Everything runs offline, no API keys needed." }),
   ]);
 }
 

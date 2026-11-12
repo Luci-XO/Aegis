@@ -54,13 +54,15 @@ Close: "Small, dependency-free, reproducible, and honest about its limits."
 ## If someone wants to use their own email
 
 Open **Test your own email** and drag in a file from `examples/emails/` (or a real
-email downloaded from Gmail with *Download message*), or paste any text. Click
-**Run it**. The page shows the scanner and classifier verdicts, what a fully
-fooled assistant would try, and the side-by-side result. Good one to use:
-`2-polite-customer-data-request.eml`, which the scanner misses and Aegis still blocks.
+email downloaded from Gmail with *Download message*), or paste any text. Choose
+**Normal AI** and click **Run it**, then choose **Aegis** and run it again. The page
+shows the scanner and classifier verdicts, what the email tries to make the AI do,
+and the result. Good one to use: `2-polite-customer-data-request.eml`, which the
+scanner misses and Aegis still blocks. Click **reset** on the Break Aegis banner
+first so the tally starts at zero.
 
 Say: "The simulated assistant is deliberately fully fooled; it does whatever the
-email asks. With a model configured in `.env` you can switch to a real AI."
+email asks, in English, Hinglish or Hindi. Try to break it."
 
 ## If the audience wants to try it
 

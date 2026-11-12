@@ -1,6 +1,6 @@
 """Generate docs/aegis_judge_guide_hinglish.pdf: the complete Hinglish guide for the
 team, written for judge Q&A. Uses the same standard-library PDF writer as
-scripts/make_knowledge_pdf.py.
+scripts/make_guide_pdf.py.
 
 Run: python scripts/make_judge_guide_pdf.py
 """
@@ -12,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-import make_knowledge_pdf as kpdf
+import make_guide_pdf as kpdf
 
 OUT = Path(__file__).resolve().parents[1] / "docs" / "aegis_judge_guide_hinglish.pdf"
 
@@ -43,7 +43,7 @@ def blocks() -> list[tuple[str, str]]:
             p(tech)
 
     add(("title", "Aegis - Poori Guide (Hinglish)"))
-    add(("sub", "Humne kya banaya, kaise kaam karta hai, kis file mein kya hai, kya badla aur kyun, "
+    add(("sub", "Humne kya banaya, kaise kaam karta hai, kis file mein kya hai, "
                 "edge cases, kamiyan, future scope, judges ke 68 counter-questions, aur appendix mein runtime pipeline, CI aur training."))
     p("Is guide ka maksad: team ka har member Aegis ko itna achhe se samjhe ki koi bhi judge kuch bhi "
       "pooche, hum confidently aur sach bolkar jawab de sakein. Har number is repo ke real runs se aaya "
@@ -98,7 +98,7 @@ def blocks() -> list[tuple[str, str]]:
     li("Testing: 330+ automated tests, mutation testing (26 jaan-boojhkar daale gaye bugs, 26 pakde "
        "gaye), random attack fuzzing, aur GitHub par CI.")
     li("Docs: README, explainer, threat model, architecture, benchmark report, pitch, demo script, "
-       "slides (.pptx), knowledge PDF, aur yeh guide.")
+       "slides (.pptx), English guide (docs/aegis_guide.pdf), aur yeh guide.")
 
     # ------------------------------------------------------------------ 4
     h1("4. Yeh kahan use hoga - examples")
@@ -186,7 +186,7 @@ def blocks() -> list[tuple[str, str]]:
     li("aegis/policies/default.json - policy file (kaun sa data kahan ja sakta hai).")
     li("aegis/data - synthetic emails, files, dev aur held-out scenarios, email corpus.")
     li("scripts/ - demo_core, run_scenarios, mutation_check, eval_email_classifier, eval_real_emails, "
-       "scoreboard, measure_latency, build_corpus_500, make_slides, make_knowledge_pdf, yeh guide.")
+       "scoreboard, measure_latency, build_corpus_500, make_slides, make_guide_pdf, yeh guide.")
     li("tests/ - 17 test files: core, policy, approvals, audit, invariants, web, custom email, "
        "classifier, freeze, examples.")
     li("examples/protect_my_agent.py - apne agent ke aage Aegis lagane ka example.")
@@ -274,54 +274,8 @@ def blocks() -> list[tuple[str, str]]:
     p("Judge ke saamne yeh sab chhupana nahi hai. 'Yeh prototype hai, aur yeh rahi humari honest limits' "
       "bolna maturity dikhata hai.")
 
-    # ------------------------------------------------------------------ 12
-    h1("12. Version history - kya badla, kyun badla, pehle kya galat tha")
-    h2("Phase 1 (PR 1-5): security core")
-    p("Gateway, policy, approvals, audit log, invariant tests (shuru mein 111 tests, 18/18 mutants), "
-      "phir detector, agents, run loop, benchmark, freeze, held-out split, dashboard, report.")
-    h2("Phase 2 (PR 6-13): usability aur email classifier")
-    li("Python 3.10 support aur troubleshooting add kiya.")
-    li("Email classifier + Gemini support aaya (PR 7).")
-    li("Galti: Windows par freeze check fail hota tha kyunki CRLF line endings se file hash badal "
-       "jaata tha (PR 8 fix: .gitattributes se LF fix).")
-    li("Gemini API ke 503/429 errors ke liye retry (PR 10), unparsed answers ki reporting (PR 11).")
-    li("Judge-friendly guided demo (PR 12) aur 'Test your own email' (PR 13).")
-    h2("Phase 3 (PR 14-24): Gemini comparison, 500 emails, pitch")
-    li("Real AI arena (PR 14) aur 'your AI vs Gemini' scoreboard (PR 16-20).")
-    li("Galti: Gemini free tier ne HTTP 429 diya; 500 mein se 150 answers aaye hi nahi, isliye "
-       "comparison unfair tha (PR 17 mein honestly report kiya).")
-    li("500-email adversarial corpus (PR 15), pitch, slides, knowledge PDF (PR 18-22).")
-    li("Galti: PDF/PPTX git mein corrupt ho rahe the (line-ending conversion) - PR 23 mein binary mark "
-       "kiya.")
-    li("Render par public deploy (PR 24) - baad mein hataya.")
-    h2("Phase 4 (PR 27-31): hardening aur Gemini hatana")
-    li("Security headers, Content-Security-Policy, SECURITY.md, CI (PR 27).")
-    li("Real AI arena aur public deploy hataye (PR 28). Kyun: venue par internet/API key par depend "
-       "karna risky tha, aur public demo server ka attack surface tha.")
-    li("Gemini poori tarah hataya (PR 29). Kyun: ek vendor par dependency, rate limits ki wajah se "
-       "unreliable numbers, aur ek API key leak ho gayi thi. Generic adapter rakha taaki koi bhi model "
-       "lag sake.")
-    li("Hybrid classifier + lookalike domains (PR 30).")
-    h2("Phase 5 (PR 32-39): real data, product polish, hackathon")
-    li("Test your own email mein Normal AI / Not-fooled AI / Aegis choice (PR 32).")
-    li("Real email evaluation (PR 33-35). Galti pakdi: synthetic-only model real spam ka 74% miss kar "
-       "raha tha. Script pehle ek ghante se zyada leti thi, ab 69 second (feature names cache, batch "
-       "scoring, min_df).")
-    li("Product cleanup (PR 36): dead code, 7 type errors, 'student/hackathon project' wording, slide "
-       "par '<Your name>' placeholder hataye.")
-    li("Real-email results ko headline banaya (PR 37). Galti sudhaari: 'F1 0.98' claim hataya, kyunki "
-       "uske rules usi corpus ko padhkar likhe gaye the aur real email par unse koi fayda nahi hua.")
-    li("Packaging (PR 38): example, launchers, version 0.2.0, CHANGELOG, naya README, fresh screenshots.")
-    li("Break Aegis (PR 39): Hinglish/Hindi/obfuscated attacks, live tally, presentation mode, speed "
-       "number. Galti pakdi: pehle 'bhej do' wala attack likhne par 'kuch nahi hua' dikhta tha.")
-    h2("v0.1.0 vs v0.2.0 ek nazar mein")
-    li("v0.1.0: core, benchmark, dashboard, sirf synthetic data, Gemini par dependency, kuch claims "
-       "development numbers par based.")
-    li("v0.2.0: real-email results, koi vendor dependency nahi, Break Aegis challenge, Hinglish support, "
-       "integration example, launchers, CI mein scripts bhi type-check, honest headline numbers.")
-
     # ------------------------------------------------------------------ 13
-    h1("13. Kya yeh pehle se bana hua hai?")
+    h1("12. Kya yeh pehle se bana hua hai?")
     p("Seedha jawab: idea naya nahi hai, aur hum yeh claim nahi karte. Research mein Progent, CaMeL aur "
       "'Design Patterns for Securing LLM Agents' jaise papers yahi direction dete hain. Industry mein "
       "bhi rule-based guardrail aur MCP gateway products hain - jaise Invariant Labs ka Invariant "
@@ -337,7 +291,7 @@ def blocks() -> list[tuple[str, str]]:
     li("Indian context: Hinglish/Hindi attacks samajhna.")
 
     # ------------------------------------------------------------------ 14
-    h1("14. AI mein Aegis ko kaise lagayein, aur Claude kaise use karega")
+    h1("13. AI mein Aegis ko kaise lagayein, aur Claude kaise use karega")
     h2("Kisi bhi agent mein")
     p("Agent jo tool call propose kare, use seedha chalane ki jagah Aegis ke gateway.submit() se "
       "guzaro. Allowed hai toh chalega, denied hai toh agent ko reason milega, approval chahiye toh "
@@ -359,7 +313,7 @@ def blocks() -> list[tuple[str, str]]:
       "sakte hain.")
 
     # ------------------------------------------------------------------ 15
-    h1("15. Future scope")
+    h1("14. Future scope")
     li("MCP gateway: Claude Desktop, Cursor jaise apps ke liye 'firewall for tools'.")
     li("Asli connectors: Gmail/Outlook (pehle read-only), Slack, Google Drive.")
     li("Policy suggestions: task description se policy draft banana, insaan approve kare.")
@@ -370,7 +324,7 @@ def blocks() -> list[tuple[str, str]]:
     li("Hosted version / SaaS, Docker image.")
 
     # ------------------------------------------------------------------ 16
-    h1("16. Project ko stand-out kaise karein (demo ke din)")
+    h1("15. Project ko stand-out kaise karein (demo ke din)")
     li("Shuruaat 'One email can trick an AI' se: problem 20 second mein relatable banao.")
     li("Guided demo: same attack, left side leak, right side block - reason ke saath.")
     li("Judge ko keyboard do: 'Break Aegis' - Hinglish mein bhi likh ke dekh lo. Counter 0 got through "
@@ -380,7 +334,7 @@ def blocks() -> list[tuple[str, str]]:
     li("Presentation mode on rakho; backup video ready rakho; internet ki zarurat nahi.")
 
     # ------------------------------------------------------------------ 17
-    h1("17. Judges ke counter-questions (Hinglish jawab)")
+    h1("16. Judges ke counter-questions (Hinglish jawab)")
 
     h2("A. Idea aur problem")
     qa("Yeh project ek line mein kya karta hai?",
@@ -479,7 +433,7 @@ def blocks() -> list[tuple[str, str]]:
        "Gateway model-agnostic hai - model badalne se security nahi badalti.")
     qa("Windows, Mac, Linux par chalta hai?",
        "Haan, Python 3.10-3.14. CI Linux par 3.10-3.13 chalata hai; Windows ke liye start_demo.bat hai. "
-       "Pehle Windows par CRLF ki wajah se ek freeze bug tha, jo fix ho chuka hai.")
+       ".gitattributes line endings fix rakhta hai taaki Windows par bhi freeze hashes match karein.")
 
     h2("D. Data aur results")
     qa("Data synthetic hai, toh results ka kya matlab?",
@@ -500,10 +454,6 @@ def blocks() -> list[tuple[str, str]]:
     qa("False alarms kitne hain?",
        "Real business email par 4.9%, baaki legit email par 1.0%. 4.9% hamari sabse badi improvement "
        "need hai - hum ise khud batate hain.")
-    qa("Pehle F1 0.98 bolte the, ab kyun nahi?",
-       "Woh hybrid rules usi synthetic corpus ko padhkar likhe gaye the, toh number development "
-       "measurement tha. Real email par unse koi fayda nahi hua (0.952 vs 0.956). Isliye headline se "
-       "hataya - inflated number dikhana galat hota.")
     qa("Synthetic par trained model real par fail kyun hua?",
        "100 synthetic emails ke templates real duniya jaise vividh nahi the. Real spam ka 74% miss hua. "
        "Real data par train karne se 99.7% hua. Lesson: real data ke bina ML claim mat karo.")
@@ -553,16 +503,6 @@ def blocks() -> list[tuple[str, str]]:
        "deployment abhi nahi bane - yeh roadmap mein hai.")
 
     h2("G. Process aur team")
-    qa("Itne changes kyun kiye?",
-       "Har change ek real problem se aaya: Windows bug, PDF corruption, Gemini rate limits, venue par "
-       "internet ka risk, inflated claim, slow script, Hinglish attack fail. Har baar test karke, measure "
-       "karke sudhaara.")
-    qa("Gemini kyun hataya?",
-       "Ek vendor par dependency thi, free tier rate limits se numbers unreliable the (500 mein se 150 "
-       "answers missing), aur venue par internet/key par depend karna risky tha. Generic adapter rakha.")
-    qa("Real AI arena kyun hataya?",
-       "Usko live internet aur API key chahiye tha; demo ke din fail ho sakta tha. Uski jagah 'Normal AI / "
-       "Not-fooled AI / Aegis' comparison aur Break Aegis challenge diya, jo offline 100% chalta hai.")
     qa("Kaise pata ki code sahi hai?",
        "CI har change par lint (ruff), type check (mypy) aur poore tests chalata hai Python 3.10-3.13 "
        "par. Mutation testing se proof ki tests bugs pakadte hain.")
@@ -611,7 +551,7 @@ def blocks() -> list[tuple[str, str]]:
        "lagti hai, chahe AI kuch bhi samjhe.")
 
     # ------------------------------------------------------------------ 18
-    h1("18. 3-minute demo flow")
+    h1("17. 3-minute demo flow")
     li("0:00 Problem: 'Ek email AI assistant ko aapki files leak karne par majboor kar sakta hai.'")
     li("0:30 Guided demo -> 'Hidden instruction': left leak, right blocked, checkpoint ka reason.")
     li("1:30 Test your own email: Hinglish attack -> Normal AI (leak) -> Aegis (blocked).")
@@ -624,7 +564,7 @@ def blocks() -> list[tuple[str, str]]:
     code("python scripts/demo_core.py")
     code("python scripts/measure_latency.py")
 
-    h1("19. Ek last baat")
+    h1("18. Ek last baat")
     p("Judges ko teen cheezein yaad rehni chahiye: (1) AI fool ho sakta hai, isliye faisla rules lete "
       "hain; (2) humne sab kuch honestly measure kiya, limits ke saath; (3) unhone khud try kiya aur "
       "Aegis nahi toota. Agar koi sawaal is guide mein nahi hai, toh sach bolo: 'Yeh humne abhi test "
@@ -738,8 +678,7 @@ def blocks() -> list[tuple[str, str]]:
     h2("Humara development workflow")
     li("Har change ek nayi branch par (feat/..., fix/..., docs/...).")
     li("Local par ruff + mypy + pytest pass, aur jahan UI badla wahan headless browser se check.")
-    li("Pull request -> merge -> CI dobara main par chalta hai -> green confirm. 38 PRs isi tarah merge "
-       "hue (#1 se #40; #25-26 merge nahi hue).")
+    li("Pull request -> merge -> CI dobara main par chalta hai -> green confirm. Har change isi raaste se aata hai.")
 
     h1("Appendix E. Humne kaise chalaya - har command aur uska output")
     li("Setup: python -m venv .venv ; .venv\\Scripts\\Activate.ps1 ; pip install pytest (aur "
@@ -754,7 +693,7 @@ def blocks() -> list[tuple[str, str]]:
     li("python scripts/eval_real_emails.py -> real email before/after/cross-source table.")
     li("python scripts/measure_latency.py -> ~0.08 ms median per decision.")
     li("python examples/protect_my_agent.py -> apne agent mein Aegis lagane ka example.")
-    li("python scripts/make_slides.py / make_knowledge_pdf.py / make_judge_guide_pdf.py -> docs dobara "
+    li("python scripts/make_slides.py / make_guide_pdf.py / make_judge_guide_pdf.py -> docs dobara "
        "banana.")
     li("python -m aegis.web --open -> dashboard.")
 
@@ -777,10 +716,6 @@ def blocks() -> list[tuple[str, str]]:
        "Nahi, dashboard built-in synthetic corpus par train hota hai kyunki real emails repo mein nahi "
        "rakh sakte (privacy). Real-data numbers alag script se measure hue. Block karne ka kaam gateway "
        "ka hai, classifier ka nahi.")
-    qa("Agar CI fail ho toh?",
-       "Merge nahi hota jab tak fix na ho. Ek baar local check mein type error dikha par humari command "
-       "ruki nahi; humne main ko saaf cache ke saath dobara check kiya aur woh green tha. Tab se local "
-       "checks real exit code par rukte hain.")
     return b
 
 
